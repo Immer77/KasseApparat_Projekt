@@ -82,7 +82,7 @@ public class Gui extends Application {
 
     // Nogle produkter jeg har oprettet for at se om mit listview virker
     private void initProduct(){
-        productCategories.add(new ProductCategory("Candy", "For kids");
+        productCategories.add(new ProductCategory("Candy", "For kids"));
         products.add(new Product("Gummibear", "Sweet candy"));
         products.add(new Product("Liqurice", "Tart candy"));
         products.add(new Product("Sourz", "Sour drink"));
