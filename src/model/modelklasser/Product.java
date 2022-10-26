@@ -17,6 +17,8 @@ public class Product {
         this.description = description;
     }
 
+
+    // Getters ------------------------------------------------------------------
     public String getName() {
         return name;
     }
