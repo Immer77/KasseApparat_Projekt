@@ -3,27 +3,24 @@ package gui;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import model.controller.ProductOverviewController;
+import model.controller.StorageInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
-
-import java.util.ArrayList;
+import storage.Storage;
 
 import java.util.ArrayList;
 
 public class Gui extends Application {
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Gui UC9, UC13, UC14");
+        stage.setTitle("Aarhus Bryghus Salgssystem");
         GridPane pane = new GridPane();
         this.initContent(pane);
 
@@ -34,10 +31,9 @@ public class Gui extends Application {
 
     // -------------------------------------------------------------------------
 
-    private final ListView<Product> lvwProdukter = new ListView<>();
-    private final ListView<ProductCategory> lvwKategorier = new ListView<>();
-    private final ArrayList<Product> products = new ArrayList<>();
-    private final ArrayList<ProductCategory> productCategories = new ArrayList<>();
+    private final ListView<Product> lvwProducts = new ListView<>();
+    private final ListView<ProductCategory> lvwCategories = new ListView<>();
+    private ProductOverviewController productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
 
     private void initContent(GridPane pane) {
 
@@ -48,24 +44,24 @@ public class Gui extends Application {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        Label lblNameKategori = new Label("Product Category:");
+        Label lblNameKategori = new Label("Produktkategorier:");
         pane.add(lblNameKategori, 0, 0);
 
-        Label lblNameProdukt = new Label("Product:");
+        Label lblNameProdukt = new Label("Produkt:");
         pane.add(lblNameProdukt, 1, 0);
 
-        pane.add(lvwKategorier, 0, 1);
-        lvwKategorier.setPrefWidth(200);
-        lvwKategorier.setPrefHeight(200);
-        lvwKategorier.getItems().setAll();
+        pane.add(lvwCategories, 0, 1);
+        lvwCategories.setPrefWidth(200);
+        lvwCategories.setPrefHeight(200);
+        lvwCategories.getItems().setAll();
 
-        pane.add(lvwProdukter, 1, 1);
-        lvwProdukter.setPrefWidth(200);
-        lvwProdukter.setPrefHeight(200);
-        lvwProdukter.getItems().setAll();
+        pane.add(lvwProducts, 1, 1);
+        lvwProducts.setPrefWidth(200);
+        lvwProducts.setPrefHeight(200);
+        lvwProducts.getItems().setAll();
 
-        ChangeListener<Product> listener = (ov, o, n) -> this.productsItemSelected();
-        lvwProdukter.getSelectionModel().selectedItemProperty().addListener(listener);
+        ChangeListener<ProductCategory> listener = (ov, o, n) -> this.productCategoryItemSelected();
+        lvwCategories.getSelectionModel().selectedItemProperty().addListener(listener);
 
         Button btnCreateProductCategory = new Button("Create category");
         pane.add(btnCreateProductCategory, 0, 0);
@@ -76,33 +72,28 @@ public class Gui extends Application {
         btnCreateProduct.setOnAction(event -> this.createProductAction());
 
         this.initProduct();
+        lvwCategories.getItems().setAll(productController.getProductCategories());
     }
 
     // -------------------------------------------------------------------------
 
     // Nogle produkter jeg har oprettet for at se om mit listview virker
     private void initProduct(){
-        productCategories.add(new ProductCategory("Candy", "For kids");
-        products.add(new Product("Gummibear", "Sweet candy"));
-        products.add(new Product("Liqurice", "Tart candy"));
-        products.add(new Product("Sourz", "Sour drink"));
-
+        productController.initContent();
     }
 
     // -------------------------------------------------------------------------
 
-    private void productsItemSelected() {
-        Product selected = lvwProdukter.getSelectionModel().getSelectedItem();
+    private void productCategoryItemSelected() {
+        ProductCategory selected = lvwCategories.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            lvwProdukter.getSelectionModel().getSelectedItem().toString();
+            lvwProducts.getItems().setAll(selected.getProducts());
         } else {
-            lvwProdukter.refresh();
+            lvwCategories.getItems().setAll(productController.getProductCategories());
         }
     }
 
-    private void initproductCategories(){
-        productCategories.add(new ProductCategory("Candy", "Goodies for kids"));
-    }
+
 
     // Button actions
     private void createProductCategoryAction(){

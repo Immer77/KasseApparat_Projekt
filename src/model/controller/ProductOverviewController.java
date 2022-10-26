@@ -66,4 +66,14 @@ public class ProductOverviewController {
         return storage.getProductCategories();
     }
 
+    public void initContent() {
+        ProductCategory pc1 = createProductCategory("Flaskeøl", "Øl på flaske");
+        pc1.createProduct("Frigatten Jylland", "60cl, 8%");
+        pc1.createProduct("Extra Pilsner", "60cl, 5%");
+
+        ProductCategory pc2 = createProductCategory("Spiritus", "Spiritus på flaske");
+        pc2.createProduct("Whiskey", "Whiskey fra Aarhus");
+        pc2.createProduct("Gin", "Ginormous");
+    }
+
 }
