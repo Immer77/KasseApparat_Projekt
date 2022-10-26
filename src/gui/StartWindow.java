@@ -1,15 +1,16 @@
 package gui;
 
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class StartWindow {
+public class StartWindow extends Application {
 
     public void start(Stage stage) {
-        stage.setTitle("Konference App");
+        stage.setTitle("Aarhus Bryghus");
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
@@ -30,9 +31,9 @@ public class StartWindow {
         Tab tabProductOverview = new Tab("Product overview");
         tabPane.getTabs().add(tabProductOverview);
 
-        KonferencePane konferencePane = new KonferencePane();
-        tabKonference.setContent(konferencePane);
-        tabKonference.setOnSelectionChanged(event -> konferencePane.updateControls());
+        ProductOverviewTab productOverviewTab = new ProductOverviewTab();
+        tabProductOverview.setContent(productOverviewTab);
+        tabProductOverview.setOnSelectionChanged(event -> productOverviewTab.updateControls());
 
     }
 }
