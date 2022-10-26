@@ -15,8 +15,11 @@ import model.modelklasser.ProductCategory;
 import storage.Storage;
 
 public class ProductOverviewTab extends Application {
+
+    private Stage stage;
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
         stage.setTitle("Aarhus Bryghus Salgssystem");
         GridPane pane = new GridPane();
         this.initContent(pane);
@@ -31,6 +34,7 @@ public class ProductOverviewTab extends Application {
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
     private ProductOverviewController productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private CreateProductWindow createProductWindow;
 
     private void initContent(GridPane pane) {
 
@@ -110,6 +114,7 @@ public class ProductOverviewTab extends Application {
      */
     private void createProductCategoryAction(){
         //TODO
+
     }
 
     /**
@@ -117,6 +122,8 @@ public class ProductOverviewTab extends Application {
      */
     private void createProductAction(){
         //TODO
+        createProductWindow = new CreateProductWindow("Nyt Produkt", stage);
+        createProductWindow.showAndWait();
     }
 
 }
