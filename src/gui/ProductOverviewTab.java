@@ -14,47 +14,33 @@ import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import storage.Storage;
 
-public class ProductOverviewTab extends Application {
-    @Override
-    public void start(Stage stage) {
-        stage.setTitle("Aarhus Bryghus Salgssystem");
-        GridPane pane = new GridPane();
-        this.initContent(pane);
-
-        Scene scene = new Scene(pane);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    // -------------------------------------------------------------------------
+public class ProductOverviewTab extends GridPane {
 
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
     private ProductOverviewController productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
 
-    private void initContent(GridPane pane) {
-
-        // pane.setGridLinesVisible(true);
-        pane.setPadding(new Insets(20));
-        pane.setHgap(10);
-        pane.setVgap(10);
+    public ProductOverviewTab() {
+        this.setPadding(new Insets(20));
+        this.setHgap(10);
+        this.setVgap(10);
 
         //Categoy Label
         Label lblNameKategori = new Label("Produktkategorier:");
-        pane.add(lblNameKategori, 0, 0);
+        this.add(lblNameKategori, 0, 0);
 
         //Product Label
         Label lblNameProdukt = new Label("Produkt:");
-        pane.add(lblNameProdukt, 1, 0);
+        this.add(lblNameProdukt, 1, 0);
 
         //List View of categories
-        pane.add(lvwCategories, 0, 1);
+        this.add(lvwCategories, 0, 1);
         lvwCategories.setPrefWidth(200);
         lvwCategories.setPrefHeight(200);
         lvwCategories.getItems().setAll();
 
         //List View of products
-        pane.add(lvwProducts, 1, 1);
+        this.add(lvwProducts, 1, 1);
         lvwProducts.setPrefWidth(200);
         lvwProducts.setPrefHeight(200);
         lvwProducts.getItems().setAll();
@@ -65,12 +51,12 @@ public class ProductOverviewTab extends Application {
 
         //create category button
         Button btnCreateProductCategory = new Button("Create category");
-        pane.add(btnCreateProductCategory, 0, 0);
+        this.add(btnCreateProductCategory, 0, 0);
         btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
 
         //create product button
         Button btnCreateProduct = new Button("Create product");
-        pane.add(btnCreateProduct, 1, 0);
+        this.add(btnCreateProduct, 1, 0);
         btnCreateProduct.setOnAction(event -> this.createProductAction());
 
         //initial methods
@@ -117,6 +103,15 @@ public class ProductOverviewTab extends Application {
      */
     private void createProductAction(){
         //TODO
+    }
+
+    public void updateControls(){
+        try {
+            lvwCategories.getItems().setAll(productController.getProductCategories());
+        }
+        catch (NullPointerException npe){
+            npe.getMessage();
+        }
     }
 
 }
