@@ -1,6 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
@@ -16,6 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+
+import java.util.ArrayList;
 
 import java.util.ArrayList;
 
