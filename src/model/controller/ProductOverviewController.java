@@ -66,6 +66,9 @@ public class ProductOverviewController {
         return storage.getProductCategories();
     }
 
+    /**
+     * Creates initial contents for storage
+     */
     public void initContent() {
         ProductCategory pc1 = createProductCategory("Flaskeøl", "Øl på flaske");
         pc1.createProduct("Frigatten Jylland", "60cl, 8%");
