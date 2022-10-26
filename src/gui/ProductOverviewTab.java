@@ -20,7 +20,7 @@ public class ProductOverviewTab extends GridPane {
 
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
-    private ProductOverviewController productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
     private Button btnCreateProduct;
 
     public ProductOverviewTab() {
@@ -65,7 +65,11 @@ public class ProductOverviewTab extends GridPane {
      * Creates initial products and categories
      */
     private void initProduct() {
-        productController.initContent();
+        if (productController instanceof ProductOverviewController) {
+            ProductOverviewController controller = (ProductOverviewController) productController;
+            controller.initContent();
+        }
+
     }
 
     // -------------------------------------------------------------------------

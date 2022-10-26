@@ -21,6 +21,7 @@ public class CreateProductWindow extends Stage {
     private TextField txfName = new TextField();
     private TextArea txaDescription = new TextArea();
     private ProductCategory productCategory;
+    private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
 
     public CreateProductWindow (String title, ProductCategory productCategory, Stage owner) {
         this.productCategory = productCategory;
@@ -65,7 +66,6 @@ public class CreateProductWindow extends Stage {
     }
 
     public void oKAction() {
-        ProductOverviewController controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
         String name = "";
         String description = "";
         if (txfName.getText().trim().length() > 0) {
