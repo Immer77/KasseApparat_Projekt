@@ -25,7 +25,7 @@ public class ProductOverviewController {
      * Returns the unique ProductOverviewController. If none exists, creates one.
      * @return unique ProductOverviewController object
      */
-    public static ProductOverviewController getProductController (StorageInterface storage) {
+    public static ProductOverviewController getProductOverviewController (StorageInterface storage) {
         if (unique_ProductOverviewController == null) {
             unique_ProductOverviewController = new ProductOverviewController(storage);
         }
