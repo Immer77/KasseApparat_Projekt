@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface StorageInterface {
-    List<ProductCategory> getProductcategories();
+    List<ProductCategory> getProductCategories();
     void addProductCategory(ProductCategory productCategory);
 
 }

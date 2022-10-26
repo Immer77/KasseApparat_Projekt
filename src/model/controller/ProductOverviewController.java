@@ -1,33 +1,35 @@
 package model.controller;
 
+import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 
-public class ProductController {
+import java.util.List;
+
+public class ProductOverviewController {
     //Fields ---------------------------------------------------------------------------------------------------------
-    private ProductController unique_ProductController;
+    private static ProductOverviewController unique_ProductOverviewController;
     private StorageInterface storage;
 
     //Constructors ---------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a new ProductController object.
+     * Creates a new ProductOverviewController object.
      * @param storage the storage this object should use, using the StorageInterface interface.
      */
-    private ProductController (StorageInterface storage) {
+    private ProductOverviewController(StorageInterface storage) {
         this.storage = storage;
     }
 
     //Methods - Get, Set & Add ---------------------------------------------------------------------------------------
-
     /**
-     * Returns the unique ProductController. If none exists, creates one.
-     * @return unique ProductController object
+     * Returns the unique ProductOverviewController. If none exists, creates one.
+     * @return unique ProductOverviewController object
      */
-    public ProductController getProductController () {
-        if (unique_ProductController == null) {
-            unique_ProductController = new ProductController();
+    public static ProductOverviewController getProductController (StorageInterface storage) {
+        if (unique_ProductOverviewController == null) {
+            unique_ProductOverviewController = new ProductOverviewController(storage);
         }
-        return unique_ProductController;
+        return unique_ProductOverviewController;
     }
 
     //Methods - Other ------------------------------------------------------------------------------------------------
@@ -52,7 +54,7 @@ public class ProductController {
      * @return returns the new Product.
      */
     public Product createProduct (ProductCategory productCategory, String name, String description) {
-        Product current = ProductCategory.createProduct (String name, String description );
+        Product current = productCategory.createProduct(name, description);
         return current;
     }
 
@@ -61,7 +63,7 @@ public class ProductController {
      * @return a list of all ProductCategories.
      */
     public List<ProductCategory> getProductCategories () {
-        return storage.getProductCategories;
+        return storage.getProductCategories();
     }
 
 }

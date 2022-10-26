@@ -11,7 +11,7 @@ public class Storage implements StorageInterface {
     private List<ProductCategory> productCategories = new ArrayList<>();
 
     @Override
-    public List<ProductCategory> getProductcategories() {
+    public List<ProductCategory> getProductCategories() {
         return new ArrayList<>(productCategories);
     }
 
