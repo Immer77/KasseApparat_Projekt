@@ -31,13 +31,13 @@ public class ProductOverviewTab extends GridPane {
         //List View of categories
         this.add(lvwCategories, 0, 1);
         lvwCategories.setPrefWidth(200);
-        lvwCategories.setPrefHeight(200);
+        lvwCategories.setPrefHeight(300);
         lvwCategories.getItems().setAll();
 
         //List View of products
         this.add(lvwProducts, 1, 1);
         lvwProducts.setPrefWidth(200);
-        lvwProducts.setPrefHeight(200);
+        lvwProducts.setPrefHeight(300);
         lvwProducts.getItems().setAll();
 
         //Listener for category list
@@ -85,14 +85,17 @@ public class ProductOverviewTab extends GridPane {
      * Opens a new window to create a new category of products
      */
     private void createProductCategoryAction() {
-        //TODO
+        Stage stage = new Stage(StageStyle.UTILITY);
+        CreateProductCategoryWindow categoryWindow = new CreateProductCategoryWindow("Ny produktkategori", stage);
+        categoryWindow.showAndWait();
+
+        updateControls();
     }
 
     /**
      * Opens a new window to create a new product, for the currently selected category
      */
     private void createProductAction() {
-
         if (lvwCategories.getSelectionModel().getSelectedItem() != null) {
             ProductCategory category = lvwCategories.getSelectionModel().getSelectedItem();
             Stage stage = new Stage(StageStyle.UTILITY);
