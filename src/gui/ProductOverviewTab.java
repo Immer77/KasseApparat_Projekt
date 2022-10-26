@@ -10,14 +10,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.controller.ProductOverviewController;
-import model.controller.StorageInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import storage.Storage;
 
-import java.util.ArrayList;
-
-public class Gui extends Application {
+public class ProductOverviewTab extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("Aarhus Bryghus Salgssystem");
