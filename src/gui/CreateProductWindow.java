@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,10 +11,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import model.controller.ProductOverviewController;
+import model.modelklasser.ProductCategory;
+import storage.Storage;
 
 public class CreateProductWindow extends Stage {
 
-    public CreateProductWindow (String title, Stage owner) {
+
+    private TextField txfName = new TextField();
+    private TextArea txaDescription = new TextArea();
+    private ProductCategory productCategory;
+
+    public CreateProductWindow (String title, ProductCategory productCategory, Stage owner) {
+        this.productCategory = productCategory;
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -29,11 +39,9 @@ public class CreateProductWindow extends Stage {
         this.setScene(scene);
     }
 
-    private TextField txfName = new TextField();
-    private TextArea txaDescription = new TextArea();
 
     public void initContent(GridPane pane) {
-        // pane.setGridLinesVisible(true);
+        //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
         pane.setVgap(10);
@@ -48,13 +56,32 @@ public class CreateProductWindow extends Stage {
 
         Button btnOK = new Button("Ok");
         pane.add(btnOK, 1, 3);
+        btnOK.setOnAction(event -> oKAction());
 
 
         Button btnCancel = new Button("Cancel");
         pane.add(btnCancel, 2, 3);
+        btnCancel.setOnAction(event -> cancelAction());
+    }
 
+    public void oKAction() {
+        ProductOverviewController controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+        String name = "";
+        String description = "";
+        if (txfName.getText().trim().length() > 0) {
+            name = txfName.getText().trim();
+        }
+        if (txaDescription.getText().trim().length() > 0) {
+            description = txaDescription.getText().trim();
+        }
 
+        controller.createProduct(productCategory, name, description);
+        this.close();
 
+    }
+
+    public void cancelAction () {
+        this.close();
     }
 
 }

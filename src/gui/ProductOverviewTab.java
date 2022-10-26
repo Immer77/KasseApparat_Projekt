@@ -4,11 +4,13 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.controller.ProductOverviewController;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
@@ -19,19 +21,12 @@ public class ProductOverviewTab extends GridPane {
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
     private ProductOverviewController productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private Button btnCreateProduct;
 
     public ProductOverviewTab() {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
-
-        //Categoy Label
-        Label lblNameKategori = new Label("Produktkategorier:");
-        this.add(lblNameKategori, 0, 0);
-
-        //Product Label
-        Label lblNameProdukt = new Label("Produkt:");
-        this.add(lblNameProdukt, 1, 0);
 
         //List View of categories
         this.add(lvwCategories, 0, 1);
@@ -55,13 +50,13 @@ public class ProductOverviewTab extends GridPane {
         btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
 
         //create product button
-        Button btnCreateProduct = new Button("Create product");
+        btnCreateProduct = new Button("Create product");
         this.add(btnCreateProduct, 1, 0);
         btnCreateProduct.setOnAction(event -> this.createProductAction());
 
         //initial methods
         this.initProduct();
-        lvwCategories.getItems().setAll(productController.getProductCategories());
+        updateControls();
     }
 
     // -------------------------------------------------------------------------
@@ -69,7 +64,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Creates initial products and categories
      */
-    private void initProduct(){
+    private void initProduct() {
         productController.initContent();
     }
 
@@ -79,14 +74,9 @@ public class ProductOverviewTab extends GridPane {
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
     private void productCategoryItemSelected() {
-        ProductCategory selected = lvwCategories.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            lvwProducts.getItems().setAll(selected.getProducts());
-        } else {
-            lvwCategories.getItems().setAll(productController.getProductCategories());
-        }
+        updateProductList();
+        productButtonGreyout();
     }
-
 
 
     // Button actions
@@ -94,23 +84,69 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Opens a new window to create a new category of products
      */
-    private void createProductCategoryAction(){
+    private void createProductCategoryAction() {
         //TODO
     }
 
     /**
      * Opens a new window to create a new product, for the currently selected category
      */
-    private void createProductAction(){
-        //TODO
+    private void createProductAction() {
+
+        if (lvwCategories.getSelectionModel().getSelectedItem() != null) {
+            ProductCategory category = lvwCategories.getSelectionModel().getSelectedItem();
+            Stage stage = new Stage(StageStyle.UTILITY);
+            CreateProductWindow productWindow = new CreateProductWindow("Nyt Produkt", category, stage);
+            productWindow.showAndWait();
+
+            updateControls();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Fejl!");
+            alert.setHeaderText("Ingen produktkategori er valgt. Alle produkter skal tilhøre en kategori!");
+            alert.showAndWait();
+        }
     }
 
-    public void updateControls(){
+    public void updateControls() {
         try {
-            lvwCategories.getItems().setAll(productController.getProductCategories());
+
+            updateCategoryList();
+            updateProductList();
+
+            productButtonGreyout();
+
+        } catch (NullPointerException npe) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Null Pointer Exception");
+            alert.setHeaderText(npe.getMessage());
+            alert.showAndWait();
         }
-        catch (NullPointerException npe){
-            npe.getMessage();
+    }
+
+    private void updateProductList() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        if (selectedCategory != null) {
+            lvwProducts.getItems().setAll(selectedCategory.getProducts());
+        } else {
+            lvwProducts.getItems().clear();
+        }
+    }
+
+
+    private void updateCategoryList() {
+        lvwCategories.getItems().setAll(productController.getProductCategories());
+    }
+
+    private void productButtonGreyout() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+
+        if (selectedCategory == null) {
+            btnCreateProduct.setDisable(true);
+
+        } else {
+            btnCreateProduct.setDisable(false);
+
         }
     }
 
