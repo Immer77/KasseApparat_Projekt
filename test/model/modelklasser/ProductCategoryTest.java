@@ -14,6 +14,9 @@ class ProductCategoryTest {
         productCategory = new ProductCategory("Øl","Bajselademadder");
     }
 
+    /**
+     * Testing to see if when product is created it succesfully adds it to the productcategory list.
+     */
     @Test
     void TC1_createProduct() {
         // Arrange
