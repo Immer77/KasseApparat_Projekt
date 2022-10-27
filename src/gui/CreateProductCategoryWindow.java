@@ -2,10 +2,7 @@ package gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -19,6 +16,12 @@ public class CreateProductCategoryWindow extends Stage {
 
     private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
 
+    /**
+     *
+     * Creates a new window used for creating a new ProductCategory
+     * @param title The title of the window
+     * @param owner The Stage owning this window
+     */
     public CreateProductCategoryWindow (String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
@@ -35,7 +38,10 @@ public class CreateProductCategoryWindow extends Stage {
         this.setScene(scene);
     }
 
-
+    /**
+     * Initialises the content in the window.
+     * @param pane The Gridpane parent of the content
+     */
     public void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
@@ -60,21 +66,33 @@ public class CreateProductCategoryWindow extends Stage {
         btnCancel.setOnAction(event -> cancelAction());
     }
 
+    /**
+     * Creates a new ProductCategory object with the entered title and description, then closes the window. If no title is given, an alert is shown and nothing happens instead.
+     */
     public void oKAction() {
         String title = "";
         String description = "";
-        if (txfTitle.getText().trim().length() > 0) {
+        if (!txfTitle.getText().isBlank()) {
             title = txfTitle.getText().trim();
-        }
-        if (txaDescription.getText().trim().length() > 0) {
-            description = txaDescription.getText().trim();
-        }
 
-        controller.createProductCategory(title, description);
-        this.close();
+            if (!txaDescription.getText().isBlank()) {
+                description = txaDescription.getText().trim();
+            }
 
+            controller.createProductCategory(title, description);
+            this.close();
+
+        } else {
+            Alert titleAlert = new Alert(Alert.AlertType.ERROR);
+            titleAlert.setTitle("Manglende titel!");
+            titleAlert.setHeaderText("En produktkategori skal have en titel før det kan oprettes!");
+            titleAlert.showAndWait();
+        }
     }
 
+    /**
+     * Closes the window, discarding any changes.
+     */
     public void cancelAction () {
         this.close();
     }

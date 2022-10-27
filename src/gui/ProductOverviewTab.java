@@ -23,6 +23,9 @@ public class ProductOverviewTab extends GridPane {
     private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
     private Button btnCreateProduct;
 
+    /**
+     * Creates a new ProductOverviewTab, for showing an overview of all ProductCategories and Products. Also allows creation of those objects.
+     */
     public ProductOverviewTab() {
         this.setPadding(new Insets(20));
         this.setHgap(10);
@@ -45,12 +48,12 @@ public class ProductOverviewTab extends GridPane {
         lvwCategories.getSelectionModel().selectedItemProperty().addListener(listener);
 
         //create category button
-        Button btnCreateProductCategory = new Button("Create category");
+        Button btnCreateProductCategory = new Button("Ny Produktkategori");
         this.add(btnCreateProductCategory, 0, 0);
         btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
 
         //create product button
-        btnCreateProduct = new Button("Create product");
+        btnCreateProduct = new Button("Nyt Produkt");
         this.add(btnCreateProduct, 1, 0);
         btnCreateProduct.setOnAction(event -> this.createProductAction());
 
@@ -89,6 +92,7 @@ public class ProductOverviewTab extends GridPane {
      * Opens a new window to create a new category of products
      */
     private void createProductCategoryAction() {
+
         Stage stage = new Stage(StageStyle.UTILITY);
         CreateProductCategoryWindow categoryWindow = new CreateProductCategoryWindow("Ny produktkategori", stage);
         categoryWindow.showAndWait();
@@ -107,6 +111,8 @@ public class ProductOverviewTab extends GridPane {
             productWindow.showAndWait();
 
             updateControls();
+            lvwCategories.getSelectionModel().select(category);
+
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Fejl!");
@@ -115,6 +121,9 @@ public class ProductOverviewTab extends GridPane {
         }
     }
 
+    /**
+     * Updates lists and buttons on this tab
+     */
     public void updateControls() {
         try {
 
@@ -131,6 +140,9 @@ public class ProductOverviewTab extends GridPane {
         }
     }
 
+    /**
+     * Helper method for updating the Product listview
+     */
     private void updateProductList() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
@@ -141,10 +153,16 @@ public class ProductOverviewTab extends GridPane {
     }
 
 
+    /**
+     * Helper method for updating the ProductCategory listview
+     */
     private void updateCategoryList() {
         lvwCategories.getItems().setAll(productController.getProductCategories());
     }
 
+    /**
+     * Helper method. Greys out btnCreateProduct button, when no ProductCategory is selected.
+     */
     private void productButtonGreyout() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
 

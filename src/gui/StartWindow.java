@@ -28,7 +28,7 @@ public class StartWindow extends Application {
     private void initTabPane(TabPane tabPane) {
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        Tab tabProductOverview = new Tab("Product overview");
+        Tab tabProductOverview = new Tab("Produktoversigt");
         tabPane.getTabs().add(tabProductOverview);
 
         ProductOverviewTab productOverviewTab = new ProductOverviewTab();
