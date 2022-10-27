@@ -1,13 +1,14 @@
 package model.controller;
 
+import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 
 import java.util.List;
 
-public class ProductOverviewController {
+public class ProductOverviewController implements ProductOverviewControllerInterface {
     //Fields ---------------------------------------------------------------------------------------------------------
-    private static ProductOverviewController unique_ProductOverviewController;
+    private static ProductOverviewControllerInterface unique_ProductOverviewController;
     private StorageInterface storage;
 
     //Constructors ---------------------------------------------------------------------------------------------------
@@ -25,7 +26,7 @@ public class ProductOverviewController {
      * Returns the unique ProductOverviewController. If none exists, creates one.
      * @return unique ProductOverviewController object
      */
-    public static ProductOverviewController getProductOverviewController (StorageInterface storage) {
+    public static ProductOverviewControllerInterface getProductOverviewController (StorageInterface storage) {
         if (unique_ProductOverviewController == null) {
             unique_ProductOverviewController = new ProductOverviewController(storage);
         }
@@ -64,6 +65,19 @@ public class ProductOverviewController {
      */
     public List<ProductCategory> getProductCategories () {
         return storage.getProductCategories();
+    }
+
+    /**
+     * Creates initial contents for storage
+     */
+    public void initContent() {
+        ProductCategory pc1 = createProductCategory("Flaskeøl", "Øl på flaske");
+        pc1.createProduct("Frigatten Jylland", "60cl, 8%");
+        pc1.createProduct("Extra Pilsner", "60cl, 5%");
+
+        ProductCategory pc2 = createProductCategory("Spiritus", "Spiritus på flaske");
+        pc2.createProduct("Whiskey", "Whiskey fra Aarhus");
+        pc2.createProduct("Gin", "Ginormous");
     }
 
 }
