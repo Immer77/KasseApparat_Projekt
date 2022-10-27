@@ -48,6 +48,6 @@ public class ProductCategory {
 
     @Override
     public String toString() {
-        return title;
+        return title + " ("+description+")";
     }
 }
