@@ -48,6 +48,10 @@ public class ProductCategory {
 
     @Override
     public String toString() {
-        return title + " ("+description+")";
+        String returnValue = title;
+        if (!description.isBlank()) {
+            returnValue += " ("+description+")";
+        }
+        return returnValue;
     }
 }
