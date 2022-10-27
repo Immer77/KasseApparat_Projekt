@@ -59,11 +59,13 @@ public class CreateProductCategoryWindow extends Stage {
         Button btnOK = new Button("Ok");
         pane.add(btnOK, 1, 3);
         btnOK.setOnAction(event -> oKAction());
+        btnOK.setDefaultButton(true);
 
 
         Button btnCancel = new Button("Cancel");
         pane.add(btnCancel, 2, 3);
         btnCancel.setOnAction(event -> cancelAction());
+        btnCancel.setCancelButton(true);
     }
 
     /**
