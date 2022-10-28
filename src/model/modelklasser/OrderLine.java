@@ -7,7 +7,7 @@ public class OrderLine {
     // forced association --> 1 Product
     private Product product;
 
-    protected OrderLine(int amount, Product product) {
+    OrderLine(int amount, Product product) {
         this.amount = amount;
         this.product = product;
     }
@@ -22,5 +22,6 @@ public class OrderLine {
 
     public double calculateTotalPrice(Unit unit, Situation situation){
         //TODO
+        return 0.0;
     }
 }
