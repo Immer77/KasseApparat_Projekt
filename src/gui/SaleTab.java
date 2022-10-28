@@ -11,7 +11,7 @@ import storage.Storage;
 
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
-    private ProductOverviewControllerInterface saleController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private ProductOverviewControllerInterface saleController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private Accordion accProductOverview;
     private ListView<HBox> orderOverview;
 
