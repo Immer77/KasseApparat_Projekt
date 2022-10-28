@@ -1,25 +1,19 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import model.controller.ProductOverviewController;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import storage.Storage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
-    Accordion accProductOverview;
+    private ProductOverviewControllerInterface saleController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private Accordion accProductOverview;
+    private ListView<HBox> orderOverview;
 
     //Constructors ------------------------------------------------------
     public SaleTab () {
@@ -28,6 +22,22 @@ public class SaleTab extends GridPane {
         this.setVgap(10);
 
         updateProductOverview();
+
+        orderOverview = new ListView<>();
+        orderOverview.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
+        this.add(orderOverview, 1, 0, 2, 2);
+
+
+
+        Label lblProductName = new Label("Produkt");
+
+        Label lblAmount = new Label("Antal");
+
+        HBox orderTitles = new HBox(lblProductName, lblAmount);
+        orderOverview.getItems().setAll(orderTitles);
+
+
+
 
     }
 
@@ -44,8 +54,19 @@ public class SaleTab extends GridPane {
     }
 
 
-
+    /**
+     * Adds a product from the overview to the current order
+     * @param product the Product to add
+     */
     private void addProductToOrder(Product product) {
+        //Create label for the product and add to the overview
+        Label lblProduct = new Label(product.toString());
+
+
+
+        //Create amount textfield, with a + & - button
+
+        //Create an orderline for the product and add to the order
 
     }
 
@@ -58,7 +79,7 @@ public class SaleTab extends GridPane {
         accProductOverview.setPadding(Insets.EMPTY);
 
         //For each category...
-        for (ProductCategory proCat : productController.getProductCategories()) {
+        for (ProductCategory proCat : saleController.getProductCategories()) {
             //Create a vbox
             VBox buttonVBox = new VBox();
             buttonVBox.setPadding(new Insets(5));
@@ -79,7 +100,7 @@ public class SaleTab extends GridPane {
 
             //Create a titledPane, add the vbox
             TitledPane titledPane = new TitledPane(proCat.getTitle(), buttonVBox);
-
+            //Add the titledPane to the accordionView
             accProductOverview.getPanes().add(titledPane);
         }
 
