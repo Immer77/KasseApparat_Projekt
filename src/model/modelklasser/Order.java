@@ -43,9 +43,6 @@ public class Order {
         this.percentDiscount = percentDiscount;
     }
 
-    public void createOrderLine(Product product, int amount){
-        //TODO
-    }
 
     public void calculateSumPrice(){
         for (OrderLine orderLine : orderLines){
