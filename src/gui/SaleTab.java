@@ -1,19 +1,23 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import model.controller.OrderController;
 import model.controller.ProductOverviewController;
-import model.modelklasser.Product;
-import model.modelklasser.ProductCategory;
+import model.modelklasser.*;
 import storage.Storage;
 
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
-    private ProductOverviewControllerInterface saleController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
+    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private Accordion accProductOverview;
     private ListView<HBox> orderOverview;
+    private ChoiceBox<Situation> chSituation;
+    private ChoiceBox<Unit> chUnits;
 
     //Constructors ------------------------------------------------------
     public SaleTab () {
@@ -21,7 +25,39 @@ public class SaleTab extends GridPane {
         this.setHgap(10);
         this.setVgap(10);
 
-        updateProductOverview();
+
+        //Adds a choicebox to select the Situation
+        chSituation = new ChoiceBox<>();
+        this.add(chSituation, 0,0);
+
+        ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelectionChanged();
+        chSituation.getSelectionModel().selectedItemProperty().addListener(situationListener);
+
+        //Adds a choicebox to select which unit to show prices in
+        chUnits = new ChoiceBox<>();
+        this.add(chUnits, 1, 0);
+
+        ChangeListener<Unit> unitListener = (ov, o, n) -> this.unitSelectionChanged();
+        chUnits.getSelectionModel().selectedItemProperty().addListener(unitListener);
+
+
+
+
+        //Initiates examples of situations
+        orderController.initContent();
+
+
+        //Updates all controls
+        updateControls();
+
+
+
+
+
+        //___________SKAL SES PÅ________________________________
+/*        updateProductOverview();
+
+
 
         orderOverview = new ListView<>();
         orderOverview.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
@@ -34,8 +70,8 @@ public class SaleTab extends GridPane {
         Label lblAmount = new Label("Antal");
 
         HBox orderTitles = new HBox(lblProductName, lblAmount);
-        orderOverview.getItems().setAll(orderTitles);
-
+        orderOverview.getItems().setAll(orderTitles);*/
+        //_________________________________________________________
 
 
 
@@ -46,6 +82,19 @@ public class SaleTab extends GridPane {
 
     //Methods - Other ----------------------------------------------------
     public void updateControls () {
+        //Update choiceboxes
+        chSituation.getItems().setAll(orderController.getSituations());
+        if (chSituation.getSelectionModel().isEmpty()) {
+            chSituation.getSelectionModel().select(0);
+        }
+
+        chUnits.getItems().setAll(Unit.values());
+        if (chUnits.getSelectionModel().isEmpty()) {
+            chUnits.getSelectionModel().select(0);
+        }
+
+        //Update productOverview
+        updateProductOverview();
 
     }
 
@@ -79,7 +128,7 @@ public class SaleTab extends GridPane {
         accProductOverview.setPadding(Insets.EMPTY);
 
         //For each category...
-        for (ProductCategory proCat : saleController.getProductCategories()) {
+        for (ProductCategory proCat : productController.getProductCategories()) {
             //Create a vbox
             VBox buttonVBox = new VBox();
             buttonVBox.setPadding(new Insets(5));
@@ -89,12 +138,27 @@ public class SaleTab extends GridPane {
 
             //for each product in the category, create a button and add to the vbox
             for (Product prod : proCat.getProducts()) {
+                BorderPane borderpane = new BorderPane();
+
                 Button productButton = new Button(prod.toString());
                 productButton.setOnAction(event -> addProductToOrder(prod));
                 productButton.setWrapText(true);
                 productButton.setMaxWidth(Double.MAX_VALUE);
+                borderpane.setLeft(productButton);
 
-                buttonVBox.getChildren().add(productButton);
+                TextField txfPrice = new TextField();
+                for (Price price : prod.getPrices()) {
+                    if (price.getSituation().equals(chSituation.getSelectionModel().getSelectedItem()) && price.getUnit().equals(chUnits.getSelectionModel().getSelectedItem())) {
+                        txfPrice.setText(price.toString());
+                    }
+                }
+                if (txfPrice.getText().isBlank()) {
+                    txfPrice.setText("-");
+                }
+                txfPrice.setEditable(false);
+                borderpane.setRight(txfPrice);
+
+                buttonVBox.getChildren().add(borderpane);
 
             }
 
@@ -105,6 +169,16 @@ public class SaleTab extends GridPane {
         }
 
         //add accordionView to tab
-        this.add(accProductOverview, 0,0);
+        this.add(accProductOverview, 0,1, 2, 2);
     }
+
+    private void situationSelectionChanged() {
+
+    }
+
+    private void unitSelectionChanged() {
+
+    }
+
+
 }

@@ -26,4 +26,9 @@ public class Price {
     public void setValue(double value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return ""+value+" "+unit;
+    }
 }
