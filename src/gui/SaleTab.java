@@ -1,24 +1,17 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import model.controller.ProductOverviewController;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import storage.Storage;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     Accordion accProductOverview;
 
     //Constructors ------------------------------------------------------
