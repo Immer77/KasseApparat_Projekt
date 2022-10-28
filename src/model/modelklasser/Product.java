@@ -29,6 +29,10 @@ public class Product {
 
     @Override
     public String toString() {
-        return name + " ("+description+")";
+        String returnValue = name;
+        if (!description.isBlank()) {
+            returnValue += " ("+description+")";
+        }
+        return returnValue;
     }
 }
