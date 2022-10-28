@@ -2,9 +2,11 @@ package gui;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import model.controller.OrderController;
 import model.controller.ProductOverviewController;
 import model.modelklasser.*;
@@ -15,25 +17,25 @@ public class SaleTab extends GridPane {
     private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
     private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private Accordion accProductOverview;
-    private ListView<HBox> orderOverview;
     private ChoiceBox<Situation> chSituation;
     private ChoiceBox<Unit> chUnits;
+    private Order currentOrder;
 
     //Constructors ------------------------------------------------------
-    public SaleTab () {
+    public SaleTab() {
+
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
 
-
-        //Adds a choicebox to select the Situation
+        //Adds a choicebox to select the Situation and a listener for the box
         chSituation = new ChoiceBox<>();
-        this.add(chSituation, 0,0);
+        this.add(chSituation, 0, 0);
 
         ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelectionChanged();
         chSituation.getSelectionModel().selectedItemProperty().addListener(situationListener);
 
-        //Adds a choicebox to select which unit to show prices in
+        //Adds a choicebox to select which unit to show prices in and a listener for the box
         chUnits = new ChoiceBox<>();
         this.add(chUnits, 1, 0);
 
@@ -41,37 +43,25 @@ public class SaleTab extends GridPane {
         chUnits.getSelectionModel().selectedItemProperty().addListener(unitListener);
 
 
+        //Adds Accordion control for showing of categories and products
+        accProductOverview = new Accordion();
+        accProductOverview.setMaxWidth(Double.MAX_VALUE);
+        accProductOverview.setPrefWidth(250);
+        accProductOverview.setPadding(Insets.EMPTY);
+        this.add(accProductOverview, 0, 1, 2, 2);
+
+        //Adds a Vbox to hold OrderLines
+        VBox orderLineView = new VBox();
+        orderLineView.setBackground(Background.fill(Color.WHITE));
+        orderLineView.setBorder(Border.stroke(Color.BLACK));
+        this.add(orderLineView,2,0);
 
 
-        //Initiates examples of situations
+        //Initiates examples of situations and prices for products
         orderController.initContent();
-
 
         //Updates all controls
         updateControls();
-
-
-
-
-
-        //___________SKAL SES PÅ________________________________
-/*        updateProductOverview();
-
-
-
-        orderOverview = new ListView<>();
-        orderOverview.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderStroke.THIN)));
-        this.add(orderOverview, 1, 0, 2, 2);
-
-
-
-        Label lblProductName = new Label("Produkt");
-
-        Label lblAmount = new Label("Antal");
-
-        HBox orderTitles = new HBox(lblProductName, lblAmount);
-        orderOverview.getItems().setAll(orderTitles);*/
-        //_________________________________________________________
 
 
 
@@ -81,7 +71,11 @@ public class SaleTab extends GridPane {
 
 
     //Methods - Other ----------------------------------------------------
-    public void updateControls () {
+
+    /**
+     * Updates all controls on this tab
+     */
+    public void updateControls() {
         //Update choiceboxes
         chSituation.getItems().setAll(orderController.getSituations());
         if (chSituation.getSelectionModel().isEmpty()) {
@@ -96,88 +90,109 @@ public class SaleTab extends GridPane {
         //Update productOverview
         updateProductOverview();
 
+        //Clears old order and creates a new one
+        /*currentOrder = orderController.*/
+
     }
 
-    public void productCategorySelectionChanged () {
-
-    }
 
 
     /**
      * Adds a product from the overview to the current order
+     *
      * @param product the Product to add
      */
     private void addProductToOrder(Product product) {
-        //Create label for the product and add to the overview
-        Label lblProduct = new Label(product.toString());
 
-
-
-        //Create amount textfield, with a + & - button
-
-        //Create an orderline for the product and add to the order
 
     }
 
+    /**
+     * Updates the overview of products, depending on the Situation and the Unit chosen.
+     */
     private void updateProductOverview() {
-        //Accordion control for showing of categories and products
-        //Create accordion view, and add the titled pane
-        accProductOverview = new Accordion();
-        accProductOverview.setMaxWidth(Double.MAX_VALUE);
-        accProductOverview.setPrefWidth(250);
-        accProductOverview.setPadding(Insets.EMPTY);
+        TitledPane selected = accProductOverview.getExpandedPane();
 
-        //For each category...
+        accProductOverview.getPanes().clear();
+
+
+        //For each price in each product in each category...
         for (ProductCategory proCat : productController.getProductCategories()) {
-            //Create a vbox
-            VBox buttonVBox = new VBox();
-            buttonVBox.setPadding(new Insets(5));
-            buttonVBox.setFillWidth(true);
-            buttonVBox.maxWidth(Double.MAX_VALUE);
-            buttonVBox.setPrefWidth(accProductOverview.getPrefWidth());
+            VBox vbxCategory = new VBox();
+            vbxCategory.setPadding(new Insets(5));
+            vbxCategory.setFillWidth(true);
+            vbxCategory.maxWidth(Double.MAX_VALUE);
+            vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
 
-            //for each product in the category, create a button and add to the vbox
+
             for (Product prod : proCat.getProducts()) {
-                BorderPane borderpane = new BorderPane();
-
-                Button productButton = new Button(prod.toString());
-                productButton.setOnAction(event -> addProductToOrder(prod));
-                productButton.setWrapText(true);
-                productButton.setMaxWidth(Double.MAX_VALUE);
-                borderpane.setLeft(productButton);
-
-                TextField txfPrice = new TextField();
                 for (Price price : prod.getPrices()) {
+                    //Determine if there is any prices matching unit and situation
                     if (price.getSituation().equals(chSituation.getSelectionModel().getSelectedItem()) && price.getUnit().equals(chUnits.getSelectionModel().getSelectedItem())) {
-                        txfPrice.setText(price.toString());
+
+                        //Create a textfield with the product name and description
+                        TextField productDescr = new TextField(prod.toString());
+                        productDescr.setMaxWidth(Double.MAX_VALUE);
+                        productDescr.setEditable(false);
+                        productDescr.setBackground(Background.EMPTY);
+
+                        //Create textfield for price
+                        TextField txfPrice = new TextField(price.getValue()+" "+price.getUnit());
+                        txfPrice.setEditable(false);
+                        txfPrice.setPrefWidth(75);
+                        txfPrice.setBackground(Background.EMPTY);
+                        txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+
+                        //Create Borderpane to hold the product and price
+                        BorderPane productline = new BorderPane(null, null, txfPrice, null, productDescr);
+                        productline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null,new BorderWidths(0.0,0.0,1,0.0))));
+                        productline.setOnMouseClicked(event -> addProductToOrder(prod));
+
+                        vbxCategory.getChildren().add(productline);
+
                     }
                 }
-                if (txfPrice.getText().isBlank()) {
-                    txfPrice.setText("-");
-                }
-                txfPrice.setEditable(false);
-                borderpane.setRight(txfPrice);
-
-                buttonVBox.getChildren().add(borderpane);
-
             }
 
-            //Create a titledPane, add the vbox
-            TitledPane titledPane = new TitledPane(proCat.getTitle(), buttonVBox);
-            //Add the titledPane to the accordionView
-            accProductOverview.getPanes().add(titledPane);
+            //If category is not empty...
+            if (!vbxCategory.getChildren().isEmpty()) {
+                //Create a titled pane and add the vbox to it
+                TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
+                accProductOverview.getPanes().add(titledPane);
+            }
+
         }
 
-        //add accordionView to tab
-        this.add(accProductOverview, 0,1, 2, 2);
+        if (accProductOverview.getPanes().contains(selected)) {
+            accProductOverview.setExpandedPane(selected);
+        } else if (!accProductOverview.getPanes().isEmpty()) {
+            accProductOverview.setExpandedPane(accProductOverview.getPanes().get(0));
+        }
     }
 
+    /**
+     * Called when the current Situation is changed.
+     */
     private void situationSelectionChanged() {
+        //Sets units to the default unit
+        chUnits.getItems().setAll(Unit.values());
+        chUnits.getSelectionModel().select(0);
+
+
+
+        //Updates overview
+        updateProductOverview();
+
 
     }
 
+    /**
+     * Called when the current unit is changed
+     */
     private void unitSelectionChanged() {
-
+        //Updates overview
+        updateProductOverview();
     }
 
 

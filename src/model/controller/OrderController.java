@@ -48,19 +48,19 @@ public class OrderController implements OrderControllerInterface {
         Situation sit1 = createSituation("Standard");
         Situation sit2 = createSituation("Fredagsbar");
 
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(70,Unit.DKK,sit1);
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(35,Unit.DKK,sit2);
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(2,Unit.KlIP,sit1);
+        storage.getProductCategories().get(0).getProducts().get(0).createPrice(70,Unit.DKK,sit2);
+        storage.getProductCategories().get(0).getProducts().get(0).createPrice(35,Unit.DKK,sit1);
+        storage.getProductCategories().get(0).getProducts().get(0).createPrice(2,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(75,Unit.DKK,sit1);
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(35,Unit.DKK,sit2);
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(2,Unit.KlIP,sit2);
+        storage.getProductCategories().get(0).getProducts().get(1).createPrice(75,Unit.DKK,sit2);
+        storage.getProductCategories().get(0).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
+        storage.getProductCategories().get(0).getProducts().get(1).createPrice(2,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(170,Unit.DKK,sit1);
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit2);
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.KlIP,sit1);
+        storage.getProductCategories().get(1).getProducts().get(0).createPrice(170,Unit.DKK,sit2);
+        storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit1);
+        storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit2);
+        storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
 
 
 
