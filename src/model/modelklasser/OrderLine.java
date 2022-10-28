@@ -5,19 +5,19 @@ import java.util.ArrayList;
 public class OrderLine {
     private int amount;
     // forced association --> 1 Product
-    private Product product;
+    private Price price;
 
-    OrderLine(int amount, Product product) {
+    public OrderLine(int amount, Price price) {
         this.amount = amount;
-        this.product = product;
+        this.price = price;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public Product getProduct() {
-        return product;
+    public Price getPrice() {
+        return price;
     }
 
     public double calculateTotalPrice(Unit unit, Situation situation){

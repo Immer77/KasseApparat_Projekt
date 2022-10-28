@@ -19,8 +19,8 @@ public class Order {
     public ArrayList<OrderLine> getOrderLines() {
         return new ArrayList<>(orderLines);
     }
-    public OrderLine createOrderLine(int amount, Product product) {
-        OrderLine orderLine = new OrderLine(amount, product);
+    public OrderLine createOrderLine(int amount, Price price) {
+        OrderLine orderLine = new OrderLine(amount, price);
         orderLines.add(orderLine);
         return orderLine;
     }
@@ -47,10 +47,6 @@ public class Order {
 
     public void setPercentDiscount(double percentDiscount) {
         this.percentDiscount = percentDiscount;
-    }
-
-    public void createOrderLine(Product product, int amount){
-        //TODO
     }
 
     public void calculateSumPrice(){

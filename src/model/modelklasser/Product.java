@@ -45,18 +45,15 @@ public class Product {
         return new ArrayList<>(prices);
     }
 
-    // SKAL VI BRUGE ADDPRICE NÅR VI HAR CREATEPRICE??
-    public void addPrice(){
-        //TODO
-    }
-
-    public void removePrice(){
-        //TODO
-    }
-
     public Price createPrice(double value, Unit unit, Situation situation){
-        Price price = new Price(value, unit, situation);
+        Price price = new Price(value, unit, situation, this);
         prices.add(price);
         return price;
+    }
+
+    public void removePrice(Price price){
+        if (prices.contains(price)){
+            prices.remove(price);
+        }
     }
 }
