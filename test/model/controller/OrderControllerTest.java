@@ -34,7 +34,6 @@ class OrderControllerTest {
     @Test
     void TC1_createOrder() {
         // Arrange
-//        Unit unit = Mock(Unit.class);
 //        Situation situation = Mock(Situation.class);
 
         // Act
