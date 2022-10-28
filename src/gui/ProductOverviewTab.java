@@ -1,12 +1,9 @@
 package gui;
 
-import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -20,7 +17,7 @@ public class ProductOverviewTab extends GridPane {
 
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private Button btnCreateProduct;
 
     /**

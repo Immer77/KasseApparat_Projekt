@@ -9,17 +9,21 @@ import java.util.List;
 public class Storage implements StorageInterface {
     private static Storage unique_Storage;
     private List<ProductCategory> productCategories;
+    private List<Order> orders;
+    private List<Situations> situations;
 
     // Constructor
     private Storage(){
         productCategories = new ArrayList<>();
+        orders = new ArrayList<>();
+        situations = new ArrayList<>();
     }
 
     /**
      * We have here used the singletonPattern, so as we do not have different storages
      * @return Returns storage if storage != null else it creates a new storage and returns it.
      */
-    public static Storage getUnique_Storage() {
+    public static Storage getStorage() {
         if(unique_Storage == null){
             unique_Storage = new Storage();
         }
@@ -43,6 +47,26 @@ public class Storage implements StorageInterface {
     public void addProductCategory(ProductCategory productCategory) {
         if(!productCategories.contains(productCategory)){
             productCategories.add(productCategory);
+        }
+    }
+
+    public List<Order> getOrders() {
+        return new ArrayList<>(orders);
+    }
+
+    public void addOrder(Order order){
+        if(!orders.contains(order)){
+            orders.add(order);
+        }
+    }
+
+    public List<Situation> getSituations() {
+        return new ArrayList<>(situations);
+    }
+
+    public void addSituation(Situation situation){
+        if(!situations.contains(situation)){
+            situations.add(situation);
         }
     }
 }
