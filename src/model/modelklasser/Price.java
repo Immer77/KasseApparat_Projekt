@@ -4,14 +4,11 @@ public class Price {
     private double value;
     private Unit unit;
     private Situation situation;
-    // composition: --> 1 Product
-    private Product product;
 
-    Price(double value, Unit unit, Situation situation, Product product) {
+    Price(double value, Unit unit, Situation situation) {
         this.value = value;
         this.unit = unit;
         this.situation = situation;
-        this.product = product;
     }
 
     public double getValue() {
@@ -30,7 +27,8 @@ public class Price {
         this.value = value;
     }
 
-    public Product getProduct(){
-        return product;
+    @Override
+    public String toString() {
+        return ""+value+" "+unit;
     }
 }

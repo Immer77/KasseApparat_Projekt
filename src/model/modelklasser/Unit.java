@@ -1,3 +1,3 @@
 package model.modelklasser;
 
-public enum Unit {DKK, PUNCHES}
+public enum Unit {DKK, KlIP}
