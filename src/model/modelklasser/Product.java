@@ -1,9 +1,14 @@
 package model.modelklasser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Product {
 
     private String name;
     private String description;
+    // composition --> 0..* Price
+    private final ArrayList<Price> prices = new ArrayList<>();
 
 
     /**
@@ -29,6 +34,29 @@ public class Product {
 
     @Override
     public String toString() {
-        return name + " ("+description+")";
+        String returnValue = name;
+        if (!description.isBlank()) {
+            returnValue += " ("+description+")";
+        }
+        return returnValue;
+    }
+
+    public ArrayList<Price> getPrices() {
+        return new ArrayList<>(prices);
+    }
+
+    // SKAL VI BRUGE ADDPRICE NÅR VI HAR CREATEPRICE??
+    public void addPrice(){
+        //TODO
+    }
+
+    public void removePrice(){
+        //TODO
+    }
+
+    public Price createPrice(double value, Unit unit, Situation situation){
+        Price price = new Price(value, unit, situation);
+        prices.add(price);
+        return price;
     }
 }
