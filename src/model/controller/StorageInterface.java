@@ -1,6 +1,9 @@
 package model.controller;
 
+import model.modelklasser.Order;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
+
 import java.util.List;
 
 public interface StorageInterface {

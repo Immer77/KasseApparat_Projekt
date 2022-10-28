@@ -1,7 +1,9 @@
 package storage;
 
 import model.controller.StorageInterface;
+import model.modelklasser.Order;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ public class Storage implements StorageInterface {
     private static Storage unique_Storage;
     private List<ProductCategory> productCategories;
     private List<Order> orders;
-    private List<Situations> situations;
+    private List<Situation> situations;
 
     // Constructor
     private Storage(){

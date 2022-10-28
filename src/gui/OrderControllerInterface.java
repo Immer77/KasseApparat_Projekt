@@ -1,5 +1,9 @@
 package gui;
 
+import model.modelklasser.Order;
+import model.modelklasser.Situation;
+import model.modelklasser.Unit;
+
 import java.util.List;
 
 public interface OrderControllerInterface {

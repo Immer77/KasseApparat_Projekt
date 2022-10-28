@@ -5,7 +5,7 @@ public class Price {
     private Unit unit;
     private Situation situation;
 
-    protected Price(double value, Unit unit, Situation situation) {
+    Price(double value, Unit unit, Situation situation) {
         this.value = value;
         this.unit = unit;
         this.situation = situation;
