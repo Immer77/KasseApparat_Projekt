@@ -1,6 +1,5 @@
 package gui;
 
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -18,7 +17,7 @@ public class CreateProductWindow extends Stage {
     private TextField txfName = new TextField();
     private TextArea txaDescription = new TextArea();
     private ProductCategory productCategory;
-    private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
+    private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getStorage());
 
     /**
      * Creates a new window used for creating a new Product
