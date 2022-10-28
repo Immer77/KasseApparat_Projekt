@@ -1,7 +1,5 @@
 package model.modelklasser;
 
-import java.util.ArrayList;
-
 public class OrderLine {
     private int amount;
     // forced association --> 1 Product
@@ -20,8 +18,15 @@ public class OrderLine {
         return product;
     }
 
-    public double calculateTotalPrice(Unit unit, Situation situation){
-        //TODO
-        return 0.0;
+    public double calculateOrderLinePrice(Unit unit, Situation situation){
+        double result = 0.0;
+        for (Price price : product.getPrices()){
+            if (price.getSituation() == situation){
+                if (price.getUnit() == unit){
+                    result = price.getValue() * amount;
+                }
+            }
+        }
+        return result;
     }
 }

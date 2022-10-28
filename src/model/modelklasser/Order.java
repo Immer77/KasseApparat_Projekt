@@ -1,7 +1,6 @@
 package model.modelklasser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Order {
     private double sumPrice;
@@ -54,6 +53,8 @@ public class Order {
     }
 
     public void calculateSumPrice(){
-        //TODO
+        for (OrderLine orderLine : orderLines){
+            sumPrice += orderLine.calculateOrderLinePrice(unit, situation);
+        }
     }
 }
