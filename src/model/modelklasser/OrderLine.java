@@ -3,30 +3,28 @@ package model.modelklasser;
 public class OrderLine {
     private int amount;
     // forced association --> 1 Product
-    private Product product;
+    private Price price;
 
-    OrderLine(int amount, Product product) {
+    OrderLine(int amount, Price price) {
         this.amount = amount;
-        this.product = product;
+        this.price = price;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public Product getProduct() {
-        return product;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    public double calculateOrderLinePrice(Unit unit, Situation situation){
+    public Price getPrice() {
+        return price;
+    }
+
+    public double calculateOrderLinePrice(){
         double result = 0.0;
-        for (Price price : product.getPrices()){
-            if (price.getSituation() == situation){
-                if (price.getUnit() == unit){
-                    result = price.getValue() * amount;
-                }
-            }
-        }
+        result = price.getValue() * amount;
         return result;
     }
 }

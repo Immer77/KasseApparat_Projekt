@@ -12,8 +12,10 @@ public interface OrderControllerInterface {
     List<Situation> getSituations();
 
     //Create
-    Order createOrder(Unit unit, Situation situation);
+    Order createOrder(Situation situation);
     List<Order> getOrders();
+
+    void removeOrder(Order order);
 
     void initContent();
 }

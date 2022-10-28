@@ -3,10 +3,10 @@ package gui;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import model.controller.OrderController;
 import model.controller.ProductOverviewController;
 import model.modelklasser.*;
@@ -19,11 +19,11 @@ public class SaleTab extends GridPane {
     private Accordion accProductOverview;
     private ChoiceBox<Situation> chSituation;
     private ChoiceBox<Unit> chUnits;
-    private Order currentOrder;
+    private VBox orderLineView;
+    private Order tempOrder;
 
     //Constructors ------------------------------------------------------
     public SaleTab() {
-
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
@@ -51,10 +51,11 @@ public class SaleTab extends GridPane {
         this.add(accProductOverview, 0, 1, 2, 2);
 
         //Adds a Vbox to hold OrderLines
-        VBox orderLineView = new VBox();
+        orderLineView = new VBox();
         orderLineView.setBackground(Background.fill(Color.WHITE));
         orderLineView.setBorder(Border.stroke(Color.BLACK));
-        this.add(orderLineView,2,0);
+        orderLineView.setPrefWidth(350);
+        this.add(orderLineView, 2, 0);
 
 
         //Initiates examples of situations and prices for products
@@ -62,7 +63,6 @@ public class SaleTab extends GridPane {
 
         //Updates all controls
         updateControls();
-
 
 
     }
@@ -90,21 +90,40 @@ public class SaleTab extends GridPane {
         //Update productOverview
         updateProductOverview();
 
-        //Clears old order and creates a new one
-        /*currentOrder = orderController.*/
+        //Resets the order
+        resetOrder();
+
 
     }
-
 
 
     /**
      * Adds a product from the overview to the current order
      *
-     * @param product the Product to add
+     * @param price the price to add to the order
      */
-    private void addProductToOrder(Product product) {
+    private void addProductToOrder(Price price) {
 
+        if(tempOrder == null) {
+            orderController.createOrder(chSituation.getValue());
+        }
 
+        //If product already is has an OrderLine, increments the amount
+        boolean foundInOrderLine = false;
+        for (OrderLine ol : tempOrder.getOrderLines()) {
+            if (ol.getPrice().equals(price)) {
+                foundInOrderLine = true;
+                ol.setAmount(ol.getAmount()+1);
+            }
+        }
+
+        //Otherwise adds product to orderLineView with amount of 1
+        if (!foundInOrderLine) {
+            tempOrder.createOrderLine(1, price);
+        }
+
+        //then displays orderlines in OrderLineView
+        displayOrderLines();
     }
 
     /**
@@ -137,7 +156,7 @@ public class SaleTab extends GridPane {
                         productDescr.setBackground(Background.EMPTY);
 
                         //Create textfield for price
-                        TextField txfPrice = new TextField(price.getValue()+" "+price.getUnit());
+                        TextField txfPrice = new TextField(price.getValue() + " " + price.getUnit());
                         txfPrice.setEditable(false);
                         txfPrice.setPrefWidth(75);
                         txfPrice.setBackground(Background.EMPTY);
@@ -146,8 +165,11 @@ public class SaleTab extends GridPane {
 
                         //Create Borderpane to hold the product and price
                         BorderPane productline = new BorderPane(null, null, txfPrice, null, productDescr);
-                        productline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null,new BorderWidths(0.0,0.0,1,0.0))));
-                        productline.setOnMouseClicked(event -> addProductToOrder(prod));
+                        productline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
+                        for (Node ch : productline.getChildren()) {
+                            ch.setOnMouseClicked(event -> addProductToOrder(price));
+                        }
+                        productline.setOnMouseClicked(event -> addProductToOrder(price));
 
                         vbxCategory.getChildren().add(productline);
 
@@ -180,9 +202,11 @@ public class SaleTab extends GridPane {
         chUnits.getSelectionModel().select(0);
 
 
-
         //Updates overview
         updateProductOverview();
+
+        //Reset the order
+        resetOrder();
 
 
     }
@@ -195,5 +219,78 @@ public class SaleTab extends GridPane {
         updateProductOverview();
     }
 
+    private void resetOrder() {
+        orderController.removeOrder(tempOrder);
+        tempOrder = orderController.createOrder(chSituation.getValue());
 
+    }
+
+    public void displayOrderLines() {
+        //Clears list
+        orderLineView.getChildren().clear();
+
+        //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
+        for (OrderLine ol : tempOrder.getOrderLines()) {
+            //Creates a spinner
+            Spinner<Integer> spnAmount = new Spinner<>(0, 999,ol.getAmount());
+            spnAmount.setEditable(true);
+            spnAmount.setPrefWidth(60);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(ol);
+            spnAmount.valueProperty().addListener(spinnerListener);
+
+            //Create a textfield with the product name and description
+            TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
+            txfproductDescr.setMaxWidth(Double.MAX_VALUE);
+            txfproductDescr.setEditable(false);
+            txfproductDescr.setBackground(Background.EMPTY);
+
+            //Create textfield for price
+            TextField txfPrice = new TextField(ol.getPrice().getValue()+" "+ol.getPrice().getUnit());
+            txfPrice.setEditable(false);
+            txfPrice.setPrefWidth(75);
+            txfPrice.setBackground(Background.EMPTY);
+            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+            //Create textfield for subtotal
+            TextField txfSubTotal = new TextField(""+ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
+            txfPrice.setEditable(false);
+            txfPrice.setPrefWidth(75);
+            txfPrice.setBackground(Background.EMPTY);
+            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+            //Creates HBox to display the orderline
+            HBox orderline = new HBox(spnAmount,txfproductDescr, txfPrice,txfSubTotal);
+            orderLineView.getChildren().add(orderline);
+
+        }
+
+        orderLineView.getChildren().setAll();
+
+
+
+      /*
+
+
+
+
+
+
+        //Create Borderpane to hold the product, amount and price
+        BorderPane orderline = new BorderPane(spnAmount, null, txfPrice, null, productDescr);
+        orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null,new BorderWidths(0.0,0.0,1,0.0))));
+
+        orderLineView.getChildren().add(orderline);
+        updateOrder();
+        */
+    }
+
+    /**
+     * Updates orderlines when spinner is used to change amount
+     * @param orderLine the orderline to update
+     */
+    public void amountChangedForOrderLine(OrderLine orderLine) {
+
+    }
 }
+
+

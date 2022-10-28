@@ -62,6 +62,12 @@ public class Storage implements StorageInterface {
         }
     }
 
+    public void removeOrder(Order order) {
+        if(orders.contains(order)){
+            orders.remove(order);
+        }
+    }
+
     public List<Situation> getSituations() {
         return new ArrayList<>(situations);
     }

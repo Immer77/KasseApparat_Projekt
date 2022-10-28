@@ -5,21 +5,19 @@ import java.util.ArrayList;
 public class Order {
     private double sumPrice;
     private double percentDiscount;
-    private Unit unit;
     private Situation situation;
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
 
-    public Order(Unit unit, Situation situation) {
-        this.unit = unit;
+    public Order(Situation situation) {
         this.situation = situation;
     }
 
     public ArrayList<OrderLine> getOrderLines() {
         return new ArrayList<>(orderLines);
     }
-    public OrderLine createOrderLine(int amount, Product product) {
-        OrderLine orderLine = new OrderLine(amount, product);
+    public OrderLine createOrderLine(int amount, Price price) {
+        OrderLine orderLine = new OrderLine(amount, price);
         orderLines.add(orderLine);
         return orderLine;
     }
@@ -32,9 +30,6 @@ public class Order {
         return percentDiscount;
     }
 
-    public Unit getUnit() {
-        return unit;
-    }
 
     public Situation getSituation() {
         return situation;
@@ -54,7 +49,7 @@ public class Order {
 
     public void calculateSumPrice(){
         for (OrderLine orderLine : orderLines){
-            sumPrice += orderLine.calculateOrderLinePrice(unit, situation);
+            sumPrice += orderLine.calculateOrderLinePrice();
         }
     }
 }

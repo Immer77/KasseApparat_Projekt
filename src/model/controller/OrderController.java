@@ -34,10 +34,14 @@ public class OrderController implements OrderControllerInterface {
         return storage.getSituations();
     }
 
-    public Order createOrder(Unit unit, Situation situation) {
-        Order order = new Order(unit, situation);
+    public Order createOrder(Situation situation) {
+        Order order = new Order(situation);
         storage.addOrder(order);
         return order;
+    }
+
+    public void removeOrder(Order order) {
+        storage.removeOrder(order);
     }
 
     public List<Order> getOrders() {

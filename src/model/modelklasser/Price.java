@@ -5,10 +5,15 @@ public class Price {
     private Unit unit;
     private Situation situation;
 
-    Price(double value, Unit unit, Situation situation) {
+
+
+    private Product product;
+
+    Price(double value, Unit unit, Situation situation, Product product) {
         this.value = value;
         this.unit = unit;
         this.situation = situation;
+        this.product = product;
     }
 
     public double getValue() {
@@ -18,6 +23,12 @@ public class Price {
     public Unit getUnit() {
         return unit;
     }
+
+    public Product getProduct() {
+        return product;
+    }
+
+
 
     public Situation getSituation() {
         return situation;
