@@ -3,10 +3,7 @@ package gui;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,6 +20,12 @@ public class CreateProductWindow extends Stage {
     private ProductCategory productCategory;
     private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getUnique_Storage());
 
+    /**
+     * Creates a new window used for creating a new Product
+     * @param title The title of the window
+     * @param productCategory The ProductCategory for which the Product should belong to
+     * @param owner The Stage owning this window
+     */
     public CreateProductWindow (String title, ProductCategory productCategory, Stage owner) {
         this.productCategory = productCategory;
         this.initOwner(owner);
@@ -41,6 +44,10 @@ public class CreateProductWindow extends Stage {
     }
 
 
+    /**
+     * Initialises the content in the window.
+     * @param pane The Gridpane parent of the content
+     */
     public void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
@@ -58,28 +65,41 @@ public class CreateProductWindow extends Stage {
         Button btnOK = new Button("Ok");
         pane.add(btnOK, 1, 3);
         btnOK.setOnAction(event -> oKAction());
-
+        btnOK.setDefaultButton(true);
 
         Button btnCancel = new Button("Cancel");
         pane.add(btnCancel, 2, 3);
         btnCancel.setOnAction(event -> cancelAction());
+        btnCancel.setCancelButton(true);
     }
 
+    /**
+     * Creates a new Product object with the entered name and description, then closes the window. If no name is given, an alert is shown and nothing happens instead.
+     */
     public void oKAction() {
         String name = "";
         String description = "";
-        if (txfName.getText().trim().length() > 0) {
+        if (!txfName.getText().isBlank()) {
             name = txfName.getText().trim();
-        }
-        if (txaDescription.getText().trim().length() > 0) {
-            description = txaDescription.getText().trim();
-        }
 
-        controller.createProduct(productCategory, name, description);
-        this.close();
+            if (!txaDescription.getText().isBlank()) {
+                description = txaDescription.getText().trim();
+            }
 
+            controller.createProduct(productCategory, name, description);
+            this.close();
+
+        } else {
+            Alert nameAlert = new Alert(Alert.AlertType.ERROR);
+            nameAlert.setTitle("Manglende navn!");
+            nameAlert.setHeaderText("Et produkt skal have et navn før det kan oprettes!");
+            nameAlert.showAndWait();
+        }
     }
 
+    /**
+     * Closes the window, discarding any changes.
+     */
     public void cancelAction () {
         this.close();
     }
