@@ -1,10 +1,7 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
-import model.modelklasser.Order;
-import model.modelklasser.Product;
-import model.modelklasser.Situation;
-import model.modelklasser.Unit;
+import model.modelklasser.*;
 
 import java.util.List;
 
@@ -48,6 +45,11 @@ public class OrderController implements OrderControllerInterface {
         return storage.getOrders();
     }
 
+    public OrderLine createOrderLineForOrder (Order order, int amount, Price price) {
+        OrderLine currentOrderLine = order.createOrderLine(amount, price);
+        return currentOrderLine;
+    }
+
     public void initContent() {
         Situation sit1 = createSituation("Standard");
         Situation sit2 = createSituation("Fredagsbar");
@@ -65,8 +67,5 @@ public class OrderController implements OrderControllerInterface {
         storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.Klip,sit2);
 
         storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
-
-
-
     }
 }

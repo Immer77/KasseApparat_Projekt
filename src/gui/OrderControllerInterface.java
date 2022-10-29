@@ -1,8 +1,6 @@
 package gui;
 
-import model.modelklasser.Order;
-import model.modelklasser.Situation;
-import model.modelklasser.Unit;
+import model.modelklasser.*;
 
 import java.util.List;
 
@@ -18,4 +16,6 @@ public interface OrderControllerInterface {
     void removeOrder(Order order);
 
     void initContent();
+
+    public OrderLine createOrderLineForOrder (Order order, int amount, Price price);
 }
