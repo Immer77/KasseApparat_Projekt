@@ -100,8 +100,8 @@ public class SaleTab extends GridPane {
         txfPercentDiscount = new TextField(""+0);
         txfPercentDiscount.setPrefWidth(75);
         txfPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        ChangeListener<String> finalPriceListener = (observable, oldV, newV) -> this.updateOrder();
-        txfPercentDiscount.textProperty().addListener(finalPriceListener);
+        ChangeListener<String> percentListener = (observable, oldV, newV) -> this.updateOrder();
+        txfPercentDiscount.textProperty().addListener(percentListener);
 
         Label lblPercent = new Label("%");
 
