@@ -1,6 +1,5 @@
 package gui;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,11 +25,11 @@ public class SaleTab extends GridPane {
     private Order tempOrder;
     private VBox vbxOrderTotal;
     private TextField txfPercentDiscount;
-    private TextField txfFinalPrice;
+    private VBox vbxFinalPrice;
 
     //Constructors ------------------------------------------------------
     public SaleTab() {
-        this.setGridLinesVisible(true);
+/*        this.setGridLinesVisible(true);*/
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
@@ -56,7 +55,7 @@ public class SaleTab extends GridPane {
         //Creates a HBox to display the choiceboxes
         HBox hbxChoices = new HBox(chSituation, chUnits);
         hbxChoices.setSpacing(10);
-        this.add(hbxChoices, 0,0,3,1);
+        this.add(hbxChoices, 0, 0, 3, 1);
 
 
         //Adds Accordion control for showing of categories and products
@@ -75,7 +74,7 @@ public class SaleTab extends GridPane {
         orderLineView.setBorder(Border.stroke(Color.BLACK));
         orderLineView.setPrefWidth(400);
         orderLineView.setPrefHeight(400);
-        this.add(orderLineView, 3, 2,3,3);
+        this.add(orderLineView, 3, 2, 3, 3);
 
         //Adds field and label for calculated total of the Order
         Label lblOrderTotal = new Label("Total:");
@@ -85,8 +84,8 @@ public class SaleTab extends GridPane {
         vbxOrderTotal.setPrefWidth(75);
         vbxOrderTotal.setPrefHeight(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
-        vbxOrderTotal.setAlignment(Pos.TOP_RIGHT);
-        vbxOrderTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.NONE, null, new BorderWidths(0.0, 0.0, 0.0, 0.0))));
+        vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
+        vbxOrderTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
 
         HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
         hbxOrderTotal.setSpacing(10);
@@ -97,7 +96,7 @@ public class SaleTab extends GridPane {
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
 
-        txfPercentDiscount = new TextField(""+0);
+        txfPercentDiscount = new TextField("" + 0);
         txfPercentDiscount.setPrefWidth(75);
         txfPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
         ChangeListener<String> percentListener = (observable, oldV, newV) -> this.updateOrder();
@@ -105,27 +104,25 @@ public class SaleTab extends GridPane {
 
         Label lblPercent = new Label("%");
 
-        HBox hbxPercentDiscount = new HBox(lblrabat,txfPercentDiscount,lblPercent);
+        HBox hbxPercentDiscount = new HBox(lblrabat, txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
+        hbxPercentDiscount.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
         this.add(hbxPercentDiscount, 5, 6);
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
 
-        txfFinalPrice = new TextField(""+0.0);
-        txfFinalPrice.setPrefWidth(75);
-        txfFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-        ChangeListener<String> finalPriceListener = (observable, oldV, newV) -> this.updateOrder();
-        txfFinalPrice.textProperty().addListener(finalPriceListener);
+        vbxFinalPrice = new VBox();
+        vbxFinalPrice.setPrefWidth(75);
+        vbxFinalPrice.setPrefHeight(75);
+        vbxFinalPrice.setBackground(Background.EMPTY);
+        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+        vbxFinalPrice.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
 
-
-        Label lblEmptyPlaceholder = new Label("%");
-        lblEmptyPlaceholder.setVisible(false);
-
-        HBox hbxFinalPrice = new HBox(lblFinal,txfFinalPrice, lblEmptyPlaceholder);
-        hbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-        this.add(hbxFinalPrice,5,7);
+        HBox hbxFinalPrice = new HBox(lblFinal, vbxFinalPrice);
+        hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
+        this.add(hbxFinalPrice, 5, 7);
 
 
         //Initiates examples of situations and prices for products
@@ -164,7 +161,6 @@ public class SaleTab extends GridPane {
         resetOrder();
 
 
-
     }
 
 
@@ -176,7 +172,7 @@ public class SaleTab extends GridPane {
     private void addProductToOrder(Price price) {
 
 
-        if(tempOrder == null) {
+        if (tempOrder == null) {
             orderController.createOrder(chSituation.getValue());
 
         }
@@ -186,14 +182,14 @@ public class SaleTab extends GridPane {
         for (OrderLine ol : tempOrder.getOrderLines()) {
             if (ol.getPrice().equals(price)) {
                 foundInOrderLine = true;
-                ol.setAmount(ol.getAmount()+1);
+                ol.setAmount(ol.getAmount() + 1);
 
             }
         }
 
         //Otherwise adds product to order with amount of 1
         if (!foundInOrderLine) {
-            tempOrder.createOrderLine(1, price);
+            orderController.createOrderLineForOrder(tempOrder, 1, price);
         }
 
         //then displays orderlines in OrderLineView
@@ -228,7 +224,7 @@ public class SaleTab extends GridPane {
                         productDescr.setMaxWidth(Double.MAX_VALUE);
                         productDescr.setEditable(false);
                         productDescr.setBackground(Background.EMPTY);
-                        HBox.setHgrow(productDescr,Priority.ALWAYS);
+                        HBox.setHgrow(productDescr, Priority.ALWAYS);
 
                         //Create textfield for price
                         TextField txfPrice = new TextField(price.getValue() + " " + price.getUnit());
@@ -284,7 +280,6 @@ public class SaleTab extends GridPane {
         updateOrder();
 
 
-
     }
 
     /**
@@ -313,10 +308,10 @@ public class SaleTab extends GridPane {
         for (OrderLine ol : tempOrder.getOrderLines()) {
 
             //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(0, 999,ol.getAmount());
+            Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue() , ol);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);
             spnAmount.valueProperty().addListener(spinnerListener);
 
             //Create a textfield with the product name and description
@@ -327,46 +322,60 @@ public class SaleTab extends GridPane {
             HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
 
             //Create textfield for price
-            TextField txfPrice = new TextField(ol.getPrice().getValue()+" "+ol.getPrice().getUnit());
+            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + ol.getPrice().getUnit());
             txfPrice.setEditable(false);
             txfPrice.setPrefWidth(75);
             txfPrice.setBackground(Background.EMPTY);
             txfPrice.setAlignment(Pos.BASELINE_RIGHT);
 
             //Create textfield for subtotal
-            TextField txfSubTotal = new TextField(""+ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
+            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
             txfSubTotal.setEditable(false);
             txfSubTotal.setPrefWidth(75);
             txfSubTotal.setBackground(Background.EMPTY);
             txfSubTotal.setAlignment(Pos.BASELINE_LEFT);
 
             //Creates HBox to display the orderline
-            HBox orderline = new HBox(spnAmount,txfproductDescr, txfPrice,txfSubTotal);
-            orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null,new BorderWidths(0.0,0.0,1,0.0))));
+            HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
+            orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
             orderLineView.getChildren().add(orderline);
         }
 
-        //Updates the calculated sum of the orderlines
+        //Updates the calculated sum of the orderlines, and the final price
         vbxOrderTotal.getChildren().clear();
+        vbxFinalPrice.getChildren().clear();
 
         for (Unit unit : Unit.values()) {
             double result = tempOrder.calculateSumPriceForUnit(unit);
-            if (result > 0.0) {
+            boolean currentUnitFound = false;
+            for (OrderLine ol : tempOrder.getOrderLines()) {
+                if (ol.getPrice().getUnit().equals(unit)) {
+                    currentUnitFound = true;
+                    break;
+                }
+            }
+
+            if (currentUnitFound) {
                 Label priceTotal = new Label(result + " " + unit);
                 priceTotal.setAlignment(Pos.BASELINE_RIGHT);
                 vbxOrderTotal.getChildren().add(priceTotal);
+
+                double percentageMultiplier = (100 - Double.parseDouble(txfPercentDiscount.getText().trim())) / 100;
+                double calculatedFinalPrice = result * percentageMultiplier;
+
+                Label finalPrice = new Label((calculatedFinalPrice + " " + unit));
+                finalPrice.setAlignment(Pos.BASELINE_RIGHT);
+                vbxFinalPrice.getChildren().add(finalPrice);
+
             }
         }
 
-        //updates final price
-        if () {
-
-        }
 
     }
 
     /**
      * Updates orderlines when spinner is used to change amount
+     *
      * @param orderLine the orderline to update
      */
     public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
@@ -377,6 +386,8 @@ public class SaleTab extends GridPane {
         }
         updateOrder();
     }
+
+
 }
 
 

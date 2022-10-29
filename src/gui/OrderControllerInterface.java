@@ -1,8 +1,6 @@
 package gui;
 
-import model.modelklasser.Order;
-import model.modelklasser.Situation;
-import model.modelklasser.Unit;
+import model.modelklasser.*;
 
 import java.util.List;
 
@@ -43,4 +41,6 @@ public interface OrderControllerInterface {
      * Initializes content for the Graphical user interface
      */
     void initContent();
+
+    public OrderLine createOrderLineForOrder (Order order, int amount, Price price);
 }
