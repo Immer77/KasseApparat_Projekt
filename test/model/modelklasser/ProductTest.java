@@ -8,13 +8,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ProductTest {
+    // Field variable
     Product product;
 
+    /**
+     * Setup method for setting up a product that we will use when testing
+     */
     @BeforeEach
     void setUp() {
         product = new Product("Ekstra pilsner", "Lidt mere pilsner");
     }
 
+    /**
+     * test case for the creation of a price object
+     */
     @Test
     void TC1_createPrice() {
         // Arrange

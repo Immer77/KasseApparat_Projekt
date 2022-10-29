@@ -9,14 +9,26 @@ public class Order {
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
 
+    // Constructor
 
     public Order(Situation situation) {
         this.situation = situation;
     }
 
+    /**
+     * Gets the list of orderlines on the order
+     * @return
+     */
     public ArrayList<OrderLine> getOrderLines() {
         return new ArrayList<>(orderLines);
     }
+
+    /**
+     * Creates an orderline
+     * @param amount amount that goes on the orderline
+     * @param price the price of the orderline
+     * @return orderline
+     */
     public OrderLine createOrderLine(int amount, Price price) {
         OrderLine orderLine = new OrderLine(amount, price);
         orderLines.add(orderLine);
@@ -29,6 +41,7 @@ public class Order {
         }
     }
 
+    // GETTERS AND SETTERS --------------------------------------------------------------------------------------
     public double getPercentDiscount() {
         return percentDiscount;
     }
@@ -54,6 +67,11 @@ public class Order {
         this.fixedPrice = fixedPrice;
     }
 
+    /**
+     * Calculates the price based on the unit whether its Dkk/punches
+     * @param unit Dkk/Punches
+     * @return
+     */
     public double calculateSumPriceForUnit(Unit unit){
         double sumPrice = 0.0;
         for (OrderLine orderLine : orderLines){

@@ -5,11 +5,13 @@ public class OrderLine {
     // forced association --> 1 Product
     private Price price;
 
+    // package private constructor
     OrderLine(int amount, Price price) {
         this.amount = amount;
         this.price = price;
     }
 
+    // Getters and setters
     public int getAmount() {
         return amount;
     }
@@ -22,6 +24,10 @@ public class OrderLine {
         return price;
     }
 
+    /**
+     * Calculates the orderlineprice
+     * @return the result of the price for the orderline
+     */
     public double calculateOrderLinePrice(){
         double result = 0.0;
         if(amount < 0){

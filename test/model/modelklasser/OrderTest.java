@@ -13,6 +13,10 @@ import static org.mockito.Mockito.when;
 
 class OrderTest {
 
+    /**
+     * TODO
+     * Not done yet, need to consult with group members
+     */
     @Test
     void calculateSumPriceForUnit() {
         // Arrange

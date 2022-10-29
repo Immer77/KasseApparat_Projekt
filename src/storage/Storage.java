@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Storage implements StorageInterface {
+
+    // Field variables
     private static Storage unique_Storage;
     private List<ProductCategory> productCategories;
     private List<Order> orders;

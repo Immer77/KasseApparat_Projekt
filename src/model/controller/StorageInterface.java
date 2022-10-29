@@ -19,6 +19,7 @@ public interface StorageInterface {
     List<Order> getOrders();
     void addOrder(Order order);
 
+    // Removesorder from storage
     void removeOrder(Order order);
 
     // Gets all Situations aswell as adding situation to situations
