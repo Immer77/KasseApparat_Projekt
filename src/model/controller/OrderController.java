@@ -53,18 +53,39 @@ public class OrderController implements OrderControllerInterface {
     }
 
     /**
-     * Creates an order and adds it to the storage
+     * Creates an order. Does NOT add the order to storage
      * @param situation
      * @return
      */
     public Order createOrder(Situation situation) {
         Order order = new Order(situation);
-        storage.addOrder(order);
         return order;
     }
 
-    public void removeOrder(Order order) {
-        storage.removeOrder(order);
+    /**
+     * Saves an order to the storage
+     * @param order The order to be saved
+     */
+    public void saveOrder(Order order) {
+        storage.addOrder(order);
+    }
+
+    /**
+     * Sets a percentage discount for the order
+     * @param order the order to set the discount for
+     * @param percentageDiscount a percentage representing a discount
+     */
+    public void setDiscountForOrder(Order order, double percentageDiscount){
+        order.setPercentDiscount(percentageDiscount);
+    }
+
+    /**
+     * Sets a fixed total price for the entire order
+     * @param order the order to set the discount for
+     * @param fixedTotalPrice the total price for the entire order, overwriting any calculated sum
+     */
+    public void setFixedPriceForOrder (Order order,  double fixedTotalPrice){
+        order.setFixedPrice(fixedTotalPrice);
     }
 
     public List<Order> getOrders() {

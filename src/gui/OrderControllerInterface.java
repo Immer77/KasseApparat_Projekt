@@ -32,10 +32,25 @@ public interface OrderControllerInterface {
     List<Order> getOrders();
 
     /**
-     * Removes the order from the list
-     * @param order
+     * Saves an order to the storage
+     * @param order The order to be saved
      */
-    void removeOrder(Order order);
+    void saveOrder(Order order);
+
+    /**
+     * Sets a percentage discount for the order
+     * @param order the order to set the discount for
+     * @param percentageDiscount a percentage representing a discount
+     */
+    void setDiscountForOrder(Order order, double percentageDiscount);
+
+    /**
+     * Sets a fixed total price for the entire order
+     * @param order the order to set the discount for
+     * @param fixedTotalPrice the total price for the entire order, overwriting any calculated sum
+     */
+    void setFixedPriceForOrder (Order order,  double fixedTotalPrice);
+
 
     /**
      * Initializes content for the Graphical user interface

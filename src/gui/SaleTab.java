@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
 import model.controller.OrderController;
 import model.controller.ProductOverviewController;
 import model.modelklasser.*;
@@ -18,6 +19,7 @@ public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
     private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
     private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private Stage mainStage;
     private Accordion accProductOverview;
     private ChoiceBox<Situation> chSituation;
     private ChoiceBox<Unit> chUnits;
@@ -26,14 +28,13 @@ public class SaleTab extends GridPane {
     private VBox vbxOrderTotal;
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
+    private TextField txfFixedTotal;
 
     //Constructors ------------------------------------------------------
     public SaleTab() {
-/*        this.setGridLinesVisible(true);*/
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
-
 
         //Adds a choicebox to select the Situation and a listener for the box
         chSituation = new ChoiceBox<>();
@@ -65,7 +66,7 @@ public class SaleTab extends GridPane {
         accProductOverview.setPadding(Insets.EMPTY);
         this.add(accProductOverview, 0, 2, 3, 2);
 
-        //Initialisez an order
+        //Initialises an order
         tempOrder = orderController.createOrder(chSituation.getValue());
 
         //Adds a Vbox to hold OrderLines
@@ -73,7 +74,6 @@ public class SaleTab extends GridPane {
         orderLineView.setBackground(Background.fill(Color.WHITE));
         orderLineView.setBorder(Border.stroke(Color.BLACK));
         orderLineView.setPrefWidth(400);
-        orderLineView.setPrefHeight(400);
         this.add(orderLineView, 3, 2, 3, 3);
 
         //Adds field and label for calculated total of the Order
@@ -82,15 +82,12 @@ public class SaleTab extends GridPane {
 
         vbxOrderTotal = new VBox();
         vbxOrderTotal.setPrefWidth(75);
-        vbxOrderTotal.setPrefHeight(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
-        vbxOrderTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
 
         HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
         hbxOrderTotal.setSpacing(10);
         hbxOrderTotal.setAlignment(Pos.TOP_RIGHT);
-        this.add(hbxOrderTotal, 5, 5);
 
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
@@ -106,8 +103,25 @@ public class SaleTab extends GridPane {
 
         HBox hbxPercentDiscount = new HBox(lblrabat, txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        hbxPercentDiscount.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
-        this.add(hbxPercentDiscount, 5, 6);
+
+        //Add field for a fixed total price
+        Label lblFixedPrice = new Label("Aftalt Total: ");
+        lblFixedPrice.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+
+        txfFixedTotal = new TextField();
+        txfFixedTotal.setPrefWidth(75);
+        txfFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
+        ChangeListener<String> fixedTotalListener = (observable, oldV, newV) -> this.updateOrder();
+        txfFixedTotal.textProperty().addListener(fixedTotalListener);
+
+        Label lblPlaceholder = new Label("%");
+        lblPlaceholder.setVisible(false);
+
+        HBox hbxFixedTotal = new HBox(lblFixedPrice, txfFixedTotal);
+        hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
+        hbxFixedTotal.setPadding(new Insets(0, 10, 0, 0));
+        hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
+
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
@@ -115,15 +129,23 @@ public class SaleTab extends GridPane {
 
         vbxFinalPrice = new VBox();
         vbxFinalPrice.setPrefWidth(75);
-        vbxFinalPrice.setPrefHeight(75);
         vbxFinalPrice.setBackground(Background.EMPTY);
         vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-        vbxFinalPrice.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
 
         HBox hbxFinalPrice = new HBox(lblFinal, vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
-        this.add(hbxFinalPrice, 5, 7);
+        hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
 
+        //Vbox for pricetotals
+        VBox vbxTotals = new VBox(hbxOrderTotal, hbxPercentDiscount, hbxFixedTotal, hbxFinalPrice);
+        vbxTotals.setSpacing(5);
+        this.add(vbxTotals, 5, 5);
+
+        //Add confirmation button for order
+        Button btnConfirmOrder = new Button("Afslut Ordre");
+        btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
+        btnConfirmOrder.setOnAction(event -> confirmOrderAction());
+        this.add(btnConfirmOrder, 3,6,3,1);
 
         //Initiates examples of situations and prices for products
         orderController.initContent();
@@ -170,8 +192,6 @@ public class SaleTab extends GridPane {
      * @param price the price to add to the order
      */
     private void addProductToOrder(Price price) {
-
-
         if (tempOrder == null) {
             orderController.createOrder(chSituation.getValue());
 
@@ -291,9 +311,8 @@ public class SaleTab extends GridPane {
     }
 
     private void resetOrder() {
-        orderController.removeOrder(tempOrder);
         tempOrder = orderController.createOrder(chSituation.getValue());
-
+        updateOrder();
     }
 
     /**
@@ -363,11 +382,24 @@ public class SaleTab extends GridPane {
                 double percentageMultiplier = (100 - Double.parseDouble(txfPercentDiscount.getText().trim())) / 100;
                 double calculatedFinalPrice = result * percentageMultiplier;
 
-                Label finalPrice = new Label((calculatedFinalPrice + " " + unit));
-                finalPrice.setAlignment(Pos.BASELINE_RIGHT);
-                vbxFinalPrice.getChildren().add(finalPrice);
+                String finalPriceText;
+                finalPriceText = calculatedFinalPrice + " " + unit;
+
+                Label lblFinalPrice = new Label(finalPriceText);
+                lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+                vbxFinalPrice.getChildren().add(lblFinalPrice);
 
             }
+        }
+
+        if (!txfFixedTotal.getText().isBlank()) {
+            vbxFinalPrice.getChildren().clear();
+            Label lblAgreedTotal = new Label("--AFTALT--");
+            lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
+            Label lblManualFinalPrice = new Label(txfFixedTotal.getText());
+            lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            vbxFinalPrice.getChildren().add(lblAgreedTotal);
+            vbxFinalPrice.getChildren().add(lblManualFinalPrice);
         }
 
 
@@ -385,6 +417,24 @@ public class SaleTab extends GridPane {
             orderLine.setAmount(newAmount);
         }
         updateOrder();
+    }
+
+    /**
+     * Called when the confirm order button is used. Opens a new window, in order to finish the order
+     */
+    private void confirmOrderAction() {
+        if (!txfPercentDiscount.getText().isBlank()) {
+            orderController.setDiscountForOrder(tempOrder, Double.parseDouble(txfPercentDiscount.getText()));
+        }
+
+        if (!txfFixedTotal.getText().isBlank()) {
+            orderController.setFixedPriceForOrder(tempOrder, Double.parseDouble(txfFixedTotal.getText()));
+        }
+
+        EndOrderWindow endOrderWindow = new EndOrderWindow("Ordrebekræftigelse", new Stage(), tempOrder);
+        endOrderWindow.showAndWait();
+
+        resetOrder();
     }
 
 
