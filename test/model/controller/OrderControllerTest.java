@@ -3,17 +3,16 @@ package model.controller;
 import gui.OrderControllerInterface;
 import model.modelklasser.Order;
 import model.modelklasser.Situation;
-import model.modelklasser.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import storage.Storage;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class OrderControllerTest {
 
@@ -56,7 +55,6 @@ class OrderControllerTest {
         assertEquals(mocksituation,order.getSituation());
         // Verifies that .addorder
         assertTrue(orders.contains(order));
-
     }
 
 }

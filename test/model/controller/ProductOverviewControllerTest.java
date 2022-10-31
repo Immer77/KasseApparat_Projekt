@@ -1,15 +1,15 @@
 package model.controller;
 
 import gui.ProductOverviewControllerInterface;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import storage.Storage;
 
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 
 class ProductOverviewControllerTest {
@@ -39,5 +39,21 @@ class ProductOverviewControllerTest {
         assertEquals("Øl",productCategory.getTitle());
         assertEquals("6.0% alc. ekstra pilsner",productCategory.getDescription());
         verify(storage).addProductCategory(productCategory);
+    }
+
+
+    @Test
+    void TC2_createProduct(){
+        //Arrange
+        ProductCategory productCategory = new ProductCategory("Øl","6.0% alc. ekstra pilsner");
+        String name = "Regnbue Bajer";
+        String description = "6% alc. pride piler";
+
+        //Act
+        Product testProduct = controller.createProduct(productCategory  , name,description);
+
+        //Assert
+        assertEquals(testProduct.getName(),name);
+        assertEquals(testProduct.getDescription(), description);
     }
 }
