@@ -13,12 +13,22 @@ import java.util.ArrayList;
 
 
 class ProductOverviewControllerTest {
+    StorageInterface storage;
+    ProductOverviewControllerInterface controller;
+
+
+    /**
+     *
+     */
+    @BeforeEach
+    void setUp() {
+        storage = mock(Storage.class);
+        controller = ProductOverviewController.getProductOverviewController(storage);
+    }
 
     @Test
     void TC1_createProductCategory() {
         // Arrange
-        StorageInterface storage = Storage.getStorage();
-        ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(storage);
         String title = "Øl";
         String description = "6.0% alc. ekstra pilsner";
 
@@ -26,6 +36,8 @@ class ProductOverviewControllerTest {
         ProductCategory productCategory = controller.createProductCategory(title,description);
 
         // Assert
-        assertTrue(controller.getProductCategories().contains(productCategory));
+        assertEquals("Øl",productCategory.getTitle());
+        assertEquals("6.0% alc. ekstra pilsner",productCategory.getDescription());
+        verify(storage).addProductCategory(productCategory);
     }
 }

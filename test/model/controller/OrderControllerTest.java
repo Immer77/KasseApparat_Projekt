@@ -8,10 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import storage.Storage;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class OrderControllerTest {
 
@@ -20,7 +22,8 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        storage = Storage.getStorage();
+        // We need to mock the storage to make sure that we are creating a unit test
+        storage = mock(Storage.class);
         orderController = OrderController.getOrderController(storage);
     }
 
@@ -29,27 +32,31 @@ class OrderControllerTest {
         // Arrange
         String name = "Fredagsbar";
 
+
         // Act
         Situation situation = orderController.createSituation(name);
 
         // Assert
         assertEquals("Fredagsbar",situation.getName());
-        assertTrue(orderController.getSituations().contains(situation));
+        // Verifies that .addsituation gets called on our mockedstorageobjekt
+        verify(storage).addSituation(situation);
     }
 
     @Test
     void TC1_createOrder() {
         // Arrange
-        // Since we are located on the same architechtural layer we can mock the class without an interface.
         Situation mocksituation = mock(Situation.class);
+        ArrayList<Order> orders = new ArrayList<>();
 
         // Act
         Order order = orderController.createOrder(mocksituation);
-
+        orders.add(order);
 
         // Assert
-        assertTrue(orderController.getOrders().contains(order));
         assertEquals(mocksituation,order.getSituation());
+        // Verifies that .addorder
+        assertTrue(orders.contains(order));
+
     }
 
 }
