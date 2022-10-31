@@ -25,7 +25,7 @@ class OrderControllerTest {
     void setUp() {
         // We need to mock the storage to make sure that we are creating a unit test
         storage = mock(Storage.class);
-        orderController = OrderController.getOrderController(storage);
+        orderController = OrderController.getOrderControllerTest(storage);
     }
 
     @Test
