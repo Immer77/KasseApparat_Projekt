@@ -7,8 +7,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductCategoryTest {
+    // Field variables
     ProductCategory productCategory;
 
+    /**
+     * Setup method to set up the productcategory
+     */
     @BeforeEach
     void setUp() {
         productCategory = new ProductCategory("Øl","Bajselademadder");

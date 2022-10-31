@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Storage implements StorageInterface {
+
+    // Field variables
     private static Storage unique_Storage;
     private List<ProductCategory> productCategories;
     private List<Order> orders;
@@ -52,19 +54,47 @@ public class Storage implements StorageInterface {
         }
     }
 
+    /**
+     * Get a list of all the orders
+     * @return
+     */
     public List<Order> getOrders() {
         return new ArrayList<>(orders);
     }
 
+    /**
+     * Adds an order to the storage
+     * @param order
+     */
     public void addOrder(Order order){
         if(!orders.contains(order)){
             orders.add(order);
         }
     }
 
+    /**
+     * Removes and order from storage
+     * @param order
+     */
+
+    public void removeOrder(Order order) {
+        if(orders.contains(order)){
+            orders.remove(order);
+        }
+    }
+
+    /**
+     * Returns a copy of the arraylist containing the situations
+     * @return
+     */
     public List<Situation> getSituations() {
         return new ArrayList<>(situations);
     }
+
+    /**
+     * Adds a sitaution to the list
+     * @param situation
+     */
 
     public void addSituation(Situation situation){
         if(!situations.contains(situation)){

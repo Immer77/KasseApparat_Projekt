@@ -1,16 +1,22 @@
 package model.modelklasser;
 
 public class Price {
+
+    // Field variables
     private double value;
     private Unit unit;
     private Situation situation;
+    private Product product;
 
-    Price(double value, Unit unit, Situation situation) {
+    // Package private constructor
+    Price(double value, Unit unit, Situation situation, Product product) {
         this.value = value;
         this.unit = unit;
         this.situation = situation;
+        this.product = product;
     }
 
+    // Getters and setters------------------------------------------------------
     public double getValue() {
         return value;
     }
@@ -18,6 +24,12 @@ public class Price {
     public Unit getUnit() {
         return unit;
     }
+
+    public Product getProduct() {
+        return product;
+    }
+
+
 
     public Situation getSituation() {
         return situation;
