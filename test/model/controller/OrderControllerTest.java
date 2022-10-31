@@ -1,6 +1,7 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
+import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Order;
 import model.modelklasser.Situation;
 import model.modelklasser.Unit;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import storage.Storage;
 
+import javax.lang.model.util.SimpleElementVisitor14;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,10 +30,9 @@ class OrderControllerTest {
     }
 
     @Test
-    void TC1_createSituation() {
+    void TC1_createSituationWithNameFredagsbar() {
         // Arrange
         String name = "Fredagsbar";
-
 
         // Act
         Situation situation = orderController.createSituation(name);
@@ -43,7 +44,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void TC1_createOrder() {
+    void TC1_createOrderWithSituationFredagsbar() {
         // Arrange
         Situation mocksituation = mock(Situation.class);
         ArrayList<Order> orders = new ArrayList<>();
@@ -59,4 +60,9 @@ class OrderControllerTest {
 
     }
 
+    @Test
+    void TC1_CreateOrderLineForOrder() {
+        // Arrange
+
+    }
 }
