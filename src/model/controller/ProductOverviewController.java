@@ -33,6 +33,16 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         return unique_ProductOverviewController;
     }
 
+    /**
+     * Bruges til test
+     * @param storage
+     * @return
+     */
+    public static ProductOverviewControllerInterface getProductOverviewControllerTest(StorageInterface storage) {
+        unique_ProductOverviewController = new ProductOverviewController(storage);
+        return unique_ProductOverviewController;
+    }
+
     //Methods - Other ------------------------------------------------------------------------------------------------
 
     /**

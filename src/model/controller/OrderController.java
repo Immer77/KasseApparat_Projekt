@@ -33,6 +33,17 @@ public class OrderController implements OrderControllerInterface {
     }
 
     /**
+     * Bruges til test for ikke at have singleton pattern til at melde fejl
+     * @param storage
+     * @return
+     */
+    public static OrderControllerInterface getOrderControllerTest(StorageInterface storage){
+        unique_OrderController = new OrderController(storage);
+        return unique_OrderController;
+
+    }
+
+    /**
      * Creates a situation and adds it to the situations list
      * @param name of the situation
      * @return situation
