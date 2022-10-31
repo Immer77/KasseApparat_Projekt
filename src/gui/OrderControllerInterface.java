@@ -49,8 +49,16 @@ public interface OrderControllerInterface {
      * @param order the order to set the discount for
      * @param fixedTotalPrice the total price for the entire order, overwriting any calculated sum
      */
-    void setFixedPriceForOrder (Order order,  double fixedTotalPrice);
+    void setFixedPriceForOrder (Order order,  double fixedTotalPrice, Unit fixedTotalPriceUnit);
 
+    public PaymentMethod getPaymentMethodForOrder (Order order);
+
+    /**
+     * Set the paymentmethod for the given order
+     * @param order an Order
+     * @param paymentMethod the method of payment for the order, given as a String
+     */
+    public void setPaymentMethodForOrder(Order order, PaymentMethod paymentMethod);
 
     /**
      * Initializes content for the Graphical user interface
