@@ -36,6 +36,9 @@ public class StartWindow extends Application {
      * @param tabPane
      */
     private void initTabPane(TabPane tabPane) {
+        //tabPane size
+        tabPane.setPrefSize(800,600);
+
         //disabled closing of tabs
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
