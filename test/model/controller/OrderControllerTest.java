@@ -1,17 +1,20 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
+import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Order;
 import model.modelklasser.Situation;
-import model.modelklasser.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import storage.Storage;
-import static org.junit.jupiter.api.Assertions.*;
+
+import javax.lang.model.util.SimpleElementVisitor14;
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 class OrderControllerTest {
 
@@ -20,12 +23,13 @@ class OrderControllerTest {
 
     @BeforeEach
     void setUp() {
-        storage = Storage.getStorage();
+        // We need to mock the storage to make sure that we are creating a unit test
+        storage = mock(Storage.class);
         orderController = OrderController.getOrderController(storage);
     }
 
     @Test
-    void TC1_createSituation() {
+    void TC1_createSituationWithNameFredagsbar() {
         // Arrange
         String name = "Fredagsbar";
 
@@ -34,22 +38,29 @@ class OrderControllerTest {
 
         // Assert
         assertEquals("Fredagsbar",situation.getName());
-        assertTrue(orderController.getSituations().contains(situation));
+        // Verifies that .addsituation gets called on our mockedstorageobjekt
+        verify(storage).addSituation(situation);
     }
 
     @Test
-    void TC1_createOrder() {
+    void TC1_createOrderWithSituationFredagsbar() {
         // Arrange
-        // Since we are located on the same architechtural layer we can mock the class without an interface.
         Situation mocksituation = mock(Situation.class);
+        ArrayList<Order> orders = new ArrayList<>();
 
         // Act
         Order order = orderController.createOrder(mocksituation);
-
+        orders.add(order);
 
         // Assert
-        assertTrue(orderController.getOrders().contains(order));
         assertEquals(mocksituation,order.getSituation());
+        // Verifies that .addorder
+        assertTrue(orders.contains(order));
     }
 
+    @Test
+    void TC1_CreateOrderLineForOrder() {
+        // Arrange
+
+    }
 }

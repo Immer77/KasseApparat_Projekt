@@ -31,6 +31,8 @@ class ProductCategoryTest {
         Product productTest = productCategory.createProduct(name,description);
 
         // Assert
+        assertEquals("Extra Pilsner",productTest.getName());
+        assertEquals("5,1% alc. En pilsner der er lidt mere pilsner", productTest.getDescription());
         assertTrue(productCategory.getProducts().contains(productTest));
     }
 }
