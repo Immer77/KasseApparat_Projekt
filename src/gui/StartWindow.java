@@ -9,13 +9,17 @@ import javafx.stage.Stage;
 
 public class StartWindow extends Application {
 
+    private Stage mainStage;
+
     public void start(Stage stage) {
         stage.setTitle("Aarhus Bryghus");
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
+
         Scene scene = new Scene(pane);
         stage.setScene(scene);
+        mainStage = stage;
         stage.show();
     }
 
@@ -28,6 +32,7 @@ public class StartWindow extends Application {
 
     /**
      * Initialises tabs in the tabpane
+     *
      * @param tabPane
      */
     private void initTabPane(TabPane tabPane) {
@@ -59,4 +64,5 @@ public class StartWindow extends Application {
         //----------------------------------------------------------------------------
 
     }
+
 }

@@ -41,21 +41,28 @@ public class Product {
         return returnValue;
     }
 
+    // gets a copy of the list of prices
     public ArrayList<Price> getPrices() {
         return new ArrayList<>(prices);
     }
 
-    // SKAL VI BRUGE ADDPRICE NÅR VI HAR CREATEPRICE??
-    public void addPrice(){
+    /**
+     * Removes the price object
+     * @param price
+     */
+    public void removePrice(Price price){
         //TODO
     }
 
-    public void removePrice(){
-        //TODO
-    }
-
+    /**
+     * Creates a price
+     * @param value the price value
+     * @param unit whether its DKK or punches
+     * @param situation what situation it is
+     * @return Returns a price object
+     */
     public Price createPrice(double value, Unit unit, Situation situation){
-        Price price = new Price(value, unit, situation);
+        Price price = new Price(value, unit, situation, this);
         prices.add(price);
         return price;
     }

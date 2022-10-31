@@ -1,3 +1,4 @@
 package model.modelklasser;
 
-public enum Unit {DKK, PUNCHES}
+// Unit that contains the DKK aswell as klip
+public enum Unit {DKK, Klip}
