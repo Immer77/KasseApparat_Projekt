@@ -69,7 +69,7 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Order createOrder(Situation situation) {
-        Order order = new Order(situation);
+        Order order = new Order();
         return order;
     }
 
