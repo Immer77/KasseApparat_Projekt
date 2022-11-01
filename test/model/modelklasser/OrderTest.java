@@ -1,11 +1,6 @@
 package model.modelklasser;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -21,7 +16,7 @@ class OrderTest {
         // Arrange
         Price price = mock(Price.class);
         Situation situation = mock(Situation.class);
-        Order order = new Order(situation);
+        Order order = new Order();
 
         // Simulerede 3 forskellige priser
         when(price.getValue()).thenReturn(30.0,40.0,20.0);

@@ -29,6 +29,7 @@ public class SaleTab extends GridPane {
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
+    private ChoiceBox<Unit> chFixedUnit;
 
     //Constructors ------------------------------------------------------
     public SaleTab() {
@@ -58,6 +59,8 @@ public class SaleTab extends GridPane {
         hbxChoices.setSpacing(10);
         this.add(hbxChoices, 0, 0, 3, 1);
 
+        //Initialises an order
+        tempOrder = orderController.createOrder(chSituation.getValue());
 
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
@@ -66,8 +69,6 @@ public class SaleTab extends GridPane {
         accProductOverview.setPadding(Insets.EMPTY);
         this.add(accProductOverview, 0, 2, 3, 2);
 
-        //Initialises an order
-        tempOrder = orderController.createOrder(chSituation.getValue());
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -79,73 +80,84 @@ public class SaleTab extends GridPane {
         //Adds field and label for calculated total of the Order
         Label lblOrderTotal = new Label("Total:");
         lblOrderTotal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        this.add(lblOrderTotal, 4, 6);
 
         vbxOrderTotal = new VBox();
         vbxOrderTotal.setPrefWidth(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
+        this.add(vbxOrderTotal, 5, 6);
 
-        HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
+/*        HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
         hbxOrderTotal.setSpacing(10);
-        hbxOrderTotal.setAlignment(Pos.TOP_RIGHT);
+        hbxOrderTotal.setAlignment(Pos.TOP_RIGHT);*/
 
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        this.add(lblrabat, 4, 7);
 
         txfPercentDiscount = new TextField("" + 0);
         txfPercentDiscount.setPrefWidth(75);
         txfPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        ChangeListener<String> percentListener = (observable, oldV, newV) -> this.updateOrder();
+        ChangeListener<String> percentListener = (observable, oldV, newV) -> this.updateDiscount();
         txfPercentDiscount.textProperty().addListener(percentListener);
 
         Label lblPercent = new Label("%");
 
-        HBox hbxPercentDiscount = new HBox(lblrabat, txfPercentDiscount, lblPercent);
+        HBox hbxPercentDiscount = new HBox(txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
+        this.add(hbxPercentDiscount, 5, 7);
 
         //Add field for a fixed total price
         Label lblFixedPrice = new Label("Aftalt Total: ");
         lblFixedPrice.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        this.add(lblFixedPrice, 4, 8);
 
         txfFixedTotal = new TextField();
         txfFixedTotal.setPrefWidth(75);
         txfFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
-        ChangeListener<String> fixedTotalListener = (observable, oldV, newV) -> this.updateOrder();
+        ChangeListener<String> fixedTotalListener = (observable, oldV, newV) -> this.updateFixedPrice();
         txfFixedTotal.textProperty().addListener(fixedTotalListener);
 
-        Label lblPlaceholder = new Label("%");
-        lblPlaceholder.setVisible(false);
+        chFixedUnit = new ChoiceBox<>();
+        chFixedUnit.getItems().setAll(Unit.values());
+        chFixedUnit.getSelectionModel().select(0);
+        ChangeListener<Unit> fixedUnitListener = (observable, oldV, newV) -> this.updateFixedPrice();
+        chFixedUnit.getSelectionModel().selectedItemProperty().addListener(fixedUnitListener);
 
-        HBox hbxFixedTotal = new HBox(lblFixedPrice, txfFixedTotal);
+        HBox hbxFixedTotal = new HBox(txfFixedTotal, chFixedUnit);
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
-        hbxFixedTotal.setPadding(new Insets(0, 10, 0, 0));
+        hbxFixedTotal.setPadding(new Insets(0, 10, 5, 0));
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
+        this.add(hbxFixedTotal, 5, 8);
 
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        this.add(lblFinal, 4, 9);
 
         vbxFinalPrice = new VBox();
         vbxFinalPrice.setPrefWidth(75);
         vbxFinalPrice.setBackground(Background.EMPTY);
         vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
 
-        HBox hbxFinalPrice = new HBox(lblFinal, vbxFinalPrice);
+        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
+        this.add(hbxFinalPrice, 5, 9);
 
-        //Vbox for pricetotals
-        VBox vbxTotals = new VBox(hbxOrderTotal, hbxPercentDiscount, hbxFixedTotal, hbxFinalPrice);
+        //Vbox for all pricetotals
+/*        VBox vbxTotals = new VBox(hbxOrderTotal, hbxPercentDiscount, hbxFixedTotal, hbxFinalPrice);
         vbxTotals.setSpacing(5);
-        this.add(vbxTotals, 5, 5);
+        this.add(vbxTotals, 5, 5);*/
 
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Afslut Ordre");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
         btnConfirmOrder.setOnAction(event -> confirmOrderAction());
-        this.add(btnConfirmOrder, 3,6,3,1);
+        this.add(btnConfirmOrder, 3, 10, 3, 1);
 
         //Initiates examples of situations and prices for products
         orderController.initContent();
@@ -194,7 +206,6 @@ public class SaleTab extends GridPane {
     private void addProductToOrder(Price price) {
         if (tempOrder == null) {
             orderController.createOrder(chSituation.getValue());
-
         }
 
         //If product already is has an OrderLine in order, increments the amount
@@ -312,6 +323,8 @@ public class SaleTab extends GridPane {
 
     private void resetOrder() {
         tempOrder = orderController.createOrder(chSituation.getValue());
+        txfPercentDiscount.setText("" + 0);
+        txfFixedTotal.clear();
         updateOrder();
     }
 
@@ -319,7 +332,6 @@ public class SaleTab extends GridPane {
      * Updates the display of orderlines
      */
     public void updateOrder() {
-
         //Clears list
         orderLineView.getChildren().clear();
 
@@ -360,12 +372,15 @@ public class SaleTab extends GridPane {
             orderLineView.getChildren().add(orderline);
         }
 
-        //Updates the calculated sum of the orderlines, and the final price
+        //Clears both the calculated total of all the orderlines, and the final total price for the order
         vbxOrderTotal.getChildren().clear();
         vbxFinalPrice.getChildren().clear();
 
+        //For each unit, calculates the sum of the orderlines with that unit
         for (Unit unit : Unit.values()) {
-            double result = tempOrder.calculateSumPriceForUnit(unit);
+
+
+            //Checks if there is any orderlines in the order with this unit
             boolean currentUnitFound = false;
             for (OrderLine ol : tempOrder.getOrderLines()) {
                 if (ol.getPrice().getUnit().equals(unit)) {
@@ -374,17 +389,40 @@ public class SaleTab extends GridPane {
                 }
             }
 
+            //If orderline with this unit exists, create labels for the total of this unit
             if (currentUnitFound) {
+                double result = tempOrder.calculateSumPriceForUnit(unit);
+
                 Label priceTotal = new Label(result + " " + unit);
                 priceTotal.setAlignment(Pos.BASELINE_RIGHT);
                 vbxOrderTotal.getChildren().add(priceTotal);
 
-                double percentageMultiplier = (100 - Double.parseDouble(txfPercentDiscount.getText().trim())) / 100;
-                double calculatedFinalPrice = result * percentageMultiplier;
+                //Calculate the total after subtracting the percentage discount
 
-                String finalPriceText;
-                finalPriceText = calculatedFinalPrice + " " + unit;
+                double calculatedFinalPrice = result;
+                try {
+                    if (!txfPercentDiscount.getText().isBlank()) {
+                        double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
+                        double percentageMultiplier = 1.0;
 
+                        if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+                            percentageMultiplier = (100 - percentageDiscount) / 100;
+                        } else {
+                            throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
+                        }
+                        calculatedFinalPrice = result * percentageMultiplier;
+                    }
+
+                } catch (NumberFormatException nfe) {
+                    txfPercentDiscount.setText("" + 0);
+
+                    Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+                    alertNFE.setTitle("Indtastet værdi er ikke et tal");
+                    alertNFE.setContentText(nfe.getMessage());
+                    alertNFE.showAndWait();
+                }
+
+                String finalPriceText = calculatedFinalPrice + " " + unit;
                 Label lblFinalPrice = new Label(finalPriceText);
                 lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
                 vbxFinalPrice.getChildren().add(lblFinalPrice);
@@ -396,7 +434,7 @@ public class SaleTab extends GridPane {
             vbxFinalPrice.getChildren().clear();
             Label lblAgreedTotal = new Label("--AFTALT--");
             lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
-            Label lblManualFinalPrice = new Label(txfFixedTotal.getText());
+            Label lblManualFinalPrice = new Label(txfFixedTotal.getText() + " " + chFixedUnit.getSelectionModel().getSelectedItem());
             lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
             vbxFinalPrice.getChildren().add(lblAgreedTotal);
             vbxFinalPrice.getChildren().add(lblManualFinalPrice);
@@ -423,18 +461,74 @@ public class SaleTab extends GridPane {
      * Called when the confirm order button is used. Opens a new window, in order to finish the order
      */
     private void confirmOrderAction() {
-        if (!txfPercentDiscount.getText().isBlank()) {
-            orderController.setDiscountForOrder(tempOrder, Double.parseDouble(txfPercentDiscount.getText()));
-        }
-
-        if (!txfFixedTotal.getText().isBlank()) {
-            orderController.setFixedPriceForOrder(tempOrder, Double.parseDouble(txfFixedTotal.getText()));
-        }
+        updateFixedPrice();
 
         EndOrderWindow endOrderWindow = new EndOrderWindow("Ordrebekræftigelse", new Stage(), tempOrder);
         endOrderWindow.showAndWait();
 
         resetOrder();
+    }
+
+    private void updateDiscount() {
+        try {
+            if (txfPercentDiscount.getText().isBlank()) {
+                txfPercentDiscount.setText("" + 0);
+            }
+
+            double discount = Double.parseDouble(txfPercentDiscount.getText().trim());
+
+            if (discount >= 0.0 && discount <= 100.0) {
+                orderController.setDiscountForOrder(tempOrder, discount);
+            } else {
+                throw new NumberFormatException("procentrabat skal være et tal mellem 0.0 og 100");
+            }
+
+        } catch (NumberFormatException nfe) {
+            txfPercentDiscount.setText("" + 0);
+
+            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+            alertNFE.setTitle("Indtastet værdi er ikke et tal");
+            alertNFE.setContentText(nfe.getMessage());
+            alertNFE.showAndWait();
+
+        } catch (RuntimeException rte) {
+            txfPercentDiscount.setText("" + 0);
+
+            Alert alertRTE = new Alert(Alert.AlertType.ERROR);
+            alertRTE.setTitle("Forkert værdi");
+            alertRTE.setContentText("Tal skal være mellem 0 og 100");
+            alertRTE.showAndWait();
+
+        }
+
+
+        updateOrder();
+    }
+
+    private void updateFixedPrice() {
+        try {
+            if (!txfFixedTotal.getText().isBlank()) {
+                double value = Double.parseDouble(txfFixedTotal.getText());
+                if (Double.parseDouble(txfFixedTotal.getText()) < 0) {
+                    throw new NumberFormatException("Den indtastede værdi kan ikke være mindre end 0");
+                }
+
+                Unit unit = chFixedUnit.getSelectionModel().getSelectedItem();
+                orderController.setFixedPriceForOrder(tempOrder, value, unit);
+            } else {
+                orderController.setFixedPriceForOrder(tempOrder, -1.0, null);
+            }
+
+            updateOrder();
+        } catch (NumberFormatException nfe) {
+            txfFixedTotal.clear();
+
+            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+            alertNFE.setTitle("Forkert indtastet værdi");
+            alertNFE.setContentText(nfe.getMessage());
+            alertNFE.showAndWait();
+        }
+
     }
 
 

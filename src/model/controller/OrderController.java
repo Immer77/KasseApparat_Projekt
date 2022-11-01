@@ -33,6 +33,17 @@ public class OrderController implements OrderControllerInterface {
     }
 
     /**
+     * Bruges til test for ikke at have singleton pattern til at melde fejl
+     * @param storage
+     * @return
+     */
+    public static OrderControllerInterface getOrderControllerTest(StorageInterface storage){
+        unique_OrderController = new OrderController(storage);
+        return unique_OrderController;
+
+    }
+
+    /**
      * Creates a situation and adds it to the situations list
      * @param name of the situation
      * @return situation
@@ -58,7 +69,7 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Order createOrder(Situation situation) {
-        Order order = new Order(situation);
+        Order order = new Order();
         return order;
     }
 
@@ -84,8 +95,9 @@ public class OrderController implements OrderControllerInterface {
      * @param order the order to set the discount for
      * @param fixedTotalPrice the total price for the entire order, overwriting any calculated sum
      */
-    public void setFixedPriceForOrder (Order order,  double fixedTotalPrice){
+    public void setFixedPriceForOrder (Order order,  double fixedTotalPrice, Unit fixedTotalPriceUnit){
         order.setFixedPrice(fixedTotalPrice);
+        order.setFixedPriceUnit(fixedTotalPriceUnit);
     }
 
     public List<Order> getOrders() {
@@ -95,6 +107,19 @@ public class OrderController implements OrderControllerInterface {
     public OrderLine createOrderLineForOrder (Order order, int amount, Price price) {
         OrderLine currentOrderLine = order.createOrderLine(amount, price);
         return currentOrderLine;
+    }
+
+    public PaymentMethod getPaymentMethodForOrder (Order order) {
+        return order.getPaymentMethod();
+    }
+
+    /**
+     * Set the paymentmethod for the given order
+     * @param order an Order
+     * @param paymentMethod the method of payment for the order
+     */
+    public void setPaymentMethodForOrder(Order order, PaymentMethod paymentMethod) {
+        order.setPaymentMethod(paymentMethod);
     }
 
     public void initContent() {

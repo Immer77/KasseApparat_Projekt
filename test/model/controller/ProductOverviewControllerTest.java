@@ -23,7 +23,7 @@ class ProductOverviewControllerTest {
     @BeforeEach
     void setUp() {
         storage = mock(Storage.class);
-        controller = ProductOverviewController.getProductOverviewController(storage);
+        controller = ProductOverviewController.getProductOverviewControllerTest(storage);
     }
 
     @Test

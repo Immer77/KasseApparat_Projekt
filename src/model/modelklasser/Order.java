@@ -4,15 +4,19 @@ import java.util.ArrayList;
 
 public class Order {
     private double percentDiscount;
-    private Situation situation;
+    /**
+     * Saves a fixed price for the whole order. Set to -1.0 if it is not in use
+     */
     private double fixedPrice;
+    private Unit fixedPriceUnit;
+
+    private PaymentMethod paymentMethod;
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
 
     // Constructor
 
-    public Order(Situation situation) {
-        this.situation = situation;
+    public Order() {
     }
 
     /**
@@ -47,16 +51,8 @@ public class Order {
     }
 
 
-    public Situation getSituation() {
-        return situation;
-    }
-
     public void setPercentDiscount(double percentDiscount) {
         this.percentDiscount = percentDiscount;
-    }
-
-    public void setSituation(Situation situation) {
-        this.situation = situation;
     }
 
     public double getFixedPrice() {
@@ -66,6 +62,26 @@ public class Order {
     public void setFixedPrice(double fixedPrice) {
         this.fixedPrice = fixedPrice;
     }
+
+    public Unit getFixedPriceUnit() {
+        return fixedPriceUnit;
+    }
+
+    public void setFixedPriceUnit(Unit fixedPriceUnit) {
+        this.fixedPriceUnit = fixedPriceUnit;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+
+
+
 
     /**
      * Calculates the price based on the unit whether its Dkk/punches

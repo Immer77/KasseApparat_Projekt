@@ -1,12 +1,14 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
+import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Order;
 import model.modelklasser.Situation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import storage.Storage;
 
+import javax.lang.model.util.SimpleElementVisitor14;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,14 +25,13 @@ class OrderControllerTest {
     void setUp() {
         // We need to mock the storage to make sure that we are creating a unit test
         storage = mock(Storage.class);
-        orderController = OrderController.getOrderController(storage);
+        orderController = OrderController.getOrderControllerTest(storage);
     }
 
     @Test
-    void TC1_createSituation() {
+    void TC1_createSituationWithNameFredagsbar() {
         // Arrange
         String name = "Fredagsbar";
-
 
         // Act
         Situation situation = orderController.createSituation(name);
@@ -42,7 +43,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void TC1_createOrder() {
+    void TC1_createOrderWithSituationFredagsbar() {
         // Arrange
         Situation mocksituation = mock(Situation.class);
         ArrayList<Order> orders = new ArrayList<>();
@@ -52,9 +53,14 @@ class OrderControllerTest {
         orders.add(order);
 
         // Assert
-        assertEquals(mocksituation,order.getSituation());
+        assertEquals(mocksituation,order.getOrderLines().get(0).getPrice().getSituation());
         // Verifies that .addorder
         assertTrue(orders.contains(order));
     }
 
+    @Test
+    void TC1_CreateOrderLineForOrder() {
+        // Arrange
+
+    }
 }
