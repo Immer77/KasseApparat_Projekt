@@ -60,7 +60,7 @@ public class SaleTab extends GridPane {
         this.add(hbxChoices, 0, 0, 3, 1);
 
         //Initialises an order
-        tempOrder = orderController.createOrder(chSituation.getValue());
+        tempOrder = orderController.createOrder();
 
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
@@ -205,7 +205,7 @@ public class SaleTab extends GridPane {
      */
     private void addProductToOrder(Price price) {
         if (tempOrder == null) {
-            orderController.createOrder(chSituation.getValue());
+            orderController.createOrder();
         }
 
         //If product already is has an OrderLine in order, increments the amount
@@ -322,7 +322,7 @@ public class SaleTab extends GridPane {
     }
 
     private void resetOrder() {
-        tempOrder = orderController.createOrder(chSituation.getValue());
+        tempOrder = orderController.createOrder();
         txfPercentDiscount.setText("" + 0);
         txfFixedTotal.clear();
         updateOrder();

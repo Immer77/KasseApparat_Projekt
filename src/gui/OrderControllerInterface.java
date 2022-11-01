@@ -20,10 +20,10 @@ public interface OrderControllerInterface {
 
     /**
      * Creates an order
-     * @param situation takes in a specific situation
+     *
      * @return
      */
-    Order createOrder(Situation situation);
+    Order createOrder();
 
     /**
      * gets a list of all the orders
