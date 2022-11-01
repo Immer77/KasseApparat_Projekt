@@ -59,6 +59,9 @@ public class SaleTab extends GridPane {
         hbxChoices.setSpacing(10);
         this.add(hbxChoices, 0, 0, 3, 1);
 
+        //Initialises an order
+        tempOrder = orderController.createOrder(chSituation.getValue());
+
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
         accProductOverview.setMaxWidth(Double.MAX_VALUE);
@@ -66,8 +69,6 @@ public class SaleTab extends GridPane {
         accProductOverview.setPadding(Insets.EMPTY);
         this.add(accProductOverview, 0, 2, 3, 2);
 
-        //Initialises an order
-        tempOrder = orderController.createOrder(chSituation.getValue());
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -85,7 +86,7 @@ public class SaleTab extends GridPane {
         vbxOrderTotal.setPrefWidth(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
-        this.add(vbxOrderTotal, 5,6);
+        this.add(vbxOrderTotal, 5, 6);
 
 /*        HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
         hbxOrderTotal.setSpacing(10);
@@ -94,7 +95,7 @@ public class SaleTab extends GridPane {
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblrabat, 4,7);
+        this.add(lblrabat, 4, 7);
 
         txfPercentDiscount = new TextField("" + 0);
         txfPercentDiscount.setPrefWidth(75);
@@ -106,7 +107,7 @@ public class SaleTab extends GridPane {
 
         HBox hbxPercentDiscount = new HBox(txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        this.add(hbxPercentDiscount, 5,7);
+        this.add(hbxPercentDiscount, 5, 7);
 
         //Add field for a fixed total price
         Label lblFixedPrice = new Label("Aftalt Total: ");
@@ -135,7 +136,7 @@ public class SaleTab extends GridPane {
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblFinal,4,9);
+        this.add(lblFinal, 4, 9);
 
         vbxFinalPrice = new VBox();
         vbxFinalPrice.setPrefWidth(75);
@@ -145,7 +146,7 @@ public class SaleTab extends GridPane {
         HBox hbxFinalPrice = new HBox(vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
-        this.add(hbxFinalPrice,5,9);
+        this.add(hbxFinalPrice, 5, 9);
 
         //Vbox for all pricetotals
 /*        VBox vbxTotals = new VBox(hbxOrderTotal, hbxPercentDiscount, hbxFixedTotal, hbxFinalPrice);
@@ -205,7 +206,6 @@ public class SaleTab extends GridPane {
     private void addProductToOrder(Price price) {
         if (tempOrder == null) {
             orderController.createOrder(chSituation.getValue());
-
         }
 
         //If product already is has an OrderLine in order, increments the amount

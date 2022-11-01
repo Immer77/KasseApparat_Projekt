@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Order {
     private double percentDiscount;
-    private Situation situation;
     /**
      * Saves a fixed price for the whole order. Set to -1.0 if it is not in use
      */
@@ -17,8 +16,7 @@ public class Order {
 
     // Constructor
 
-    public Order(Situation situation) {
-        this.situation = situation;
+    public Order() {
     }
 
     /**
@@ -53,16 +51,8 @@ public class Order {
     }
 
 
-    public Situation getSituation() {
-        return situation;
-    }
-
     public void setPercentDiscount(double percentDiscount) {
         this.percentDiscount = percentDiscount;
-    }
-
-    public void setSituation(Situation situation) {
-        this.situation = situation;
     }
 
     public double getFixedPrice() {

@@ -53,7 +53,7 @@ class OrderControllerTest {
         orders.add(order);
 
         // Assert
-        assertEquals(mocksituation,order.getSituation());
+        assertEquals(mocksituation,order.getOrderLines().get(0).getPrice().getSituation());
         // Verifies that .addorder
         assertTrue(orders.contains(order));
     }
