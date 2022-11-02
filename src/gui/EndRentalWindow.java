@@ -31,7 +31,6 @@ public class EndRentalWindow extends Stage {
     private TextArea txaDescription;
     private DatePicker endDatePicker;
 
-
     public EndRentalWindow(String title, Stage owner, Rental rental) {
         this.rental = rental;
         this.initOwner(owner);
@@ -63,15 +62,16 @@ public class EndRentalWindow extends Stage {
         Label lblName = new Label("Name");
         txfName =  new TextField();
         txfName.setEditable(false);
+        txfName.appendText(rental.getName());
         nameVBox.getChildren().addAll(lblName,txfName);
 
         VBox descriptionVBox = new VBox();
         Label lblDescription = new Label("Description");
         txaDescription = new TextArea();
         txaDescription.setEditable(false);
+        txaDescription.appendText(rental.getDescription());
         descriptionVBox.getChildren().setAll(lblDescription,txaDescription);
 
-        
         VBox startdateVBox = new VBox();
         Label lblStartDate = new Label("Start dato");
         txfStartDate = new TextField(rental.getStartDate().toString());
@@ -93,16 +93,14 @@ public class EndRentalWindow extends Stage {
         //Adds SplitPane to hold OrderLines for used and unused items
         pane.add(splitPane,1,0);
 
-
-
-
         //Adds a Vbox to hold all OrderLines
         orderLineView = new VBox(new Label("Alle udlejede produkter"));
         orderLineView.setPrefWidth(200);
-        orderLineView.getChildren().add(lvwRentalOrderlines);
         for (OrderLine ol : rental.getOrderLines()){
             lvwRentalOrderlines.getItems().setAll(ol);
         }
+        orderLineView.getChildren().add(lvwRentalOrderlines);
+
 
         //adds button in splitpane
         btnAddToUnused = new Button(">");
@@ -134,8 +132,6 @@ public class EndRentalWindow extends Stage {
 
         buttons.getChildren().addAll(btnOK,btnCancel);
 
-
-        updateRental();
     }
 
         private void oKAction() {
@@ -153,7 +149,6 @@ public class EndRentalWindow extends Stage {
             } else {
                 orderLine.setAmount(newAmount);
             }
-            updateRental();
         }
 
     private void updateRental() {
