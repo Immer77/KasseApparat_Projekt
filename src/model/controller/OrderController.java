@@ -2,6 +2,7 @@ package model.controller;
 
 import gui.OrderControllerInterface;
 import model.modelklasser.*;
+import org.mockito.internal.matchers.Or;
 import org.objenesis.instantiator.basic.NewInstanceInstantiator;
 import storage.Storage;
 
@@ -133,11 +134,11 @@ public class OrderController implements OrderControllerInterface {
         return rental;
     }
 
-    public List<Order> getRentals(){
-        ArrayList<Order> rentals = new ArrayList<>();
+    public List<Rental> getRentals(){
+        ArrayList<Rental> rentals = new ArrayList<>();
         for(Order order : storage.getOrders()){
             if(order instanceof Rental){
-                rentals.add(order);
+                rentals.add((Rental) order);
             }
         }
         return rentals;
@@ -165,9 +166,10 @@ public class OrderController implements OrderControllerInterface {
 
         storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
 
-        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
-        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
-        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
+        createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften",LocalDate.now());
+        createRental("Peter Immersen", "Udlejer 2 mokai",LocalDate.now());
+        createRental("Magnus Mejlgaard", "Udlejer 300 Sweet temptations fustager",LocalDate.now());
+        createRental("Kristoffer Frank", "Udlejer en halv øl som han har svært ved at få ned, svagdrikker", LocalDate.now());
 
 
     }

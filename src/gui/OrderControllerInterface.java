@@ -70,6 +70,6 @@ public interface OrderControllerInterface {
 
     Rental createRental(String name, String description, LocalDate startDate);
 
-    List<Order> getRentals();
+    List<Rental> getRentals();
 
 }

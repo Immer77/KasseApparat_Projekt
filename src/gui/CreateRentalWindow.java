@@ -40,8 +40,7 @@ public class CreateRentalWindow extends Stage {
     private Label chFixedUnit;
 
 
-
-    public CreateRentalWindow(String title, Stage owner){
+    public CreateRentalWindow(String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -64,31 +63,20 @@ public class CreateRentalWindow extends Stage {
         pane.setVgap(10);
 
         Label lblName = new Label("Navn:");
-        pane.add(lblName, 0,0);
+        pane.add(lblName, 0, 0);
         Label lblDato = new Label("Slutdato");
-        pane.add(lblDato,0,1);
+        pane.add(lblDato, 0, 1);
         Label lblDescription = new Label("Beskrivelse:");
-        pane.add(lblDescription, 0,2);
+        pane.add(lblDescription, 0, 2);
 
 
-        pane.add(txfName, 1,0, 2, 1);
+        pane.add(txfName, 1, 0, 2, 1);
 
-        pane.add(datePicker,1,1,2,1);
+        pane.add(datePicker, 1, 1, 2, 1);
 
         pane.add(txaDescription, 1, 2, 2, 1);
         txaDescription.setPrefWidth(100);
         txaDescription.setPrefWidth(100);
-
-
-        Button btnOK = new Button("Ok");
-        pane.add(btnOK, 1, 4);
-        btnOK.setOnAction(event -> oKAction());
-        btnOK.setDefaultButton(true);
-
-        Button btnCancel = new Button("Cancel");
-        pane.add(btnCancel, 2, 4);
-        btnCancel.setOnAction(event -> cancelAction());
-        btnCancel.setCancelButton(true);
 
 
         //-------------------------------------------------'
@@ -121,7 +109,6 @@ public class CreateRentalWindow extends Stage {
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
         pane.add(vbxOrderTotal, 9, 4);
-
 
 
         //Add field for percent Discount
@@ -181,8 +168,15 @@ public class CreateRentalWindow extends Stage {
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Opret Udlejning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
-        btnConfirmOrder.setOnAction(event -> confirmOrderAction());
+        btnConfirmOrder.setOnAction(event -> oKAction());
         pane.add(btnConfirmOrder, 7, 8, 3, 1);
+
+        // Adds a cancel button
+        Button btnCancel = new Button("Afbryd");
+        btnCancel.setMaxWidth(Double.MAX_VALUE);
+        btnCancel.setOnAction(event -> cancelAction());
+        pane.add(btnCancel, 6, 8, 3, 1);
+
 
         //Initiates examples of situations and prices for products
 
@@ -191,16 +185,15 @@ public class CreateRentalWindow extends Stage {
         updateControls();
 
 
-
     }
 
     private void cancelAction() {
+        this.close();
     }
 
     public void oKAction() {
         String name = "";
         String description = "";
-        LocalDate datepicker = null;
         if (!txfName.getText().isBlank()) {
             name = txfName.getText().trim();
 
@@ -208,7 +201,7 @@ public class CreateRentalWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createRental(name, description, LocalDate.from(datepicker.getDayOfWeek()));
+            controller.createRental(name, description, LocalDate.from(datePicker.getValue()));
             this.close();
 
         } else {
@@ -292,7 +285,7 @@ public class CreateRentalWindow extends Stage {
                         HBox.setHgrow(productDescr, Priority.ALWAYS);
 
                         //Create textfield for price
-                        TextField txfPrice = new TextField(price.getValue() + " " + price.getUnit());
+                        TextField txfPrice = new TextField(price.getValue() + " " + Unit.DKK);
                         txfPrice.setEditable(false);
                         txfPrice.setPrefWidth(75);
                         txfPrice.setBackground(Background.EMPTY);
@@ -329,7 +322,6 @@ public class CreateRentalWindow extends Stage {
     }
 
 
-
     private void resetOrder() {
         tempOrder = controller.createOrder();
         txfPercentDiscount.setText("" + 0);
@@ -362,14 +354,14 @@ public class CreateRentalWindow extends Stage {
             HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
 
             //Create textfield for price
-            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + ol.getPrice().getUnit());
+            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + Unit.DKK);
             txfPrice.setEditable(false);
             txfPrice.setPrefWidth(75);
             txfPrice.setBackground(Background.EMPTY);
             txfPrice.setAlignment(Pos.BASELINE_RIGHT);
 
             //Create textfield for subtotal
-            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
+            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + Unit.DKK);
             txfSubTotal.setEditable(false);
             txfSubTotal.setPrefWidth(75);
             txfSubTotal.setBackground(Background.EMPTY);
@@ -386,57 +378,56 @@ public class CreateRentalWindow extends Stage {
         vbxFinalPrice.getChildren().clear();
 
         //For each unit, calculates the sum of the orderlines with that unit
-        for (Unit unit : Unit.values()) {
 
 
-            //Checks if there is any orderlines in the order with this unit
-            boolean currentUnitFound = false;
-            for (OrderLine ol : tempOrder.getOrderLines()) {
-                if (ol.getPrice().getUnit().equals(unit)) {
-                    currentUnitFound = true;
-                    break;
-                }
+        //Checks if there is any orderlines in the order with this unit
+        boolean currentUnitFound = false;
+        for (OrderLine ol : tempOrder.getOrderLines()) {
+            if (ol.getPrice().getUnit().equals(Unit.DKK)) {
+                currentUnitFound = true;
+                break;
             }
+        }
 
-            //If orderline with this unit exists, create labels for the total of this unit
-            if (currentUnitFound) {
-                double result = tempOrder.calculateSumPriceForUnit(unit);
+        //If orderline with this unit exists, create labels for the total of this unit
+        if (currentUnitFound) {
+            double result = tempOrder.calculateSumPriceForUnit(Unit.DKK);
 
-                Label priceTotal = new Label(result + " " + unit);
-                priceTotal.setAlignment(Pos.BASELINE_RIGHT);
-                vbxOrderTotal.getChildren().add(priceTotal);
+            Label priceTotal = new Label(result + " " + Unit.DKK);
+            priceTotal.setAlignment(Pos.BASELINE_RIGHT);
+            vbxOrderTotal.getChildren().add(priceTotal);
 
-                //Calculate the total after subtracting the percentage discount
+            //Calculate the total after subtracting the percentage discount
 
-                double calculatedFinalPrice = result;
-                try {
-                    if (!txfPercentDiscount.getText().isBlank()) {
-                        double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
-                        double percentageMultiplier = 1.0;
+            double calculatedFinalPrice = result;
+            try {
+                if (!txfPercentDiscount.getText().isBlank()) {
+                    double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
+                    double percentageMultiplier = 1.0;
 
-                        if (percentageDiscount >= 0 && percentageDiscount <= 100) {
-                            percentageMultiplier = (100 - percentageDiscount) / 100;
-                        } else {
-                            throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
-                        }
-                        calculatedFinalPrice = result * percentageMultiplier;
+                    if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+                        percentageMultiplier = (100 - percentageDiscount) / 100;
+                    } else {
+                        throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
                     }
-
-                } catch (NumberFormatException nfe) {
-                    txfPercentDiscount.setText("" + 0);
-
-                    Alert alertNFE = new Alert(Alert.AlertType.ERROR);
-                    alertNFE.setTitle("Indtastet værdi er ikke et tal");
-                    alertNFE.setContentText(nfe.getMessage());
-                    alertNFE.showAndWait();
+                    calculatedFinalPrice = result * percentageMultiplier;
                 }
 
-                String finalPriceText = calculatedFinalPrice + " " + unit;
-                Label lblFinalPrice = new Label(finalPriceText);
-                lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-                vbxFinalPrice.getChildren().add(lblFinalPrice);
+            } catch (NumberFormatException nfe) {
+                txfPercentDiscount.setText("" + 0);
 
+                Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+                alertNFE.setTitle("Indtastet værdi er ikke et tal");
+                alertNFE.setContentText(nfe.getMessage());
+                alertNFE.showAndWait();
             }
+
+            String finalPriceText = calculatedFinalPrice + " " + Unit.DKK;
+            Label lblFinalPrice = new Label(finalPriceText);
+            lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            vbxFinalPrice.getChildren().add(lblFinalPrice);
+
+
         }
 
         if (!txfFixedTotal.getText().isBlank()) {
@@ -462,17 +453,6 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
-    /**
-     * Called when the confirm order button is used. Opens a new window, in order to finish the order
-     */
-    private void confirmOrderAction() {
-        updateFixedPrice();
-
-        EndOrderWindow endOrderWindow = new EndOrderWindow("Ordrebekræftigelse", new Stage(), tempOrder);
-        endOrderWindow.showAndWait();
-
-        resetOrder();
-    }
 
     private void updateDiscount() {
         try {
