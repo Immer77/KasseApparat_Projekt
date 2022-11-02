@@ -4,12 +4,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -25,7 +21,16 @@ public class EndRentalWindow extends Stage {
     private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
     private Rental rental;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
-    private VBox orderLineView;
+    private VBox orderLineView, unusedOrderLineView, rentalInfoVBox;
+    private SplitPane splitPane = new SplitPane();
+    private ListView<OrderLine> lvwRentalOrderlines = new ListView<>();
+    private ListView<OrderLine> lvwUnusedProducts = new ListView<>();
+    private HBox buttons;
+    private Button btnAddToUnused;
+    private TextField txfName, txfStartDate;
+    private TextArea txaDescription;
+    private DatePicker endDatePicker;
+
 
     public EndRentalWindow(String title, Stage owner, Rental rental) {
         this.rental = rental;
@@ -49,24 +54,88 @@ public class EndRentalWindow extends Stage {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        //Adds a Vbox to hold OrderLines
-        orderLineView = new VBox();
-        orderLineView.setBackground(Background.fill(Color.WHITE));
-        orderLineView.setBorder(Border.stroke(Color.BLACK));
-        orderLineView.setPrefWidth(400);
-        pane.add(orderLineView, 3, 2, 3, 3);
+        //adds vbox for rental info
+        rentalInfoVBox = new VBox();
+        rentalInfoVBox.setPrefWidth(200);
 
-        //Confirm and cancel buttons
+        //adds labels, textfields, textarea and datepicker for rentalinfo
+        VBox nameVBox = new VBox();
+        Label lblName = new Label("Name");
+        txfName =  new TextField();
+        txfName.setEditable(false);
+        nameVBox.getChildren().addAll(lblName,txfName);
+
+        VBox descriptionVBox = new VBox();
+        Label lblDescription = new Label("Description");
+        txaDescription = new TextArea();
+        txaDescription.setEditable(false);
+        descriptionVBox.getChildren().setAll(lblDescription,txaDescription);
+
+        
+        VBox startdateVBox = new VBox();
+        Label lblStartDate = new Label("Start dato");
+        txfStartDate = new TextField(rental.getStartDate().toString());
+        txfStartDate.setEditable(false);
+        startdateVBox.getChildren().addAll(lblStartDate,txfStartDate);
+
+        VBox endDateVBox = new VBox();
+        endDatePicker = new DatePicker();
+        endDatePicker.setValue(rental.getEndDate());
+        Label lblEndDate = new Label("Slut dato");
+        endDateVBox.getChildren().addAll(lblEndDate,endDatePicker);
+
+        HBox dateHBox = new HBox();
+        dateHBox.getChildren().addAll(startdateVBox,endDateVBox);
+
+        rentalInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,dateHBox);
+        pane.add(rentalInfoVBox,0,0);
+
+        //Adds SplitPane to hold OrderLines for used and unused items
+        pane.add(splitPane,1,0);
+
+
+
+
+        //Adds a Vbox to hold all OrderLines
+        orderLineView = new VBox(new Label("Alle udlejede produkter"));
+        orderLineView.setPrefWidth(200);
+        orderLineView.getChildren().add(lvwRentalOrderlines);
+        for (OrderLine ol : rental.getOrderLines()){
+            lvwRentalOrderlines.getItems().setAll(ol);
+        }
+
+        //adds button in splitpane
+        btnAddToUnused = new Button(">");
+        btnAddToUnused.setMinWidth(50);
+
+        //adds a VBox to hold unused products
+        unusedOrderLineView = new VBox(new Label("Produkter som er ubrugte"));
+        unusedOrderLineView.setPrefWidth(200);
+        unusedOrderLineView.getChildren().add(lvwUnusedProducts);
+
+        //adds vboxs to splitpane
+        splitPane.getItems().addAll(orderLineView,btnAddToUnused,unusedOrderLineView);
+
+        //Confirm and cancel buttons with vbox to hold them
+        buttons = new HBox();
+        pane.add(buttons,1,1);
+        buttons.setSpacing(10);
+        buttons.setPrefWidth(200);
+
         Button btnOK = new Button("Bekræft");
-        pane.add(btnOK, 0, 3);
+        btnOK.setMaxWidth(Double.MAX_VALUE);
         btnOK.setOnAction(event -> oKAction());
         btnOK.setDefaultButton(true);
 
         Button btnCancel = new Button("Fortryd");
-        pane.add(btnCancel, 1, 3);
+        btnCancel.setMaxWidth(Double.MAX_VALUE);
         btnCancel.setOnAction(event -> cancelAction());
         btnCancel.setCancelButton(true);
 
+        buttons.getChildren().addAll(btnOK,btnCancel);
+
+
+        updateRental();
     }
 
         private void oKAction() {

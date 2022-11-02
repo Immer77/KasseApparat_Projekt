@@ -1,5 +1,6 @@
 package model.modelklasser;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Order {
@@ -13,6 +14,7 @@ public class Order {
     private PaymentMethod paymentMethod;
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
+    private LocalDate endDate;
 
     // Constructor
 
@@ -79,9 +81,13 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 
-
-
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 
     /**
      * Calculates the price based on the unit whether its Dkk/punches

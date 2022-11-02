@@ -89,6 +89,11 @@ public class RentalTab extends GridPane {
     }
 
     private void finishRental() {
+        Stage stage = new Stage(StageStyle.UTILITY);
+        EndRentalWindow endRentalWindow = new EndRentalWindow("Afslut udlejning",stage, lvwActiveRentals.getSelectionModel().getSelectedItem());
+        endRentalWindow.showAndWait();
+
+        updateControls();
     }
 
     private void createRental() {

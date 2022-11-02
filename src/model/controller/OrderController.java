@@ -2,9 +2,6 @@ package model.controller;
 
 import gui.OrderControllerInterface;
 import model.modelklasser.*;
-import org.mockito.internal.matchers.Or;
-import org.objenesis.instantiator.basic.NewInstanceInstantiator;
-import storage.Storage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -84,6 +81,10 @@ public class OrderController implements OrderControllerInterface {
      */
     public void saveOrder(Order order) {
         storage.addOrder(order);
+    }
+
+    public void setEndDateForOrder(Order order, LocalDate date){
+        order.setEndDate(date);
     }
 
     /**
