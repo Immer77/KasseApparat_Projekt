@@ -65,10 +65,10 @@ public class OrderController implements OrderControllerInterface {
 
     /**
      * Creates an order. Does NOT add the order to storage
-     * @param situation
+     *
      * @return
      */
-    public Order createOrder(Situation situation) {
+    public Order createOrder() {
         Order order = new Order();
         return order;
     }

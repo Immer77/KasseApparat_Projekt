@@ -23,7 +23,23 @@ class ProductTest {
      * test case for the creation of a price object
      */
     @Test
-    void TC1_createPrice() {
+    void TC1_createPrice_dkk_fredagsbar_0() {
+        // Arrange
+        double value = 0;
+        Situation situation = mock(Situation.class);
+
+        // Act
+        Price price = product.createPrice(value,Unit.DKK,situation);
+
+
+        // Assert
+        assertEquals(0,price.getValue());
+        assertTrue(product.getPrices().contains(price));
+        assertEquals(situation,price.getSituation());
+    }
+
+    @Test
+    void TC2_createPrice_dkk_butik_35() {
         // Arrange
         double value = 35;
         Situation situation = mock(Situation.class);
