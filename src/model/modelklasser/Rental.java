@@ -41,19 +41,12 @@ public class Rental extends Order{
         this.startDate = startDate;
     }
 
-
-    @Override
-    public double calculateSumPriceForUnit(Unit unit){
+    public double calculateDeposit(Unit unit){
         double sumPrice = 0.0;
-        if(unit.equals(Unit.DKK)){
-            for (OrderLine orderLine : super.getOrderLines()){
-                if (orderLine.getPrice().getUnit().equals(unit)) {
-                    sumPrice += orderLine.calculateOrderLinePrice();
-                }
+        for (OrderLine orderLine : super.getOrderLines()){
+            if (orderLine.getPrice().getProduct().getDepositPrice().getUnit().equals(unit)) {
+                sumPrice += orderLine.getPrice().getProduct().getDepositPrice().getValue();
             }
-        }
-        else{
-            throw new IllegalArgumentException("Can't calculate price for rental in punches");
         }
         return sumPrice;
     }

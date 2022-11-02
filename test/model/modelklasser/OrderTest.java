@@ -13,6 +13,7 @@ class OrderTest {
     Price price;
     Order order;
 
+
     @BeforeEach
     void setUp() {
         price = mock(Price.class);
@@ -76,4 +77,6 @@ class OrderTest {
         assertTrue(order.getOrderLines().contains(orderLine));
         assertEquals(525,orderLine.getPrice().getValue());
     }
+
+
 }

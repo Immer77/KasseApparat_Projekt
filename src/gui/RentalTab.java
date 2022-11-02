@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
+import model.controller.ProductOverviewController;
 import model.modelklasser.Order;
 import storage.Storage;
 
@@ -40,6 +41,11 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.getItems().setAll();
 
 
+//        this.add(lvwActiveRentals,0,2);
+//        lvwActiveRentals.setPrefWidth(200);
+//        lvwActiveRentals.setPrefHeight(300);
+//        lvwActiveRentals.getItems().setAll();
+//
 
         lvwRentals.setPrefWidth(200);
         lvwRentals.setPrefHeight(300);

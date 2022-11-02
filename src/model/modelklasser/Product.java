@@ -1,7 +1,6 @@
 package model.modelklasser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Product {
 
@@ -9,6 +8,7 @@ public class Product {
     private String description;
     // composition --> 0..* Price
     private final ArrayList<Price> prices = new ArrayList<>();
+    private Price depositPrice;
 
 
     /**
@@ -46,12 +46,19 @@ public class Product {
         return new ArrayList<>(prices);
     }
 
+
+    public Price getDepositPrice() {
+        return depositPrice;
+    }
+
     /**
      * Removes the price object
      * @param price
      */
     public void removePrice(Price price){
-        //TODO
+        if (prices.contains(price)){
+            prices.remove(price);
+        }
     }
 
     /**
@@ -66,4 +73,11 @@ public class Product {
         prices.add(price);
         return price;
     }
+
+    public Price createDeposit(double value, Unit unit, Situation situation){
+        Price deposit = new Price(value, unit,situation, this);
+        this.depositPrice = deposit;
+        return deposit;
+    }
+
 }
