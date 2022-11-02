@@ -132,7 +132,7 @@ public class OrderController implements OrderControllerInterface {
         return rental;
     }
 
-    public List<Order> getAllRentals(){
+    public List<Order> getRentals(){
         ArrayList<Order> rentals = new ArrayList<>();
         for(Order order : storage.getOrders()){
             if(order instanceof Rental){
