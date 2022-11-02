@@ -41,6 +41,6 @@ public class Price {
 
     @Override
     public String toString() {
-        return ""+value+" "+unit;
+        return product.getName()+" " +value+" "+unit;
     }
 }

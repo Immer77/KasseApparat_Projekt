@@ -13,6 +13,8 @@ import model.modelklasser.Order;
 import model.modelklasser.Rental;
 import storage.Storage;
 
+import java.time.LocalDate;
+
 public class RentalTab extends GridPane {
     private final ListView<Rental> lvwActiveRentals = new ListView<>();
     private final ListView<Rental> lvwRentals = new ListView<>();
@@ -34,19 +36,19 @@ public class RentalTab extends GridPane {
         VBox leftControl  = new VBox(new Label("Aktive Udlejninger"));
         VBox midControl = new VBox(new Label("Færdige udlejninger"));
         VBox rightControl = new VBox(new Label("Udlejningsinformation"));
-//        VBox rentalField = new VBox();
+
         HBox btnBox = new HBox();
         btnBox.setSpacing(10);
         this.add(btnBox,0,0);
 
-        lvwActiveRentals.setPrefWidth(200);
+        lvwActiveRentals.setPrefWidth(100);
         lvwActiveRentals.setPrefHeight(300);
         lvwActiveRentals.getItems().setAll();
         ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateFieldsInfo();
         lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
 
 
-        lvwRentals.setPrefWidth(200);
+        lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(300);
         lvwRentals.getItems().setAll();
         midControl.getChildren().add(lvwRentals);
@@ -62,9 +64,7 @@ public class RentalTab extends GridPane {
         txfName.setEditable(false);
         txaDescription.setEditable(false);
         datePicker.setEditable(false);
-//        rentalField.getChildren().add(txfName);
-//        rentalField.getChildren().add(txaDescription);
-//        rentalField.getChildren().add(datePicker);
+
         rightControl.getChildren().add(txfName);
         rightControl.getChildren().add(txaDescription);
         rightControl.getChildren().add(datePicker);
@@ -81,9 +81,12 @@ public class RentalTab extends GridPane {
     private void updateFieldsInfo() {
         String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
         String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+        LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getStartDate();
         txfName.setText(name);
         txaDescription.setText(description);
-        datePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getStartDate()));
+        datePicker.setText(String.valueOf(date));
+
+
 
 
     }

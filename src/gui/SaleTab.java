@@ -148,10 +148,6 @@ public class SaleTab extends GridPane {
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
         this.add(hbxFinalPrice, 5, 9);
 
-        //Vbox for all pricetotals
-/*        VBox vbxTotals = new VBox(hbxOrderTotal, hbxPercentDiscount, hbxFixedTotal, hbxFinalPrice);
-        vbxTotals.setSpacing(5);
-        this.add(vbxTotals, 5, 5);*/
 
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Afslut Ordre");

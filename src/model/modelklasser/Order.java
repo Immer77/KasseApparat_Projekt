@@ -103,4 +103,9 @@ public class Order {
         }
         return sumPrice;
     }
+
+    @Override
+    public String toString() {
+        return "\nUdlejet: " + orderLines + "\n Samlet pris: " +calculateSumPriceForUnit(Unit.DKK);
+    }
 }
