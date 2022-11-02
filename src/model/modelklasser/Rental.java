@@ -40,24 +40,4 @@ public class Rental extends Order{
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
-
-
-    @Override
-    public double calculateSumPriceForUnit(Unit unit){
-        double sumPrice = 0.0;
-        if(unit.equals(Unit.DKK)){
-            for (OrderLine orderLine : super.getOrderLines()){
-                if (orderLine.getPrice().getUnit().equals(unit)) {
-                    sumPrice += orderLine.calculateOrderLinePrice();
-                }
-            }
-        }
-        else{
-            throw new IllegalArgumentException("Can't calculate price for rental in punches");
-        }
-        return sumPrice;
-    }
-
-
-
 }
