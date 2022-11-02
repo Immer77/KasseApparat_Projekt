@@ -1,7 +1,6 @@
 package model.modelklasser;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
 
@@ -18,8 +17,8 @@ public class RentalTest {
 
     @BeforeEach
     void setUp() {
-        String name = "Alt";
-        String description = "Vi lejer det hele";
+        String name = "ØlTilHavefest";
+        String description = "Øl til min solo havefest";
         LocalDate endDate = LocalDate.of(2022,12,1);
         order = new Order();
         rental = new Rental(name,description,endDate);
@@ -29,14 +28,36 @@ public class RentalTest {
      * Udregner samlet deposit værdi for alle ordrelinjer i en ordre
      */
     @Test
-    void TC1_calculateDeposit() {
+    void TC1_calculateDepositForOneBeer() {
         // Arrange
         Situation situation = mock(Situation.class);
-        Product product1 = new Product("Øl","noget øl");
+        Product product1 = new Product("Øl1","noget øl");
         Price pantPris1 = product1.createDeposit(1.0,Unit.DKK,situation);
-        Product product2 = new Product("Øl","noget øl");
+
+
+
+        // Setting up our orderlines
+        OrderLine orderLine1 = rental.createOrderLine(1,pantPris1);
+
+
+
+        // Act
+        double result = rental.calculateDeposit(Unit.DKK);
+
+        //Assert
+        assertEquals(1.0,result);
+        assertTrue(rental.getOrderLines().contains(orderLine1));
+    }
+
+    @Test
+    void TC2_calculateDepositForThreeBeers() {
+        // Arrange
+        Situation situation = mock(Situation.class);
+        Product product1 = new Product("Øl1","noget øl");
+        Price pantPris1 = product1.createDeposit(1.0,Unit.DKK,situation);
+        Product product2 = new Product("Øl2","noget øl");
         Price pantPris2 = product2.createDeposit(1.5,Unit.DKK,situation);
-        Product product3 = new Product("Øl","noget øl");
+        Product product3 = new Product("Øl3","noget øl");
         Price pantPris3 = product3.createDeposit(3.0,Unit.DKK,situation);
 
 
