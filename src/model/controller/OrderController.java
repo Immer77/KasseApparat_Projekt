@@ -126,13 +126,14 @@ public class OrderController implements OrderControllerInterface {
         order.setPaymentMethod(paymentMethod);
     }
 
-    public Rental createRental(String name, String description, LocalDate startDate) {
-        Rental rental = new Rental(name,description,startDate);
+    public Rental createRental(String name, String description, LocalDate endDate) {
+        Rental rental = new Rental(name,description,endDate);
+        rental.setStartDate(LocalDate.now());
         storage.addOrder(rental);
         return rental;
     }
 
-    public List<Order> getAllRentals(){
+    public List<Order> getRentals(){
         ArrayList<Order> rentals = new ArrayList<>();
         for(Order order : storage.getOrders()){
             if(order instanceof Rental){

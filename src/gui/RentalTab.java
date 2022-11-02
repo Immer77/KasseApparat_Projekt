@@ -8,7 +8,6 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.Order;
 import storage.Storage;
 
@@ -57,7 +56,7 @@ public class RentalTab extends GridPane {
 
     public void updateControls() {
         //Update choiceboxes
-        lvwActiveRentals.getItems().setAll(rentalController.getAllRentals());
+        lvwActiveRentals.getItems().setAll(rentalController.getRentals());
         splitPane.getItems().setAll();
 
     }
