@@ -37,4 +37,9 @@ public class OrderLine {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "\nAntal: " + amount + ", produkt: " + price;
+    }
 }

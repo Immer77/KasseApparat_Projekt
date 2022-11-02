@@ -27,17 +27,13 @@ public class CreateRentalWindow extends Stage {
     private final OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
     private final DatePicker datePicker = new DatePicker();
     private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
-    private Stage mainStage;
     private Accordion accProductOverview;
-    private ChoiceBox<Situation> chSituation;
-    private ChoiceBox<Unit> chUnits;
     private VBox orderLineView;
     private Order tempOrder;
     private VBox vbxOrderTotal;
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
-    private Label chFixedUnit;
 
 
     public CreateRentalWindow(String title, Stage owner) {
@@ -139,10 +135,10 @@ public class CreateRentalWindow extends Stage {
         ChangeListener<String> fixedTotalListener = (observable, oldV, newV) -> this.updateFixedPrice();
         txfFixedTotal.textProperty().addListener(fixedTotalListener);
 
-        chFixedUnit = new Label("DKK");
 
 
-        HBox hbxFixedTotal = new HBox(txfFixedTotal, chFixedUnit);
+
+        HBox hbxFixedTotal = new HBox(txfFixedTotal);
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
         hbxFixedTotal.setPadding(new Insets(4, 8, 5, 0));
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
@@ -201,7 +197,7 @@ public class CreateRentalWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createRental(name, description, LocalDate.from(datePicker.getValue()));
+            controller.createRental(name, description + "\nPrisen for Udlejning: " + tempOrder, LocalDate.from(datePicker.getValue()));
             this.close();
 
         } else {
