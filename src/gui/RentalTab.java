@@ -1,21 +1,26 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.modelklasser.Order;
+import model.modelklasser.Rental;
 import storage.Storage;
 
 public class RentalTab extends GridPane {
-    private final ListView<Order> lvwActiveRentals = new ListView<>();
-    private final ListView<Order> lvwRentals = new ListView<>();
-    private OrderControllerInterface rentalController = OrderController.getOrderController(Storage.getStorage());
+    private final ListView<Rental> lvwActiveRentals = new ListView<>();
+    private final ListView<Rental> lvwRentals = new ListView<>();
+    private OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
     private SplitPane splitPane = new SplitPane();
+    private final TextField txfName = new TextField();
+    private final TextArea txaDescription = new TextArea();
+    private final TextField datePicker = new TextField();
 
 
 
@@ -27,54 +32,75 @@ public class RentalTab extends GridPane {
 
         this.add(splitPane,0,1);
         VBox leftControl  = new VBox(new Label("Aktive Udlejninger"));
-        VBox rightControl = new VBox(new Label("Færdige udlejninger"));
+        VBox midControl = new VBox(new Label("Færdige udlejninger"));
+        VBox rightControl = new VBox(new Label("Udlejningsinformation"));
+//        VBox rentalField = new VBox();
+        HBox btnBox = new HBox();
+        btnBox.setSpacing(10);
+        this.add(btnBox,0,0);
 
-        splitPane.getItems().addAll(leftControl, rightControl);
+        lvwActiveRentals.setPrefWidth(200);
+        lvwActiveRentals.setPrefHeight(300);
+        lvwActiveRentals.getItems().setAll();
+        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateFieldsInfo();
+        lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
 
 
-//        this.add(lvwActiveRentals,0,2);
-//        lvwActiveRentals.setPrefWidth(200);
-//        lvwActiveRentals.setPrefHeight(300);
-//        lvwActiveRentals.getItems().setAll();
-//
+        lvwRentals.setPrefWidth(200);
+        lvwRentals.setPrefHeight(300);
+        lvwRentals.getItems().setAll();
+        midControl.getChildren().add(lvwRentals);
 
-//        this.add(lvwRentals,1,2);
-//        lvwRentals.setPrefWidth(200);
-//        lvwRentals.setPrefHeight(300);
-//        lvwRentals.getItems().setAll();
         Button btnRental = new Button("Opret udlejning");
         btnRental.setOnAction(event -> this.createRental());
+        btnBox.getChildren().add(btnRental);
 
-        this.initProduct();
+        Button btnFinishRental = new Button("Afslut udlejning");
+        btnFinishRental.setOnAction(event -> this.finishRental());
+        btnBox.getChildren().add(btnFinishRental);
+
+        txfName.setEditable(false);
+        txaDescription.setEditable(false);
+        datePicker.setEditable(false);
+//        rentalField.getChildren().add(txfName);
+//        rentalField.getChildren().add(txaDescription);
+//        rentalField.getChildren().add(datePicker);
+        rightControl.getChildren().add(txfName);
+        rightControl.getChildren().add(txaDescription);
+        rightControl.getChildren().add(datePicker);
+
+
+        leftControl.getChildren().add(lvwActiveRentals);
+        splitPane.getItems().addAll(leftControl, midControl, rightControl);
+
+
         updateControls();
 
     }
 
-    private void createRental() {
+    private void updateFieldsInfo() {
+        String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
+        String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+        txfName.setText(name);
+        txaDescription.setText(description);
+        datePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getStartDate()));
 
+
+    }
+
+    private void finishRental() {
+    }
+
+    private void createRental() {
+        Stage stage = new Stage(StageStyle.UTILITY);
+        CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", stage);
+        rentalWindow.showAndWait();
+
+        updateControls();
     }
 
     public void updateControls() {
-        //Update choiceboxes
-        lvwActiveRentals.getItems().setAll(rentalController.getRentals());
-        splitPane.getItems().setAll();
-
+        lvwActiveRentals.getItems().setAll(controller.getRentals());
     }
-    /**
-     * Creates initial products and categories
-     */
-    private void initProduct() {
-        if (rentalController instanceof OrderController) {
-            OrderController controller = (OrderController) rentalController;
-            controller.initContent();
-        }
-
-    }
-
-
-
-
-
-
 
 }
