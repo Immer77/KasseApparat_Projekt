@@ -2,7 +2,11 @@ package model.controller;
 
 import gui.OrderControllerInterface;
 import model.modelklasser.*;
+import org.objenesis.instantiator.basic.NewInstanceInstantiator;
+import storage.Storage;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderController implements OrderControllerInterface {
@@ -122,6 +126,26 @@ public class OrderController implements OrderControllerInterface {
         order.setPaymentMethod(paymentMethod);
     }
 
+    public Rental createRental(String name, String description, LocalDate startDate) {
+        Rental rental = new Rental(name,description,startDate);
+        storage.addOrder(rental);
+        return rental;
+    }
+
+    public List<Order> getAllRentals(){
+        ArrayList<Order> rentals = new ArrayList<>();
+        for(Order order : storage.getOrders()){
+            if(order instanceof Rental){
+                rentals.add(order);
+            }
+        }
+        return rentals;
+    }
+
+
+
+
+
     public void initContent() {
         Situation sit1 = createSituation("Standard");
         Situation sit2 = createSituation("Fredagsbar");
@@ -139,5 +163,11 @@ public class OrderController implements OrderControllerInterface {
         storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.Klip,sit2);
 
         storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
+
+        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
+        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
+        createRental("Jens Hansen", "Låner fadølsanlæg til 500 kr",LocalDate.now());
+
+
     }
 }

@@ -58,6 +58,8 @@ public class Rental extends Order{
         return sumPrice;
     }
 
-
-
+    @Override
+    public String toString() {
+        return name + "(" + startDate + ')';
+    }
 }

@@ -66,6 +66,18 @@ public class StartWindow extends Application {
         secondTab.setOnSelectionChanged(event -> saleTab.updateControls());
         //----------------------------------------------------------------------------
 
+        //-----------Rental overview tab creation-------------------------------------
+        //Creates a new instance of a Rentaltab
+        RentalTab rentalTab = new RentalTab();
+        // Creatas a new tab, with a title and the rentaltab as content
+        Tab thirdTab = new Tab("Udlejning", rentalTab);
+        //...then adds it to the tabPane
+        tabPane.getTabs().add(thirdTab);
+        //Updates controls when tab selection changes
+        thirdTab.setOnSelectionChanged(event -> rentalTab.updateControls());
+
+
+
     }
 
 }
