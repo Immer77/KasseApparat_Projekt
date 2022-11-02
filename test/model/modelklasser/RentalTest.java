@@ -28,7 +28,7 @@ public class RentalTest {
         // Arrange
 
         // Simulerede 3 forskellige priser
-        when(priceWithPant.getDepositPrice).thenReturn(1.0,1.5,3.0);
+        when(priceWithPant.getProduct().getDepositPrice().getValue()).thenReturn(1.0,1.5,3.0);
         when(priceWithPant.getUnit()).thenReturn(Unit.DKK);
 
         // Setting up our orderlines
