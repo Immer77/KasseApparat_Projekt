@@ -2,6 +2,7 @@ package gui;
 
 import model.modelklasser.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrderControllerInterface {
@@ -51,19 +52,24 @@ public interface OrderControllerInterface {
      */
     void setFixedPriceForOrder (Order order,  double fixedTotalPrice, Unit fixedTotalPriceUnit);
 
-    public PaymentMethod getPaymentMethodForOrder (Order order);
+    PaymentMethod getPaymentMethodForOrder (Order order);
 
     /**
      * Set the paymentmethod for the given order
      * @param order an Order
      * @param paymentMethod the method of payment for the order, given as a String
      */
-    public void setPaymentMethodForOrder(Order order, PaymentMethod paymentMethod);
+    void setPaymentMethodForOrder(Order order, PaymentMethod paymentMethod);
 
     /**
      * Initializes content for the Graphical user interface
      */
     void initContent();
 
-    public OrderLine createOrderLineForOrder (Order order, int amount, Price price);
+    OrderLine createOrderLineForOrder (Order order, int amount, Price price);
+
+    Rental createRental(String name, String description, LocalDate startDate);
+
+    List<Order> getAllRentals();
+
 }
