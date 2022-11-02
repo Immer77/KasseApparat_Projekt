@@ -16,6 +16,7 @@ import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.modelklasser.OrderLine;
 import model.modelklasser.PaymentMethod;
+import model.modelklasser.Price;
 import model.modelklasser.Rental;
 import storage.Storage;
 
@@ -55,16 +56,16 @@ public class EndRentalWindow extends Stage {
         orderLineView.setPrefWidth(400);
         pane.add(orderLineView, 3, 2, 3, 3);
 
-            //Confirm and cancel buttons
-            Button btnOK = new Button("Bekræft");
-            pane.add(btnOK, 0, 3);
-            btnOK.setOnAction(event -> oKAction());
-            btnOK.setDefaultButton(true);
+        //Confirm and cancel buttons
+        Button btnOK = new Button("Bekræft");
+        pane.add(btnOK, 0, 3);
+        btnOK.setOnAction(event -> oKAction());
+        btnOK.setDefaultButton(true);
 
-            Button btnCancel = new Button("Fortryd");
-            pane.add(btnCancel, 1, 3);
-            btnCancel.setOnAction(event -> cancelAction());
-            btnCancel.setCancelButton(true);
+        Button btnCancel = new Button("Fortryd");
+        pane.add(btnCancel, 1, 3);
+        btnCancel.setOnAction(event -> cancelAction());
+        btnCancel.setCancelButton(true);
 
     }
 
@@ -122,5 +123,15 @@ public class EndRentalWindow extends Stage {
             orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
             orderLineView.getChildren().add(orderline);
         }
+    }
+
+    private void removeUnusedProductFromRental(Price price) {
+        //Otherwise adds product to order with amount of 1
+        if (rental.getOrderLines().contains(price)) {
+            orderController.createOrderLineForOrder(rental, 1, price);
+        }
+
+        //then displays orderlines in OrderLineView
+        updateRental();
     }
 }
