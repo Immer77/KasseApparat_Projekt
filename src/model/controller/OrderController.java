@@ -167,7 +167,9 @@ public class OrderController implements OrderControllerInterface {
 
         storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
 
-        createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften",LocalDate.now());
+        Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften",LocalDate.now());
+        rental1.createOrderLine(1,storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1));
+        rental1.createOrderLine(1,storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit1));
         createRental("Peter Immersen", "Udlejer 2 mokai",LocalDate.now());
         createRental("Magnus Mejlgaard", "Udlejer 300 Sweet temptations fustager",LocalDate.now());
         createRental("Kristoffer Frank", "Udlejer en halv øl som han har svært ved at få ned, svagdrikker", LocalDate.now());

@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -90,28 +92,29 @@ public class EndRentalWindow extends Stage {
         rentalInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,dateHBox);
         pane.add(rentalInfoVBox,0,0);
 
-        //Adds SplitPane to hold OrderLines for used and unused items
-        pane.add(splitPane,1,0);
 
         //Adds a Vbox to hold all OrderLines
-        orderLineView = new VBox(new Label("Alle udlejede produkter"));
+        orderLineView = new VBox();
+        Label lblOrderLine = new Label("Alle udlejede produkter");
         orderLineView.setPrefWidth(200);
-        for (OrderLine ol : rental.getOrderLines()){
-            lvwRentalOrderlines.getItems().setAll(ol);
-        }
-        orderLineView.getChildren().add(lvwRentalOrderlines);
+        lvwRentalOrderlines.getItems().setAll(rental.getOrderLines());
+        orderLineView.getChildren().setAll(lblOrderLine ,lvwRentalOrderlines);
 
 
         //adds button in splitpane
         btnAddToUnused = new Button(">");
         btnAddToUnused.setMinWidth(50);
+        btnAddToUnused.setOnAction(Event -> chooseOrderLineToChange());
 
         //adds a VBox to hold unused products
-        unusedOrderLineView = new VBox(new Label("Produkter som er ubrugte"));
+        unusedOrderLineView = new VBox();
+        Label lblUnused = new Label("Produkter som er ubrugte");
         unusedOrderLineView.setPrefWidth(200);
-        unusedOrderLineView.getChildren().add(lvwUnusedProducts);
+        unusedOrderLineView.getChildren().setAll(lblUnused,lvwUnusedProducts);
+
 
         //adds vboxs to splitpane
+        pane.add(splitPane,1,0);
         splitPane.getItems().addAll(orderLineView,btnAddToUnused,unusedOrderLineView);
 
         //Confirm and cancel buttons with vbox to hold them
@@ -132,35 +135,60 @@ public class EndRentalWindow extends Stage {
 
         buttons.getChildren().addAll(btnOK,btnCancel);
 
+        //Add field for the final price
+        Label lblFinal = new Label("Endelig Total: ");
+        lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        pane.add(lblFinal, 4, 9);
+
+        VBox vbxFinalPrice = new VBox();
+        vbxFinalPrice.setPrefWidth(75);
+        vbxFinalPrice.setBackground(Background.EMPTY);
+        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
+        hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
+        hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
+        pane.add(hbxFinalPrice, 5, 9);
+
     }
 
-        private void oKAction() {
-            orderController.setPaymentMethodForOrder(rental, chPaymentMethod.getSelectionModel().getSelectedItem());
-            orderController.saveOrder(rental);
-            this.close();
+    private void oKAction() {
+        orderController.setPaymentMethodForOrder(rental, chPaymentMethod.getSelectionModel().getSelectedItem());
+        orderController.saveOrder(rental);
+        this.close();
+    }
+
+    private void cancelAction() {
+        this.close();
+    }
+    private void chooseOrderLineToChange(){
+        OrderLine chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
+        if (!lvwUnusedProducts.getItems().contains(chosenOL)){
+            lvwUnusedProducts.getItems().add(chosenOL);
         }
 
-        private void cancelAction() {
-            this.close();
-        }
-        public void amountChangedForOrderLine ( int newAmount, OrderLine orderLine){
-            if (newAmount < 1) {
-                rental.removeOrderLine(orderLine);
-            } else {
-                orderLine.setAmount(newAmount);
-            }
-        }
+    }
 
-    private void updateRental() {
-        for (OrderLine ol : rental.getOrderLines()) {
+    private void changeAmountInChosenOrderLine(int newAmount, OrderLine ol){
+        if (newAmount < 1) {
 
+        } else {
+            ol.setAmount(newAmount);
+        }
+        updateUnusedProducts();
+    }
+
+
+
+    private void updateUnusedProducts() {
+        //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
+        for (OrderLine ol : lvwUnusedProducts.getItems()){
             //Creates a spinner
             Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountInChosenOrderLine(spnAmount.getValue(), ol);
             spnAmount.valueProperty().addListener(spinnerListener);
-
             //Create a textfield with the product name and description
             TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
             txfproductDescr.setMaxWidth(Double.MAX_VALUE);
@@ -185,17 +213,17 @@ public class EndRentalWindow extends Stage {
             //Creates HBox to display the orderline
             HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
             orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-            orderLineView.getChildren().add(orderline);
+            unusedOrderLineView.getChildren().add(orderline);
         }
     }
 
-    private void removeUnusedProductFromRental(Price price) {
+    private void addToUnusedProducts(Price price) {
         //Otherwise adds product to order with amount of 1
         if (rental.getOrderLines().contains(price)) {
             orderController.createOrderLineForOrder(rental, 1, price);
         }
 
         //then displays orderlines in OrderLineView
-        updateRental();
+        updateUnusedProducts();
     }
 }
