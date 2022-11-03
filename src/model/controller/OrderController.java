@@ -6,6 +6,7 @@ import model.modelklasser.*;
 import storage.Storage;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,8 +149,30 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Creates a new Tour object, with a planned date and time
+     * @param endDate the date this tour is planned for
+     * @param time the time this tour is planned for
+     * @return the new Tour object
+     */
+    public Tour createTour (LocalDate endDate, LocalTime time) {
+        Tour tour = new Tour(endDate, time);
+        return tour;
+    }
 
-
+    /**
+     * Returns a list of all Tours in the system.
+     * @return A list of Tours
+     */
+    public List<Tour> getTours() {
+        List<Tour> list = new ArrayList<>();
+        for (Order order : storage.getOrders()) {
+            if (order instanceof Tour) {
+                list.add((Tour) order);
+            }
+        }
+        return list;
+    }
 
 
     public void initContent() {
