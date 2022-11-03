@@ -29,11 +29,12 @@ public class CreateRentalWindow extends Stage {
     private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private Accordion accProductOverview;
     private VBox orderLineView;
-    private Order tempOrder;
+    private Order order;
     private VBox vbxOrderTotal;
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
+    private double calculatedFinalPrice = 0.0;
 
 
     public CreateRentalWindow(String title, Stage owner) {
@@ -78,7 +79,7 @@ public class CreateRentalWindow extends Stage {
         //-------------------------------------------------'
 
         //Initialises an order
-        tempOrder = controller.createOrder();
+        order = controller.createOrder();
 
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
@@ -197,7 +198,11 @@ public class CreateRentalWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createRental(name, description + "\nPrisen for Udlejning: " + tempOrder, LocalDate.from(datePicker.getValue()));
+
+            Rental rental = controller.createRental(name, description + "\nPrisen for Udlejning: " + calculatedFinalPrice + " " + order.getOrderLines(), LocalDate.from(datePicker.getValue()));
+            for(OrderLine order : order.getOrderLines()){
+                rental.addOrderLine(order);
+            }
             this.close();
 
         } else {
@@ -227,13 +232,13 @@ public class CreateRentalWindow extends Stage {
      * @param price the price to add to the order
      */
     private void addProductToOrder(Price price) {
-        if (tempOrder == null) {
+        if (order == null) {
             controller.createOrder();
         }
 
         //If product already is has an OrderLine in order, increments the amount
         boolean foundInOrderLine = false;
-        for (OrderLine ol : tempOrder.getOrderLines()) {
+        for (OrderLine ol : order.getOrderLines()) {
             if (ol.getPrice().equals(price)) {
                 foundInOrderLine = true;
                 ol.setAmount(ol.getAmount() + 1);
@@ -243,7 +248,7 @@ public class CreateRentalWindow extends Stage {
 
         //Otherwise adds product to order with amount of 1
         if (!foundInOrderLine) {
-            controller.createOrderLineForOrder(tempOrder, 1, price);
+            controller.createOrderLineForOrder(order, 1, price);
         }
 
         //then displays orderlines in OrderLineView
@@ -319,7 +324,7 @@ public class CreateRentalWindow extends Stage {
 
 
     private void resetOrder() {
-        tempOrder = controller.createOrder();
+        order = controller.createOrder();
         txfPercentDiscount.setText("" + 0);
         txfFixedTotal.clear();
         updateOrder();
@@ -333,7 +338,7 @@ public class CreateRentalWindow extends Stage {
         orderLineView.getChildren().clear();
 
         //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
-        for (OrderLine ol : tempOrder.getOrderLines()) {
+        for (OrderLine ol : order.getOrderLines()) {
 
             //Creates a spinner
             Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
@@ -378,7 +383,7 @@ public class CreateRentalWindow extends Stage {
 
         //Checks if there is any orderlines in the order with this unit
         boolean currentUnitFound = false;
-        for (OrderLine ol : tempOrder.getOrderLines()) {
+        for (OrderLine ol : order.getOrderLines()) {
             if (ol.getPrice().getUnit().equals(Unit.DKK)) {
                 currentUnitFound = true;
                 break;
@@ -387,7 +392,7 @@ public class CreateRentalWindow extends Stage {
 
         //If orderline with this unit exists, create labels for the total of this unit
         if (currentUnitFound) {
-            double result = tempOrder.calculateSumPriceForUnit(Unit.DKK);
+            double result = order.calculateSumPriceForUnit(Unit.DKK);
 
             Label priceTotal = new Label(result + " " + Unit.DKK);
             priceTotal.setAlignment(Pos.BASELINE_RIGHT);
@@ -395,7 +400,7 @@ public class CreateRentalWindow extends Stage {
 
             //Calculate the total after subtracting the percentage discount
 
-            double calculatedFinalPrice = result;
+            calculatedFinalPrice = result;
             try {
                 if (!txfPercentDiscount.getText().isBlank()) {
                     double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
@@ -427,9 +432,14 @@ public class CreateRentalWindow extends Stage {
         }
 
         if (!txfFixedTotal.getText().isBlank()) {
+            calculatedFinalPrice = Double.parseDouble(txfFixedTotal.getText());
             vbxFinalPrice.getChildren().clear();
             Label lblAgreedTotal = new Label("--AFTALT--");
             lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
+            Label lblManualFinalPrice = new Label(txfFixedTotal.getText() + " " + Unit.DKK);
+            lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            vbxFinalPrice.getChildren().add(lblAgreedTotal);
+            vbxFinalPrice.getChildren().add(lblManualFinalPrice);
         }
 
 
@@ -442,7 +452,7 @@ public class CreateRentalWindow extends Stage {
      */
     public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
         if (newAmount < 1) {
-            tempOrder.removeOrderLine(orderLine);
+            order.removeOrderLine(orderLine);
         } else {
             orderLine.setAmount(newAmount);
         }
@@ -459,7 +469,7 @@ public class CreateRentalWindow extends Stage {
             double discount = Double.parseDouble(txfPercentDiscount.getText().trim());
 
             if (discount >= 0.0 && discount <= 100.0) {
-                controller.setDiscountForOrder(tempOrder, discount);
+                controller.setDiscountForOrder(order, discount);
             } else {
                 throw new NumberFormatException("procentrabat skal være et tal mellem 0.0 og 100");
             }
@@ -493,9 +503,9 @@ public class CreateRentalWindow extends Stage {
                 if (Double.parseDouble(txfFixedTotal.getText()) < 0) {
                     throw new NumberFormatException("Den indtastede værdi kan ikke være mindre end 0");
                 }
-                controller.setFixedPriceForOrder(tempOrder, value, Unit.DKK);
+                controller.setFixedPriceForOrder(order, value, Unit.DKK);
             } else {
-                controller.setFixedPriceForOrder(tempOrder, -1.0, null);
+                controller.setFixedPriceForOrder(order, -1.0, null);
             }
 
             updateOrder();

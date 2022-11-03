@@ -1,7 +1,9 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
+import gui.ProductOverviewControllerInterface;
 import model.modelklasser.*;
+import storage.Storage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class OrderController implements OrderControllerInterface {
     //Field Variables
     private static OrderControllerInterface unique_OrderController;
     private StorageInterface storage;
+
 
     /**
      * Private ordercontroller supporting singleton pattern
@@ -153,26 +156,32 @@ public class OrderController implements OrderControllerInterface {
         Situation sit1 = createSituation("Standard");
         Situation sit2 = createSituation("Fredagsbar");
 
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(70,Unit.DKK,sit2);
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(35,Unit.DKK,sit1);
-        storage.getProductCategories().get(0).getProducts().get(0).createPrice(2,Unit.Klip,sit2);
+        Price price = storage.getProductCategories().get(0).getProducts().get(0).createPrice(70,Unit.DKK,sit2);
+        Price price1 = storage.getProductCategories().get(0).getProducts().get(0).createPrice(35,Unit.DKK,sit1);
+        Price price2 = storage.getProductCategories().get(0).getProducts().get(0).createPrice(2,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(75,Unit.DKK,sit2);
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
-        storage.getProductCategories().get(0).getProducts().get(1).createPrice(2,Unit.Klip,sit2);
+        Price price3 = storage.getProductCategories().get(0).getProducts().get(1).createPrice(75,Unit.DKK,sit2);
+        Price price4 = storage.getProductCategories().get(0).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
+        Price price5 = storage.getProductCategories().get(0).getProducts().get(1).createPrice(2,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(170,Unit.DKK,sit2);
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit1);
-        storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.Klip,sit2);
+        Price price6 = storage.getProductCategories().get(1).getProducts().get(0).createPrice(170,Unit.DKK,sit2);
+        Price price7 = storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit1);
+        Price price8 = storage.getProductCategories().get(1).getProducts().get(0).createPrice(1,Unit.Klip,sit2);
 
-        storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
+        Price price9 = storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1);
 
-        Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften",LocalDate.now());
-        rental1.createOrderLine(1,storage.getProductCategories().get(1).getProducts().get(1).createPrice(35,Unit.DKK,sit1));
-        rental1.createOrderLine(1,storage.getProductCategories().get(1).getProducts().get(0).createPrice(57,Unit.DKK,sit1));
-        createRental("Peter Immersen", "Udlejer 2 mokai",LocalDate.now());
-        createRental("Magnus Mejlgaard", "Udlejer 300 Sweet temptations fustager",LocalDate.now());
-        createRental("Kristoffer Frank", "Udlejer en halv øl som han har svært ved at få ned, svagdrikker", LocalDate.now());
+        Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften",LocalDate.of(2022,12,31));
+        Rental rental2 = createRental("Peter Immersen", "Udlejer 2 mokai",LocalDate.now());
+        Rental rental3 = createRental("Magnus Mejlgaard", "Udlejer 300 Sweet temptations fustager",LocalDate.now());
+        Rental rental4 = createRental("Kristoffer Frank", "Udlejer en halv øl som han har svært ved at få ned, svagdrikker", LocalDate.now());
+
+        rental1.createOrderLine(3,price1);
+        rental2.createOrderLine(4,price);
+        rental3.createOrderLine(5,price6);
+        rental4.createOrderLine(1,price3);
+
+
+
 
 
     }

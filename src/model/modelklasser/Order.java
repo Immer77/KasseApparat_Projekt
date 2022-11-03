@@ -41,6 +41,12 @@ public class Order {
         return orderLine;
     }
 
+    public void addOrderLine(OrderLine orderLine){
+        if(!orderLines.contains(orderLine)){
+            orderLines.add(orderLine);
+        }
+    }
+
     public void removeOrderLine(OrderLine orderLine) {
         if (orderLines.contains(orderLine)) {
             orderLines.remove(orderLine);
