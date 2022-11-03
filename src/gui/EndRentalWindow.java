@@ -14,7 +14,6 @@ import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.modelklasser.OrderLine;
 import model.modelklasser.PaymentMethod;
-import model.modelklasser.Price;
 import model.modelklasser.Rental;
 import storage.Storage;
 
@@ -25,10 +24,9 @@ public class EndRentalWindow extends Stage {
     private ChoiceBox<PaymentMethod> chPaymentMethod;
     private VBox orderLineView, unusedOrderLineView, rentalInfoVBox;
     private SplitPane splitPane = new SplitPane();
-    private ListView<OrderLine> lvwRentalOrderlines = new ListView<>();
-    private ListView<OrderLine> lvwUnusedProducts = new ListView<>();
+    private ListView<HBox> lvwRentalOrderlines = new ListView<>();
+    private ListView<HBox> lvwUnusedProducts = new ListView<>();
     private HBox buttons;
-    private Button btnAddToUnused;
     private TextField txfName, txfStartDate;
     private TextArea txaDescription;
     private DatePicker endDatePicker;
@@ -94,32 +92,32 @@ public class EndRentalWindow extends Stage {
 
 
         //Adds a Vbox to hold all OrderLines
-        orderLineView = new VBox();
-        Label lblOrderLine = new Label("Alle udlejede produkter");
-        orderLineView.setPrefWidth(200);
-        lvwRentalOrderlines.getItems().setAll(rental.getOrderLines());
-        orderLineView.getChildren().setAll(lblOrderLine ,lvwRentalOrderlines);
+        orderLineView = new VBox(new Label("Alle udlejede produkter"));
+        orderLineView.setPrefWidth(300);
+        for (OrderLine ol : rental.getOrderLines()){
+            HBox orderline = new HBox();
+            Label lblOL = new Label(" "+ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit());
+            orderline.setOnMouseClicked(event -> addToUnusedProducts(ol));
+            orderline.getChildren().setAll(lblOL);
+            lvwRentalOrderlines.getItems().setAll(orderline);
+        }
+        orderLineView.getChildren().add(lvwRentalOrderlines);
 
-
-        //adds button in splitpane
-        btnAddToUnused = new Button(">");
-        btnAddToUnused.setMinWidth(50);
-        btnAddToUnused.setOnAction(Event -> chooseOrderLineToChange());
 
         //adds a VBox to hold unused products
         unusedOrderLineView = new VBox();
         Label lblUnused = new Label("Produkter som er ubrugte");
-        unusedOrderLineView.setPrefWidth(200);
+        unusedOrderLineView.setPrefWidth(300);
         unusedOrderLineView.getChildren().setAll(lblUnused,lvwUnusedProducts);
 
 
         //adds vboxs to splitpane
         pane.add(splitPane,1,0);
-        splitPane.getItems().addAll(orderLineView,btnAddToUnused,unusedOrderLineView);
+        splitPane.getItems().addAll(orderLineView,unusedOrderLineView);
 
         //Confirm and cancel buttons with vbox to hold them
         buttons = new HBox();
-        pane.add(buttons,1,1);
+        pane.add(buttons,1,2);
         buttons.setSpacing(10);
         buttons.setPrefWidth(200);
 
@@ -149,7 +147,6 @@ public class EndRentalWindow extends Stage {
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
         pane.add(hbxFinalPrice, 5, 9);
-
     }
 
     private void oKAction() {
@@ -161,20 +158,21 @@ public class EndRentalWindow extends Stage {
     private void cancelAction() {
         this.close();
     }
+
     private void chooseOrderLineToChange(){
-        OrderLine chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
+        HBox chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
         if (!lvwUnusedProducts.getItems().contains(chosenOL)){
-            chosenOL.setAmount(1);
             lvwUnusedProducts.getItems().add(chosenOL);
         }else{
 
         }
+        updateUnusedProducts();
 
     }
 
-    private void changeAmountInChosenOrderLine(int newAmount, OrderLine ol){
-        if (newAmount < 1) {
-
+    private void changeAmountOnOrderLine(int newAmount, OrderLine ol){
+        if (newAmount >= 0) {
+            rental.removeOrderLine(ol);
         } else {
             ol.setAmount(newAmount);
         }
@@ -185,12 +183,12 @@ public class EndRentalWindow extends Stage {
 
     private void updateUnusedProducts() {
         //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
-        for (OrderLine ol : lvwUnusedProducts.getItems()){
+        for (OrderLine ol : rental.getOrderLines()){
             //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
+            Spinner<Integer> spnAmount = new Spinner<>(-999, 0, -1);
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountInChosenOrderLine(spnAmount.getValue(), ol);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountOnOrderLine(spnAmount.getValue(), ol);
             spnAmount.valueProperty().addListener(spinnerListener);
 
             //Create a textfield with the product name and description
@@ -217,14 +215,14 @@ public class EndRentalWindow extends Stage {
             //Creates HBox to display the orderline
             HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
             orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-            unusedOrderLineView.getChildren().add(orderline);
+            lvwUnusedProducts.getItems().add(orderline);
         }
     }
 
-    private void addToUnusedProducts(Price price) {
+    private void addToUnusedProducts(OrderLine orderLine) {
         //Otherwise adds product to order with amount of 1
-        if (rental.getOrderLines().contains(price)) {
-            orderController.createOrderLineForOrder(rental, 1, price);
+        if (rental.getOrderLines().contains(orderLine)) {
+            orderController.createOrderLineForOrder(rental, -1, orderLine.getPrice());
         }
 
         //then displays orderlines in OrderLineView

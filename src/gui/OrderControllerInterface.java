@@ -3,6 +3,7 @@ package gui;
 import model.modelklasser.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface OrderControllerInterface {
@@ -73,5 +74,21 @@ public interface OrderControllerInterface {
     List<Rental> getRentals();
 
     void setEndDateForOrder(Order order, LocalDate date);
+
+    /**
+     * Creates a new Tour object, with a planned date and time
+     * @param endDate the date this tour is planned for
+     * @param time the time this tour is planned for
+     * @return the new Tour object
+     */
+    public Tour createTour (LocalDate endDate, LocalTime time);
+
+    /**
+     * Returns a list of all Tours in the system.
+     * @return A list of Tours
+     */
+    public List<Tour> getTours();
+
+
 
 }
