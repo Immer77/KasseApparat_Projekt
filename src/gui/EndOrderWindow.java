@@ -1,23 +1,28 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.modelklasser.*;
+import model.modelklasser.Order;
+import model.modelklasser.OrderLine;
+import model.modelklasser.PaymentMethod;
+import model.modelklasser.Unit;
 import storage.Storage;
+
+import java.time.LocalDate;
 
 public class EndOrderWindow extends Stage {
     //Fields ------------------------------------------------------------
@@ -144,6 +149,7 @@ public class EndOrderWindow extends Stage {
 
     private void oKAction() {
         orderController.setPaymentMethodForOrder(order, chPaymentMethod.getSelectionModel().getSelectedItem());
+        orderController.setEndDateForOrder(order, LocalDate.now());
         orderController.saveOrder(order);
         this.close();
     }

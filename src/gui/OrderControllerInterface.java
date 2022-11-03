@@ -72,4 +72,6 @@ public interface OrderControllerInterface {
 
     List<Rental> getRentals();
 
+    void setEndDateForOrder(Order order, LocalDate date);
+
 }

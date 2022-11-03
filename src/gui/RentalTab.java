@@ -23,6 +23,7 @@ public class RentalTab extends GridPane {
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
     private final TextField datePicker = new TextField();
+    private Order order = controller.createOrder();
 
 
 
@@ -52,6 +53,7 @@ public class RentalTab extends GridPane {
         lvwRentals.setPrefHeight(300);
         lvwRentals.getItems().setAll();
         midControl.getChildren().add(lvwRentals);
+        midControl.setMinWidth(200);
 
         Button btnRental = new Button("Opret udlejning");
         btnRental.setOnAction(event -> this.createRental());
@@ -79,12 +81,20 @@ public class RentalTab extends GridPane {
     }
 
     private void updateFieldsInfo() {
-        String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
-        String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
-        LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getStartDate();
-        txfName.setText(name);
-        txaDescription.setText(description);
-        datePicker.setText(String.valueOf(date));
+        try {
+            String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
+            String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
+            txfName.setText(name);
+            txaDescription.setText(description);
+            datePicker.setText(String.valueOf(date));
+        }catch (NullPointerException ne){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Mangler navn på Udlejning");
+            alert.setHeaderText("Du mangler at udfylde noget information");
+            alert.show();
+        }
+
 
 
 
@@ -92,6 +102,11 @@ public class RentalTab extends GridPane {
     }
 
     private void finishRental() {
+        Stage stage = new Stage(StageStyle.UTILITY);
+        EndRentalWindow endRentalWindow = new EndRentalWindow("Afslut udlejning",stage, lvwActiveRentals.getSelectionModel().getSelectedItem());
+        endRentalWindow.showAndWait();
+
+        updateControls();
     }
 
     private void createRental() {

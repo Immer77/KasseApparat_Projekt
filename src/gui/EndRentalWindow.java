@@ -4,18 +4,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.modelklasser.OrderLine;
 import model.modelklasser.PaymentMethod;
+import model.modelklasser.Price;
 import model.modelklasser.Rental;
 import storage.Storage;
 
@@ -24,7 +23,15 @@ public class EndRentalWindow extends Stage {
     private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
     private Rental rental;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
-    private VBox orderLineView;
+    private VBox orderLineView, unusedOrderLineView, rentalInfoVBox;
+    private SplitPane splitPane = new SplitPane();
+    private ListView<OrderLine> lvwRentalOrderlines = new ListView<>();
+    private ListView<OrderLine> lvwUnusedProducts = new ListView<>();
+    private HBox buttons;
+    private Button btnAddToUnused;
+    private TextField txfName, txfStartDate;
+    private TextArea txaDescription;
+    private DatePicker endDatePicker;
 
     public EndRentalWindow(String title, Stage owner, Rental rental) {
         this.rental = rental;
@@ -48,52 +55,140 @@ public class EndRentalWindow extends Stage {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        //Adds a Vbox to hold OrderLines
+        //adds vbox for rental info
+        rentalInfoVBox = new VBox();
+        rentalInfoVBox.setPrefWidth(200);
+
+        //adds labels, textfields, textarea and datepicker for rentalinfo
+        VBox nameVBox = new VBox();
+        Label lblName = new Label("Name");
+        txfName =  new TextField();
+        txfName.setEditable(false);
+        txfName.appendText(rental.getName());
+        nameVBox.getChildren().addAll(lblName,txfName);
+
+        VBox descriptionVBox = new VBox();
+        Label lblDescription = new Label("Description");
+        txaDescription = new TextArea();
+        txaDescription.setEditable(false);
+        txaDescription.appendText(rental.getDescription());
+        descriptionVBox.getChildren().setAll(lblDescription,txaDescription);
+
+        VBox startdateVBox = new VBox();
+        Label lblStartDate = new Label("Start dato");
+        txfStartDate = new TextField(rental.getStartDate().toString());
+        txfStartDate.setEditable(false);
+        startdateVBox.getChildren().addAll(lblStartDate,txfStartDate);
+
+        VBox endDateVBox = new VBox();
+        endDatePicker = new DatePicker();
+        endDatePicker.setValue(rental.getEndDate());
+        Label lblEndDate = new Label("Slut dato");
+        endDateVBox.getChildren().addAll(lblEndDate,endDatePicker);
+
+        HBox dateHBox = new HBox();
+        dateHBox.getChildren().addAll(startdateVBox,endDateVBox);
+
+        rentalInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,dateHBox);
+        pane.add(rentalInfoVBox,0,0);
+
+
+        //Adds a Vbox to hold all OrderLines
         orderLineView = new VBox();
-        orderLineView.setBackground(Background.fill(Color.WHITE));
-        orderLineView.setBorder(Border.stroke(Color.BLACK));
-        orderLineView.setPrefWidth(400);
-        pane.add(orderLineView, 3, 2, 3, 3);
+        Label lblOrderLine = new Label("Alle udlejede produkter");
+        orderLineView.setPrefWidth(200);
+        lvwRentalOrderlines.getItems().setAll(rental.getOrderLines());
+        orderLineView.getChildren().setAll(lblOrderLine ,lvwRentalOrderlines);
 
-            //Confirm and cancel buttons
-            Button btnOK = new Button("Bekræft");
-            pane.add(btnOK, 0, 3);
-            btnOK.setOnAction(event -> oKAction());
-            btnOK.setDefaultButton(true);
 
-            Button btnCancel = new Button("Fortryd");
-            pane.add(btnCancel, 1, 3);
-            btnCancel.setOnAction(event -> cancelAction());
-            btnCancel.setCancelButton(true);
+        //adds button in splitpane
+        btnAddToUnused = new Button(">");
+        btnAddToUnused.setMinWidth(50);
+        btnAddToUnused.setOnAction(Event -> chooseOrderLineToChange());
+
+        //adds a VBox to hold unused products
+        unusedOrderLineView = new VBox();
+        Label lblUnused = new Label("Produkter som er ubrugte");
+        unusedOrderLineView.setPrefWidth(200);
+        unusedOrderLineView.getChildren().setAll(lblUnused,lvwUnusedProducts);
+
+
+        //adds vboxs to splitpane
+        pane.add(splitPane,1,0);
+        splitPane.getItems().addAll(orderLineView,btnAddToUnused,unusedOrderLineView);
+
+        //Confirm and cancel buttons with vbox to hold them
+        buttons = new HBox();
+        pane.add(buttons,1,1);
+        buttons.setSpacing(10);
+        buttons.setPrefWidth(200);
+
+        Button btnOK = new Button("Bekræft");
+        btnOK.setMaxWidth(Double.MAX_VALUE);
+        btnOK.setOnAction(event -> oKAction());
+        btnOK.setDefaultButton(true);
+
+        Button btnCancel = new Button("Fortryd");
+        btnCancel.setMaxWidth(Double.MAX_VALUE);
+        btnCancel.setOnAction(event -> cancelAction());
+        btnCancel.setCancelButton(true);
+
+        buttons.getChildren().addAll(btnOK,btnCancel);
+
+        //Add field for the final price
+        Label lblFinal = new Label("Endelig Total: ");
+        lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        pane.add(lblFinal, 4, 9);
+
+        VBox vbxFinalPrice = new VBox();
+        vbxFinalPrice.setPrefWidth(75);
+        vbxFinalPrice.setBackground(Background.EMPTY);
+        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
+        hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
+        hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
+        pane.add(hbxFinalPrice, 5, 9);
 
     }
 
-        private void oKAction() {
-            orderController.setPaymentMethodForOrder(rental, chPaymentMethod.getSelectionModel().getSelectedItem());
-            orderController.saveOrder(rental);
-            this.close();
+    private void oKAction() {
+        orderController.setPaymentMethodForOrder(rental, chPaymentMethod.getSelectionModel().getSelectedItem());
+        orderController.saveOrder(rental);
+        this.close();
+    }
+
+    private void cancelAction() {
+        this.close();
+    }
+    private void chooseOrderLineToChange(){
+        OrderLine chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
+        if (!lvwUnusedProducts.getItems().contains(chosenOL)){
+            chosenOL.setAmount(1);
+            lvwUnusedProducts.getItems().add(chosenOL);
         }
 
-        private void cancelAction() {
-            this.close();
-        }
-        public void amountChangedForOrderLine ( int newAmount, OrderLine orderLine){
-            if (newAmount < 1) {
-                rental.removeOrderLine(orderLine);
-            } else {
-                orderLine.setAmount(newAmount);
-            }
-            updateRental();
-        }
+    }
 
-    private void updateRental() {
-        for (OrderLine ol : rental.getOrderLines()) {
+    private void changeAmountInChosenOrderLine(int newAmount, OrderLine ol){
+        if (newAmount < 1) {
 
+        } else {
+            ol.setAmount(newAmount);
+        }
+        updateUnusedProducts();
+    }
+
+
+
+    private void updateUnusedProducts() {
+        //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
+        for (OrderLine ol : lvwUnusedProducts.getItems()){
             //Creates a spinner
             Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountInChosenOrderLine(spnAmount.getValue(), ol);
             spnAmount.valueProperty().addListener(spinnerListener);
 
             //Create a textfield with the product name and description
@@ -120,7 +215,17 @@ public class EndRentalWindow extends Stage {
             //Creates HBox to display the orderline
             HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
             orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-            orderLineView.getChildren().add(orderline);
+            unusedOrderLineView.getChildren().add(orderline);
         }
+    }
+
+    private void addToUnusedProducts(Price price) {
+        //Otherwise adds product to order with amount of 1
+        if (rental.getOrderLines().contains(price)) {
+            orderController.createOrderLineForOrder(rental, 1, price);
+        }
+
+        //then displays orderlines in OrderLineView
+        updateUnusedProducts();
     }
 }
