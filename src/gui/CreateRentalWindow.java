@@ -22,6 +22,7 @@ import java.time.LocalDate;
 
 public class CreateRentalWindow extends Stage {
 
+    // Field variables
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
     private final OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
@@ -37,6 +38,7 @@ public class CreateRentalWindow extends Stage {
     private double calculatedFinalPrice = 0.0;
 
 
+    // Constructor to createRentalWIndows
     public CreateRentalWindow(String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
@@ -53,6 +55,10 @@ public class CreateRentalWindow extends Stage {
         this.setScene(scene);
     }
 
+    /**
+     * Initilizes the pane to display lbls, textfields etc.
+     * @param pane
+     */
     public void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
@@ -137,8 +143,6 @@ public class CreateRentalWindow extends Stage {
         txfFixedTotal.textProperty().addListener(fixedTotalListener);
 
 
-
-
         HBox hbxFixedTotal = new HBox(txfFixedTotal);
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
         hbxFixedTotal.setPadding(new Insets(4, 8, 5, 0));
@@ -184,10 +188,17 @@ public class CreateRentalWindow extends Stage {
 
     }
 
+    /**
+     * Closes down the window
+     */
     private void cancelAction() {
         this.close();
     }
 
+
+    /**
+     * Creates the rental
+     */
     public void oKAction() {
         String name = "";
         String description = "";
@@ -199,7 +210,7 @@ public class CreateRentalWindow extends Stage {
             }
 
 
-            Rental rental = controller.createRental(name, description + "\nPrisen for Udlejning: " + calculatedFinalPrice + " " + order.getOrderLines(), LocalDate.from(datePicker.getValue()));
+            Rental rental = controller.createRental(name, description, LocalDate.from(datePicker.getValue()));
             for(OrderLine order : order.getOrderLines()){
                 rental.addOrderLine(order);
             }
@@ -213,7 +224,7 @@ public class CreateRentalWindow extends Stage {
         }
     }
 
-    //----------------------
+    //Updates controls
     public void updateControls() {
 
         //Update productOverview
@@ -323,6 +334,7 @@ public class CreateRentalWindow extends Stage {
     }
 
 
+    // Reset the order an clears the fields
     private void resetOrder() {
         order = controller.createOrder();
         txfPercentDiscount.setText("" + 0);
@@ -460,6 +472,9 @@ public class CreateRentalWindow extends Stage {
     }
 
 
+    /**
+     * Method to update discount on the order
+     */
     private void updateDiscount() {
         try {
             if (txfPercentDiscount.getText().isBlank()) {
@@ -496,6 +511,9 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
+    /**
+     * Method to update the fixedprice if the fixed price is set
+     */
     private void updateFixedPrice() {
         try {
             if (!txfFixedTotal.getText().isBlank()) {

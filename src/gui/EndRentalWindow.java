@@ -166,6 +166,8 @@ public class EndRentalWindow extends Stage {
         if (!lvwUnusedProducts.getItems().contains(chosenOL)){
             chosenOL.setAmount(1);
             lvwUnusedProducts.getItems().add(chosenOL);
+        }else{
+
         }
 
     }
