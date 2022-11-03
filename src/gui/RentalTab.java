@@ -53,6 +53,7 @@ public class RentalTab extends GridPane {
         lvwRentals.setPrefHeight(300);
         lvwRentals.getItems().setAll();
         midControl.getChildren().add(lvwRentals);
+        midControl.setMinWidth(200);
 
         Button btnRental = new Button("Opret udlejning");
         btnRental.setOnAction(event -> this.createRental());
@@ -83,7 +84,7 @@ public class RentalTab extends GridPane {
         try {
             String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
             String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
-            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getStartDate();
+            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
             txfName.setText(name);
             txaDescription.setText(description);
             datePicker.setText(String.valueOf(date));
@@ -110,7 +111,7 @@ public class RentalTab extends GridPane {
 
     private void createRental() {
         Stage stage = new Stage(StageStyle.UTILITY);
-        CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", order, stage);
+        CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", stage);
         rentalWindow.showAndWait();
 
         updateControls();

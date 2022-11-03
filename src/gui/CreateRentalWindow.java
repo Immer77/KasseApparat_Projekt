@@ -37,7 +37,7 @@ public class CreateRentalWindow extends Stage {
     private double calculatedFinalPrice = 0.0;
 
 
-    public CreateRentalWindow(String title, Order order, Stage owner) {
+    public CreateRentalWindow(String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -199,7 +199,10 @@ public class CreateRentalWindow extends Stage {
             }
 
 
-            controller.createRental(name, description + "\nPrisen for Udlejning: " + calculatedFinalPrice + " " + order.getOrderLines(), LocalDate.from(datePicker.getValue()));
+            Rental rental = controller.createRental(name, description + "\nPrisen for Udlejning: " + calculatedFinalPrice + " " + order.getOrderLines(), LocalDate.from(datePicker.getValue()));
+            for(OrderLine order : order.getOrderLines()){
+                rental.addOrderLine(order);
+            }
             this.close();
 
         } else {

@@ -1,5 +1,7 @@
 package model.modelklasser;
 
+import net.bytebuddy.asm.Advice;
+
 import java.time.LocalDate;
 
 public class Rental extends Order{
@@ -7,13 +9,16 @@ public class Rental extends Order{
     private String name;
     private String description;
     private LocalDate startDate;
+    private LocalDate endDate;
 
 
-    public Rental(String name, String description, LocalDate startDate) {
+    public Rental(String name, String description, LocalDate endDate) {
         super();
         this.name = name;
         this.description = description;
-        this.startDate = startDate;
+        this.startDate = LocalDate.now();
+        this.endDate = endDate;
+
     }
 
 
@@ -52,7 +57,12 @@ public class Rental extends Order{
     }
 
     @Override
+    public LocalDate getEndDate(){
+        return endDate;
+    }
+
+    @Override
     public String toString() {
-        return name + "(" + startDate + ')';
+        return "Navn på Udlejer " + name + " Slutdato: " + endDate;
     }
 }
