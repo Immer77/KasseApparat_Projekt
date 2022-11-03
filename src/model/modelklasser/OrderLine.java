@@ -30,11 +30,7 @@ public class OrderLine {
      */
     public double calculateOrderLinePrice(){
         double result = 0.0;
-        if(amount < 0){
-            throw new IllegalArgumentException("Number must not be negative");
-        }else{
-            result = price.getValue() * amount;
-        }
+        result = price.getValue() * amount;
         return result;
     }
 

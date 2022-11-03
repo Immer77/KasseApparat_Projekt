@@ -107,7 +107,7 @@ public class EndRentalWindow extends Stage {
         //adds a VBox to hold unused products
         unusedOrderLineView = new VBox();
         Label lblUnused = new Label("Produkter som er ubrugte");
-        unusedOrderLineView.setPrefWidth(300);
+        unusedOrderLineView.setPrefWidth(500);
         unusedOrderLineView.getChildren().setAll(lblUnused,lvwUnusedProducts);
 
 
@@ -159,17 +159,6 @@ public class EndRentalWindow extends Stage {
         this.close();
     }
 
-    private void chooseOrderLineToChange(){
-        HBox chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
-        if (!lvwUnusedProducts.getItems().contains(chosenOL)){
-            lvwUnusedProducts.getItems().add(chosenOL);
-        }else{
-
-        }
-        updateUnusedProducts();
-
-    }
-
     private void changeAmountOnOrderLine(int newAmount, OrderLine ol){
         if (newAmount >= 0) {
             rental.removeOrderLine(ol);
@@ -184,43 +173,46 @@ public class EndRentalWindow extends Stage {
     private void updateUnusedProducts() {
         //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
         for (OrderLine ol : rental.getOrderLines()){
-            //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(-999, 0, -1);
-            spnAmount.setEditable(true);
-            spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountOnOrderLine(spnAmount.getValue(), ol);
-            spnAmount.valueProperty().addListener(spinnerListener);
+            if (ol.getAmount()< 0){
+                //Creates a spinner
+                Spinner<Integer> spnAmount = new Spinner<>(-999, 0, ol.getAmount());
+                spnAmount.setEditable(true);
+                spnAmount.setPrefWidth(60);
+                ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountOnOrderLine(spnAmount.getValue(), ol);
+                spnAmount.valueProperty().addListener(spinnerListener);
 
-            //Create a textfield with the product name and description
-            TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
-            txfproductDescr.setMaxWidth(Double.MAX_VALUE);
-            txfproductDescr.setEditable(false);
-            txfproductDescr.setBackground(Background.EMPTY);
-            HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
+                //Create a textfield with the product name and description
+                TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
+                txfproductDescr.setMaxWidth(Double.MAX_VALUE);
+                txfproductDescr.setEditable(false);
+                txfproductDescr.setBackground(Background.EMPTY);
+                HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
 
-            //Create textfield for price
-            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + ol.getPrice().getUnit());
-            txfPrice.setEditable(false);
-            txfPrice.setPrefWidth(75);
-            txfPrice.setBackground(Background.EMPTY);
-            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+                //Create textfield for price
+                TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + ol.getPrice().getUnit());
+                txfPrice.setEditable(false);
+                txfPrice.setPrefWidth(75);
+                txfPrice.setBackground(Background.EMPTY);
+                txfPrice.setAlignment(Pos.BASELINE_RIGHT);
 
-            //Create textfield for subtotal
-            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
-            txfSubTotal.setEditable(false);
-            txfSubTotal.setPrefWidth(75);
-            txfSubTotal.setBackground(Background.EMPTY);
-            txfSubTotal.setAlignment(Pos.BASELINE_LEFT);
+                //Create textfield for subtotal
+                TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
+                txfSubTotal.setEditable(false);
+                txfSubTotal.setPrefWidth(75);
+                txfSubTotal.setBackground(Background.EMPTY);
+                txfSubTotal.setAlignment(Pos.BASELINE_LEFT);
 
-            //Creates HBox to display the orderline
-            HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
-            orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-            lvwUnusedProducts.getItems().add(orderline);
+                //Creates HBox to display the orderline
+                HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
+                orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
+                lvwUnusedProducts.getItems().add(orderline);
+            }
+
         }
     }
 
     private void addToUnusedProducts(OrderLine orderLine) {
-        //Otherwise adds product to order with amount of 1
+        //Otherwise adds product to unused products with amount of -1
         if (rental.getOrderLines().contains(orderLine)) {
             orderController.createOrderLineForOrder(rental, -1, orderLine.getPrice());
         }
