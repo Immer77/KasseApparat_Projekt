@@ -23,6 +23,7 @@ public class RentalTab extends GridPane {
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
     private final TextField datePicker = new TextField();
+    private Order order = controller.createOrder();
 
 
 
@@ -79,12 +80,20 @@ public class RentalTab extends GridPane {
     }
 
     private void updateFieldsInfo() {
-        String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
-        String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
-        LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getStartDate();
-        txfName.setText(name);
-        txaDescription.setText(description);
-        datePicker.setText(String.valueOf(date));
+        try {
+            String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
+            String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getStartDate();
+            txfName.setText(name);
+            txaDescription.setText(description);
+            datePicker.setText(String.valueOf(date));
+        }catch (NullPointerException ne){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Mangler navn på Udlejning");
+            alert.setHeaderText("Du mangler at udfylde noget information");
+            alert.show();
+        }
+
 
 
 
@@ -101,7 +110,7 @@ public class RentalTab extends GridPane {
 
     private void createRental() {
         Stage stage = new Stage(StageStyle.UTILITY);
-        CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", stage);
+        CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", order, stage);
         rentalWindow.showAndWait();
 
         updateControls();
