@@ -164,6 +164,7 @@ public class EndRentalWindow extends Stage {
     private void chooseOrderLineToChange(){
         OrderLine chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
         if (!lvwUnusedProducts.getItems().contains(chosenOL)){
+            chosenOL.setAmount(1);
             lvwUnusedProducts.getItems().add(chosenOL);
         }
 
@@ -189,6 +190,7 @@ public class EndRentalWindow extends Stage {
             spnAmount.setPrefWidth(60);
             ChangeListener<Integer> spinnerListener = (ov, n, o) -> changeAmountInChosenOrderLine(spnAmount.getValue(), ol);
             spnAmount.valueProperty().addListener(spinnerListener);
+
             //Create a textfield with the product name and description
             TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
             txfproductDescr.setMaxWidth(Double.MAX_VALUE);
