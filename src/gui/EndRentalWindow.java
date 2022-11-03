@@ -165,6 +165,8 @@ public class EndRentalWindow extends Stage {
         OrderLine chosenOL = lvwRentalOrderlines.getSelectionModel().getSelectedItem();
         if (!lvwUnusedProducts.getItems().contains(chosenOL)){
             lvwUnusedProducts.getItems().add(chosenOL);
+        }else{
+
         }
 
     }

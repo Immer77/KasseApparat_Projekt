@@ -4,14 +4,16 @@ import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDate;
 
+//------- SUBCLASS OF ORDER --------//
 public class Rental extends Order{
-
+    // Fields variables
     private String name;
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
 
 
+    // Constructor
     public Rental(String name, String description, LocalDate endDate) {
         super();
         this.name = name;
@@ -21,7 +23,7 @@ public class Rental extends Order{
 
     }
 
-
+    // Getters and setters--------------
     public String getName() {
         return name;
     }
@@ -46,6 +48,17 @@ public class Rental extends Order{
         this.startDate = startDate;
     }
 
+    @Override
+    public LocalDate getEndDate(){
+        return endDate;
+    }
+
+    /**
+     * Method to calculate the deposit
+     * @param unit which unit it uses to calculate the price
+     * @return
+     */
+
     public double calculateDeposit(Unit unit){
         double sumPrice = 0.0;
         for (OrderLine orderLine : super.getOrderLines()){
@@ -57,12 +70,7 @@ public class Rental extends Order{
     }
 
     @Override
-    public LocalDate getEndDate(){
-        return endDate;
-    }
-
-    @Override
     public String toString() {
-        return "Navn på Udlejer " + name + " Slutdato: " + endDate;
+        return "Udlejer: " + name + " Slutdato: " + endDate;
     }
 }
