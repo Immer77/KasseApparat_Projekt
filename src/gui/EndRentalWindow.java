@@ -205,7 +205,9 @@ public class EndRentalWindow extends Stage {
                 //Creates HBox to display the orderline
                 HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
                 orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-                lvwUnusedProducts.getItems().add(orderline);
+                if (!lvwUnusedProducts.getItems().contains(ol.getPrice().getProduct())){
+                    lvwUnusedProducts.getItems().add(orderline);
+                }
             }
 
         }
