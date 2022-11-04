@@ -19,8 +19,8 @@ public class TourTab extends GridPane {
     private final ListView<Tour> lvwTours = new ListView<>();
     private final ListView<Tour> lvwActiveTours = new ListView<>();
     private SplitPane splitPane = new SplitPane();
-    private OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
-    private Order order = controller.createOrder();
+    private OrderControllerInterface controller;
+    private Order order;
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
     private final TextField timePicker = new TextField();
@@ -32,6 +32,9 @@ public TourTab(){
     this.setPadding(new Insets(20));
     this.setHgap(10);
     this.setVgap(10);
+
+    controller = new OrderController(Storage.getStorage());
+    order = controller.createOrder();
 
     // Adding a splitpane to the pane
     this.add(splitPane, 0, 1);

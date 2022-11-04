@@ -21,7 +21,7 @@ import storage.Storage;
 
 public class EndTourWindow extends Stage {
 
-    private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
+    private OrderControllerInterface orderController;
     private Tour tour;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
     private VBox orderLineView, unusedOrderLineView, tourInfoVBox;
@@ -47,6 +47,8 @@ public class EndTourWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        orderController = new OrderController(Storage.getStorage());
     }
 
     private void initContent(GridPane pane) {

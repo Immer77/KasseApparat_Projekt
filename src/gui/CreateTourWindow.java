@@ -26,9 +26,8 @@ public class CreateTourWindow extends Stage {
     // Field variables
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
-    private final OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
+    private final OrderControllerInterface controller;
     private final DatePicker datePicker = new DatePicker();
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
     private VBox orderLineView;
     private Order order;
     private VBox vbxOrderTotal;
@@ -54,6 +53,10 @@ public class CreateTourWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        controller = new OrderController(Storage.getStorage());
+        //Initialises an order
+        order = controller.createOrder();
     }
 
     /**
@@ -87,8 +90,6 @@ public class CreateTourWindow extends Stage {
 
         //-------------------------------------------
 
-        //Initialises an order
-        order = controller.createOrder();
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
