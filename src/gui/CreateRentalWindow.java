@@ -535,6 +535,5 @@ public class CreateRentalWindow extends Stage {
             alertNFE.setContentText(nfe.getMessage());
             alertNFE.showAndWait();
         }
-
     }
 }
