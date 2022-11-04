@@ -26,6 +26,5 @@
     </orderEntry>
     <orderEntry type="library" name="JavaFX" level="application" />
     <orderEntry type="library" name="Mockito" level="application" />
-    <orderEntry type="library" name="javafx19" level="application" />
   </component>
 </module>

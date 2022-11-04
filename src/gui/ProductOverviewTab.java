@@ -17,7 +17,7 @@ public class ProductOverviewTab extends GridPane {
 
     private final ListView<Product> lvwProducts = new ListView<>();
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
 
     /**
@@ -27,6 +27,8 @@ public class ProductOverviewTab extends GridPane {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
+
+        productController = new ProductOverviewController(Storage.getStorage());
 
         //List View of categories
         this.add(lvwCategories, 0, 1);
