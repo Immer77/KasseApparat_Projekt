@@ -17,25 +17,34 @@ import java.time.LocalDate;
 
 public class RentalTab extends GridPane {
     // Field variables
-    private final ListView<Rental> lvwActiveRentals = new ListView<>();
-    private final ListView<Rental> lvwRentals = new ListView<>();
+    private final ListView<Rental> lvwActiveRentals;
+    private final ListView<Rental> lvwRentals;
     private OrderControllerInterface controller;
-    private SplitPane splitPane = new SplitPane();
-    private final TextField txfName = new TextField();
-    private final TextArea txaDescription = new TextArea();
-    private final TextField datePicker = new TextField();
-    private Order order = controller.createOrder();
+    private SplitPane splitPane;
+    private final TextField txfName;
+    private final TextArea txaDescription;
+    private final TextField datePicker;
+    private Order order;
 
 
     /**
      * Rental tab to control all the rentals
      */
     public RentalTab() {
+        lvwActiveRentals = new ListView<>();
+        lvwRentals = new ListView<>();
+        controller = new OrderController(Storage.getStorage());
+        splitPane = new SplitPane();
+        txfName = new TextField();
+        txaDescription = new TextArea();
+        datePicker = new TextField();
+        order = controller.createOrder();
+
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
 
-        controller = new OrderController(Storage.getStorage());
+
 
 
         // Adding a splitpane to the pane
