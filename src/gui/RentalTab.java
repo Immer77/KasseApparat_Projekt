@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.modelklasser.Order;
+import model.modelklasser.OrderLine;
 import model.modelklasser.Rental;
 import storage.Storage;
 
@@ -46,7 +47,7 @@ public class RentalTab extends GridPane {
         // To control the buttons
         HBox btnBox = new HBox();
         btnBox.setSpacing(10);
-        this.add(btnBox, 0, 0,1,1);
+        this.add(btnBox, 0, 0, 1, 1);
 
         // List of active rentals
         lvwActiveRentals.setPrefWidth(100);
@@ -97,12 +98,49 @@ public class RentalTab extends GridPane {
      * Updates fields in right control pane
      */
     private void updateFieldsInfo() {
-        String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
-        String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
-        LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
-        txfName.setText(name);
-        txaDescription.setText(description + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines());
-        datePicker.setText(String.valueOf(date));
+        try {
+            String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
+            String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
+            txfName.setText(name);
+
+            double result = calculateFinalPrice();
+
+            txaDescription.setText(description + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal:" + result);
+            datePicker.setText(String.valueOf(date));
+
+        }catch (NullPointerException ne){
+            throw new RuntimeException("Fejler med navn" ,ne);
+        }
+
+    }
+
+
+    private double calculateFinalPrice() {
+        double finalPrice = 0.0;
+        for (OrderLine orderLine : lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines()) {
+            if (lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice() != 0) {
+                finalPrice = lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice();
+                break;
+            }
+            if (lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount() != 0) {
+                finalPrice += orderLine.getPrice().getValue();
+            } else {
+                finalPrice += orderLine.getPrice().getValue();
+            }
+
+        }
+        double percentageMultiplier = 1.0;
+        double percentageDiscount = lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount();
+
+        if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+            percentageMultiplier = (100 - percentageDiscount) / 100;
+        } else {
+            throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
+        }
+        finalPrice *= percentageMultiplier;
+
+        return finalPrice;
     }
 
     /**

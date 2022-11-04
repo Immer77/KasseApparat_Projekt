@@ -46,7 +46,7 @@ public class StartWindow extends Application {
         //disabled closing of tabs
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        //-----------Product Overview Tab creation-----------
+        //-----------Product Overview Tab creation
         //Creates a new Tab with a label, and adds it to the tabPane
         Tab firstTab = new Tab("Produktoversigt");
         tabPane.getTabs().add(firstTab);
