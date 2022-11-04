@@ -4,8 +4,11 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+import javax.swing.text.html.CSS;
 
 public class StartWindow extends Application {
 
@@ -16,10 +19,11 @@ public class StartWindow extends Application {
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
-
+        Image image = new Image("file:.\\KasseAparatSystem\\src\\gui\\AB.jpg");
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         mainStage = stage;
+        stage.getIcons().add(image);
         stage.show();
     }
 
@@ -42,7 +46,7 @@ public class StartWindow extends Application {
         //disabled closing of tabs
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        //-----------Product Overview Tab creation------------------------------------
+        //-----------Product Overview Tab creation-----------
         //Creates a new Tab with a label, and adds it to the tabPane
         Tab firstTab = new Tab("Produktoversigt");
         tabPane.getTabs().add(firstTab);

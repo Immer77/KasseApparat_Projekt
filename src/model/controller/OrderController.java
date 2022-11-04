@@ -131,13 +131,23 @@ public class OrderController implements OrderControllerInterface {
         order.setPaymentMethod(paymentMethod);
     }
 
+    /**
+     * Method to create a new rental and adding it to storage
+     * @param name of the person who is making the rental
+     * @param description of what he rents
+     * @param endDate of the time he is finished with the rental
+     * @return
+     */
     public Rental createRental(String name, String description, LocalDate endDate) {
         Rental rental = new Rental(name,description,endDate);
-        rental.setStartDate(LocalDate.now());
         storage.addOrder(rental);
         return rental;
     }
 
+    /**
+     * Takes the storage list of all orders and returns all the instances where order is rental due to the polymorphic effect.
+     * @return
+     */
     public List<Rental> getRentals(){
         ArrayList<Rental> rentals = new ArrayList<>();
         for(Order order : storage.getOrders()){
