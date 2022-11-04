@@ -17,8 +17,8 @@ import storage.Storage;
 
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
-    private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
-    private ProductOverviewControllerInterface productController = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private OrderControllerInterface orderController;
+
     private Stage mainStage;
     private Accordion accProductOverview;
     private ChoiceBox<Situation> chSituation;
@@ -36,6 +36,8 @@ public class SaleTab extends GridPane {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
+
+        orderController = new OrderController(Storage.getStorage());
 
         //Adds a choicebox to select the Situation and a listener for the box
         chSituation = new ChoiceBox<>();
@@ -233,7 +235,7 @@ public class SaleTab extends GridPane {
 
 
         //For each price in each product in each category...
-        for (ProductCategory proCat : productController.getProductCategories()) {
+        for (ProductCategory proCat : orderController.getProductCategories()) {
             VBox vbxCategory = new VBox();
             vbxCategory.setPadding(new Insets(5));
             vbxCategory.setFillWidth(true);

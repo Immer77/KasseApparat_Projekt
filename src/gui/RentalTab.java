@@ -19,7 +19,7 @@ public class RentalTab extends GridPane {
     // Field variables
     private final ListView<Rental> lvwActiveRentals = new ListView<>();
     private final ListView<Rental> lvwRentals = new ListView<>();
-    private OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
+    private OrderControllerInterface controller;
     private SplitPane splitPane = new SplitPane();
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
@@ -34,6 +34,8 @@ public class RentalTab extends GridPane {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
+
+        controller = new OrderController(Storage.getStorage());
 
 
         // Adding a splitpane to the pane

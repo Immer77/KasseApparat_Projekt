@@ -26,7 +26,7 @@ import java.time.LocalDate;
 
 public class EndOrderWindow extends Stage {
     //Fields ------------------------------------------------------------
-    private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
+    private OrderControllerInterface orderController;
     private Order order;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
 
@@ -47,6 +47,8 @@ public class EndOrderWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        orderController = new OrderController(Storage.getStorage());
     }
 
     //Methods - Get, Set & Add -------------------------------------------

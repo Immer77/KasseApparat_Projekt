@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ProductOverviewController implements ProductOverviewControllerInterface {
     //Fields ---------------------------------------------------------------------------------------------------------
-    private static ProductOverviewControllerInterface unique_ProductOverviewController;
     private StorageInterface storage;
 
     //Constructors ---------------------------------------------------------------------------------------------------
@@ -17,21 +16,11 @@ public class ProductOverviewController implements ProductOverviewControllerInter
      * Creates a new ProductOverviewController object.
      * @param storage the storage this object should use, using the StorageInterface interface.
      */
-    private ProductOverviewController(StorageInterface storage) {
+    public ProductOverviewController(StorageInterface storage) {
         this.storage = storage;
     }
 
     //Methods - Get, Set & Add ---------------------------------------------------------------------------------------
-    /**
-     * Returns the unique ProductOverviewController. If none exists, creates one.
-     * @return unique ProductOverviewController object
-     */
-    public static ProductOverviewControllerInterface getProductOverviewController (StorageInterface storage) {
-        if (unique_ProductOverviewController == null) {
-            unique_ProductOverviewController = new ProductOverviewController(storage);
-        }
-        return unique_ProductOverviewController;
-    }
 
     /**
      * Bruges til test
@@ -39,7 +28,7 @@ public class ProductOverviewController implements ProductOverviewControllerInter
      * @return
      */
     public static ProductOverviewControllerInterface getProductOverviewControllerTest(StorageInterface storage) {
-        unique_ProductOverviewController = new ProductOverviewController(storage);
+        ProductOverviewControllerInterface unique_ProductOverviewController = new ProductOverviewController(storage);
         return unique_ProductOverviewController;
     }
 

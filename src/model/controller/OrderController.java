@@ -13,7 +13,6 @@ import java.util.List;
 public class OrderController implements OrderControllerInterface {
 
     //Field Variables
-    private static OrderControllerInterface unique_OrderController;
     private StorageInterface storage;
 
 
@@ -21,22 +20,10 @@ public class OrderController implements OrderControllerInterface {
      * Private ordercontroller supporting singleton pattern
      * @param storage
      */
-    private OrderController(StorageInterface storage){
+    public OrderController(StorageInterface storage){
         this.storage = storage;
     }
 
-    /**
-     * Singleton pattern where we only have one unique ordercontroller
-     * @param storage programming to interfaces
-     * @return current controller or new unique controller
-     */
-    public static OrderControllerInterface getOrderController(StorageInterface storage){
-        if(unique_OrderController == null){
-            unique_OrderController = new OrderController(storage);
-        }
-        return unique_OrderController;
-
-    }
 
     /**
      * Bruges til test for ikke at have singleton pattern til at melde fejl
@@ -44,7 +31,7 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public static OrderControllerInterface getOrderControllerTest(StorageInterface storage){
-        unique_OrderController = new OrderController(storage);
+        OrderControllerInterface unique_OrderController = new OrderController(storage);
         return unique_OrderController;
 
     }
@@ -54,7 +41,6 @@ public class OrderController implements OrderControllerInterface {
      * @param name of the situation
      * @return situation
      */
-
     public Situation createSituation(String name) {
         Situation situation = new Situation(name);
         storage.addSituation(situation);
@@ -182,6 +168,14 @@ public class OrderController implements OrderControllerInterface {
             }
         }
         return list;
+    }
+
+    /**
+     * Returns all current ProductCategories
+     * @return a list of all ProductCategories.
+     */
+    public List<ProductCategory> getProductCategories () {
+        return storage.getProductCategories();
     }
 
 
