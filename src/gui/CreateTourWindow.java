@@ -13,7 +13,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.*;
 import storage.Storage;
 
@@ -26,7 +25,7 @@ public class CreateTourWindow extends Stage {
     // Field variables
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
-    private final OrderControllerInterface controller;
+    private final OrderControllerInterface orderController;
     private final DatePicker datePicker = new DatePicker();
     private VBox orderLineView;
     private Order order;
@@ -54,9 +53,9 @@ public class CreateTourWindow extends Stage {
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
-        controller = new OrderController(Storage.getStorage());
+        orderController = new OrderController(Storage.getStorage());
         //Initialises an order
-        order = controller.createOrder();
+        order = orderController.createOrder();
     }
 
     /**
@@ -162,7 +161,7 @@ public class CreateTourWindow extends Stage {
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Opret Udlejning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
-        btnConfirmOrder.setOnAction(event -> oKAction());
+        btnConfirmOrder.setOnAction(event -> okAction());
         pane.add(btnConfirmOrder, 7, 8, 3, 1);
 
         // Adds a cancel button
@@ -199,7 +198,7 @@ public class CreateTourWindow extends Stage {
             double discount = Double.parseDouble(txfPercentDiscount.getText().trim());
 
             if (discount >= 0.0 && discount <= 100.0) {
-                controller.setDiscountForOrder(order, discount);
+                orderController.setDiscountForOrder(order, discount);
             } else {
                 throw new NumberFormatException("procentrabat skal være et tal mellem 0.0 og 100");
             }
@@ -234,9 +233,9 @@ public class CreateTourWindow extends Stage {
                 if (Double.parseDouble(txfFixedTotal.getText()) < 0) {
                     throw new NumberFormatException("Den indtastede værdi kan ikke være mindre end 0");
                 }
-                controller.setFixedPriceForOrder(order, value, Unit.DKK);
+                orderController.setFixedPriceForOrder(order, value, Unit.DKK);
             } else {
-                controller.setFixedPriceForOrder(order, -1.0, null);
+                orderController.setFixedPriceForOrder(order, -1.0, null);
             }
 
             updateOrder();
@@ -250,7 +249,7 @@ public class CreateTourWindow extends Stage {
         }
     }
 
-    public void oKAction() {
+    public void okAction() {
         String name = "";
         String description = "";
         if (!txfName.getText().isBlank()) {
@@ -260,7 +259,7 @@ public class CreateTourWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            Tour tour = controller.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
+            Tour tour = orderController.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
             for(OrderLine order : order.getOrderLines()){
                 tour.addOrderLine(order);
             }
