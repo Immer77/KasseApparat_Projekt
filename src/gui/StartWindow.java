@@ -75,6 +75,18 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(thirdTab);
         //Updates controls when tab selection changes
         thirdTab.setOnSelectionChanged(event -> rentalTab.updateControls());
+        //----------------------------------------------------------------------------
+
+        //-----------Rental overview tab creation-------------------------------------
+        //Creates a new instance of a Rentaltab
+        TourTab tourTab = new TourTab();
+        // Creatas a new tab, with a title and the rentaltab as content
+        Tab fourthTab = new Tab("Rundvisninger", tourTab);
+        //...then adds it to the tabPane
+        tabPane.getTabs().add(fourthTab);
+        //Updates controls when tab selection changes
+        fourthTab.setOnSelectionChanged(event -> tourTab.updateControls());
+        //----------------------------------------------------------------------------
 
 
 
