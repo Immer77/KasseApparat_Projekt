@@ -10,7 +10,7 @@ public class Tour extends Order{
     private LocalTime time;
 
     //Constructors ---------------------------------------------------------------------------------------------------
-    public Tour(LocalDate endDate, LocalTime Time) {
+    public Tour(LocalDate endDate, LocalTime time) {
         super();
         this.setEndDate(endDate);
         this.time = time;
