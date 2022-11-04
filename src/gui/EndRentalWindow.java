@@ -19,7 +19,7 @@ import storage.Storage;
 
 public class EndRentalWindow extends Stage {
 
-    private OrderControllerInterface orderController = OrderController.getOrderController(Storage.getStorage());
+    private OrderControllerInterface orderController;
     private Rental rental;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
     private VBox orderLineView, unusedOrderLineView, rentalInfoVBox;
@@ -46,6 +46,8 @@ public class EndRentalWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        orderController = new OrderController(Storage.getStorage());
     }
 
     private void initContent(GridPane pane) {
