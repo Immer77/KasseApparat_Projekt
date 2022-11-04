@@ -8,8 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-import javax.swing.text.html.CSS;
-
 public class StartWindow extends Application {
 
     private Stage mainStage;
@@ -19,7 +17,7 @@ public class StartWindow extends Application {
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
-        Image image = new Image("file:.\\KasseAparatSystem\\src\\gui\\AB.jpg");
+        Image image = new Image("file:.\\KasseApparat_Projekt\\src\\gui\\AB.jpg");
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         mainStage = stage;
