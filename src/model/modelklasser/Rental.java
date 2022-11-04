@@ -1,7 +1,5 @@
 package model.modelklasser;
 
-import net.bytebuddy.asm.Advice;
-
 import java.time.LocalDate;
 
 //------- SUBCLASS OF ORDER --------//
