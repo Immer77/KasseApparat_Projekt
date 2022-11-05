@@ -67,33 +67,33 @@ public class SaleTab extends GridPane {
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
         accProductOverview.setMaxWidth(Double.MAX_VALUE);
-        accProductOverview.setPrefWidth(250);
+        accProductOverview.setPrefWidth(500);
         accProductOverview.setPadding(Insets.EMPTY);
-        this.add(accProductOverview, 0, 2, 3, 2);
+        this.add(accProductOverview, 0, 2, 3, 7);
 
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
         orderLineView.setBackground(Background.fill(Color.WHITE));
         orderLineView.setBorder(Border.stroke(Color.BLACK));
-        orderLineView.setPrefWidth(400);
-        this.add(orderLineView, 3, 2, 3, 3);
+        orderLineView.setPrefWidth(500);
+        this.add(orderLineView, 3, 2, 2, 6);
 
         //Adds field and label for calculated total of the Order
         Label lblOrderTotal = new Label("Total:");
         lblOrderTotal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblOrderTotal, 4, 6);
+        this.add(lblOrderTotal, 7, 1);
 
         vbxOrderTotal = new VBox();
         vbxOrderTotal.setPrefWidth(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
-        this.add(vbxOrderTotal, 5, 6);
+        this.add(vbxOrderTotal, 8, 1);
 
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblrabat, 4, 7);
+        this.add(lblrabat, 7, 2);
 
         txfPercentDiscount = new TextField("" + 0);
         txfPercentDiscount.setPrefWidth(75);
@@ -105,12 +105,12 @@ public class SaleTab extends GridPane {
 
         HBox hbxPercentDiscount = new HBox(txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        this.add(hbxPercentDiscount, 5, 7);
+        this.add(hbxPercentDiscount, 8, 2);
 
         //Add field for a fixed total price
         Label lblFixedPrice = new Label("Aftalt Total: ");
         lblFixedPrice.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblFixedPrice, 4, 8);
+        this.add(lblFixedPrice, 7, 3);
 
         txfFixedTotal = new TextField();
         txfFixedTotal.setPrefWidth(75);
@@ -128,30 +128,32 @@ public class SaleTab extends GridPane {
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
         hbxFixedTotal.setPadding(new Insets(0, 10, 5, 0));
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
-        this.add(hbxFixedTotal, 5, 8);
+        this.add(hbxFixedTotal, 8, 3);
 
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        this.add(lblFinal, 4, 9);
+        lblFinal.setAlignment(Pos.TOP_LEFT);
+        this.add(lblFinal, 7, 4);
 
         vbxFinalPrice = new VBox();
         vbxFinalPrice.setPrefWidth(75);
         vbxFinalPrice.setBackground(Background.EMPTY);
-        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+        vbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
 
         HBox hbxFinalPrice = new HBox(vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
-        this.add(hbxFinalPrice, 5, 9);
+        this.add(hbxFinalPrice, 8, 4);
 
 
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Afslut Ordre");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
         btnConfirmOrder.setOnAction(event -> confirmOrderAction());
-        this.add(btnConfirmOrder, 3, 10, 3, 1);
+        btnConfirmOrder.setAlignment(Pos.TOP_LEFT);
+        this.add(btnConfirmOrder, 7, 5, 2, 1);
 
         //Initiates examples of situations and prices for products
         orderController.initContent();

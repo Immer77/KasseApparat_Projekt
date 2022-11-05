@@ -102,7 +102,7 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         Situation sitFred = createSituation("Fredagsbar");
 
         ProductCategory pc0 = createProductCategory("Klippekort", "");
-        Product P01 = pc0.createProduct("4 Klip", "");
+        Product P01 = pc0.createProduct("Klippekort", "4 Klip");
         P01.createPrice(130, Unit.DKK, sitStand);
         P01.createPrice(130, Unit.DKK, sitFred);
 
@@ -216,21 +216,21 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P308.createPrice(1, Unit.Klip, sitFred);
 
         ProductCategory pc4 = createProductCategory("Spiritus", "");
-        Product P401 = pc4.createProduct("Whisky 45%", "50cl rør");
+        Product P401 = pc4.createProduct("Whiskey 45%", "50cl rør");
         P401.createPrice(599, Unit.DKK, sitStand);
         P401.createPrice(599, Unit.DKK, sitFred);
-        Product P402 = pc4.createProduct("Whisky 45%", "4 cl");
+        Product P402 = pc4.createProduct("Whiskey 45%", "4 cl");
         P402.createPrice(50, Unit.DKK, sitFred);
-        Product P403 = pc4.createProduct("Whisky 43%", "50 cl rør");
+        Product P403 = pc4.createProduct("Whiskey 43%", "50 cl rør");
         P403.createPrice(499, Unit.DKK, sitStand);
         P403.createPrice(499, Unit.DKK, sitFred);
-        Product P404 = pc4.createProduct("Whisk 43", " u/ egesplint");
+        Product P404 = pc4.createProduct("Whiskey 43%", " u/ egesplint");
         P404.createPrice(300, Unit.DKK, sitStand);
         P404.createPrice(300, Unit.DKK, sitFred);
-        Product P405 = pc4.createProduct("Whisk 43", " m/ egesplint");
+        Product P405 = pc4.createProduct("Whiskey 43%", " m/ egesplint");
         P405.createPrice(350, Unit.DKK, sitStand);
         P405.createPrice(350, Unit.DKK, sitFred);
-        Product P406 = pc4.createProduct("Whiskyglas & Brikker", "2 stk");
+        Product P406 = pc4.createProduct("Whiskeyglas & Brikker", "2 stk");
         P406.createPrice(80, Unit.DKK, sitStand);
         P406.createPrice(80, Unit.DKK, sitFred);
         Product P407 = pc4.createProduct("Liquer of Aarhus", "");
@@ -272,15 +272,15 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P509.createDeposit(200, Unit.DKK, sitStand);
 
         ProductCategory pc6 = createProductCategory("Kulsyre", "");
-        Product P601 = pc6.createProduct("6 kg", "");
+        Product P601 = pc6.createProduct("Kulsyre - 6 kg", "");
         P601.createPrice(400, Unit.DKK, sitStand);
         P601.createPrice(400, Unit.DKK, sitFred);
         P601.createDeposit(1000, Unit.DKK, sitStand);
-        Product P602 = pc6.createProduct("4 kg", "");
-        Product P603 = pc6.createProduct("10 kg", "");
+        Product P602 = pc6.createProduct("Kulsyre - 4 kg", "");
+        Product P603 = pc6.createProduct("Kulsyre - 10 kg", "");
 
         ProductCategory pc7 = createProductCategory("Malt", "");
-        Product P701 = pc7.createProduct("25 kg", "");
+        Product P701 = pc7.createProduct("Malt", "25 kg");
         P701.createPrice(300, Unit.DKK, sitStand);
 
         ProductCategory pc8 = createProductCategory("Beklædning", "");
@@ -301,13 +301,13 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P902.createPrice(400, Unit.DKK, sitStand);
         Product P903 = pc9.createProduct("Bar med flere haner", "");
         P903.createPrice(500, Unit.DKK, sitStand);
-        Product P904 = pc9.createProduct("Levering", "");
+        Product P904 = pc9.createProduct("Anlæg Levering", "");
         P904.createPrice(500, Unit.DKK, sitStand);
         Product P905 = pc9.createProduct("Krus", "");
         P905.createPrice(60, Unit.DKK, sitStand);
 
         ProductCategory pc10 = createProductCategory("Krus", "");
-        Product P1001 = pc10.createProduct("Uanset størrelse", "");
+        Product P1001 = pc10.createProduct("Krus", "Uanset størrelse");
         P1001.createPrice(15, Unit.DKK, sitStand);
 
         ProductCategory pc11 = createProductCategory("Sampakninger", "");
@@ -334,11 +334,11 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P1107.createPrice(370, Unit.DKK, sitFred);
 
         ProductCategory pc12 = createProductCategory("Rundvisning", "");
-        Product P1201 = pc12.createProduct("Standard", "Indenfor arbejdstid");
+        Product P1201 = pc12.createProduct("Rundvisning - Standard", "Indenfor arbejdstid");
         P1201.createPrice(100, Unit.DKK, sitStand);
-        Product P1202 = pc12.createProduct("Studerende", "");
+        Product P1202 = pc12.createProduct("Rundvisning - Studerende", "");
         P1202.createPrice(70, Unit.DKK, sitStand);
-        Product P1203 = pc12.createProduct("Aften", "Udenfor arbejdstid");
+        Product P1203 = pc12.createProduct("Rundvisning - Aften", "Udenfor arbejdstid");
         P1203.createPrice(150, Unit.DKK, sitStand);
     }
 
