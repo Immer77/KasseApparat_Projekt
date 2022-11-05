@@ -2,13 +2,18 @@ package gui;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.ProductOverviewController;
+import model.modelklasser.Price;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
 import storage.Storage;
@@ -19,6 +24,9 @@ public class ProductOverviewTab extends GridPane {
     private final ListView<ProductCategory> lvwCategories = new ListView<>();
     private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
+    private ListView<HBox> lvwPrices = new ListView<>();
+
+    private Button btnCreatePrice;
 
     /**
      * Creates a new ProductOverviewTab, for showing an overview of all ProductCategories and Products. Also allows creation of those objects.
@@ -40,25 +48,40 @@ public class ProductOverviewTab extends GridPane {
         this.add(lvwProducts, 1, 1);
         lvwProducts.setPrefWidth(200);
         lvwProducts.setPrefHeight(300);
-        lvwProducts.getItems().setAll();
+
+        //List view of Prices
+        this.add(lvwPrices, 2, 1);
+        lvwPrices.setPrefWidth(200);
+        lvwPrices.setPrefHeight(300);
 
         //Listener for category list
-        ChangeListener<ProductCategory> listener = (ov, o, n) -> this.productCategoryItemSelected();
-        lvwCategories.getSelectionModel().selectedItemProperty().addListener(listener);
+        ChangeListener<ProductCategory> categoryListener = (ov, o, n) -> this.productCategoryItemSelected();
+        lvwCategories.getSelectionModel().selectedItemProperty().addListener(categoryListener);
+
+        //Listener for product list
+        ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
+        lvwProducts.getSelectionModel().selectedItemProperty().addListener(productListener);
 
         //create category button
         Button btnCreateProductCategory = new Button("Ny Produktkategori");
+        btnCreateProductCategory.setMaxWidth(Double.MAX_VALUE);
         this.add(btnCreateProductCategory, 0, 0);
         btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
 
         //create product button
         btnCreateProduct = new Button("Nyt Produkt");
+        btnCreateProduct.setMaxWidth(Double.MAX_VALUE);
         this.add(btnCreateProduct, 1, 0);
         btnCreateProduct.setOnAction(event -> this.createProductAction());
 
+        //CreatePrice button
+        btnCreatePrice = new Button("Ny Pris");
+        btnCreatePrice.setMaxWidth(Double.MAX_VALUE);
+        this.add(btnCreatePrice, 2,0);
+        btnCreatePrice.setOnAction(event -> this.createPriceAction());
+
         //initial methods
-        this.initProduct();
-        updateControls();
+        this.initContent();
     }
 
     // -------------------------------------------------------------------------
@@ -66,11 +89,15 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Creates initial products and categories
      */
-    private void initProduct() {
+    private void initContent() {
+        //TODO - Remove this from final version. It creates initial objects to storage
         if (productController instanceof ProductOverviewController) {
             ProductOverviewController controller = (ProductOverviewController) productController;
             controller.initContent();
         }
+
+        btnCreatePrice.setDisable(true);
+        updateControls();
 
     }
 
@@ -81,7 +108,6 @@ public class ProductOverviewTab extends GridPane {
      */
     private void productCategoryItemSelected() {
         updateProductList();
-        productButtonGreyout();
     }
 
 
@@ -129,8 +155,6 @@ public class ProductOverviewTab extends GridPane {
             updateCategoryList();
             updateProductList();
 
-            productButtonGreyout();
-
         } catch (NullPointerException npe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Null Pointer Exception");
@@ -146,8 +170,10 @@ public class ProductOverviewTab extends GridPane {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
             lvwProducts.getItems().setAll(selectedCategory.getProducts());
+            btnCreateProduct.setDisable(false);
         } else {
             lvwProducts.getItems().clear();
+            btnCreateProduct.setDisable(true);
         }
     }
 
@@ -159,19 +185,52 @@ public class ProductOverviewTab extends GridPane {
         lvwCategories.getItems().setAll(productController.getProductCategories());
     }
 
-    /**
-     * Helper method. Greys out btnCreateProduct button, when no ProductCategory is selected.
-     */
-    private void productButtonGreyout() {
-        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+    public void productItemSelected() {
+        updatePriceList();
+    }
 
-        if (selectedCategory == null) {
-            btnCreateProduct.setDisable(true);
+    public void updatePriceList() {
 
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+
+        lvwPrices.getItems().clear();
+
+        if (selectedProduct != null) {
+            for (Price price : selectedProduct.getPrices()) {
+                //Create label for Situation
+                Label lblSituation = new Label(price.getSituation().getName());
+                lblSituation.setPrefWidth(70);
+
+
+                Label lblseperator = new Label(" - ");
+                lblseperator.setAlignment(Pos.BASELINE_CENTER);
+                lblseperator.setPrefWidth(30);
+
+                //Create label for value
+                Label lblValue = new Label("" + price.getValue());
+                lblValue.setAlignment(Pos.BASELINE_RIGHT);
+                HBox.setHgrow(lblValue, Priority.ALWAYS);
+
+                //Create label for Unit
+                Label lblUnit = new Label("" + price.getUnit());
+                lblUnit.setAlignment(Pos.BASELINE_RIGHT);
+
+                //Hbox to hold the labels
+                HBox hbxPrice = new HBox(lblSituation, lblseperator, lblValue, lblUnit);
+                hbxPrice.setSpacing(5);
+                hbxPrice.setMaxWidth(Double.MAX_VALUE);
+                lvwPrices.getItems().add(hbxPrice);
+
+                btnCreatePrice.setDisable(false);
+            }
         } else {
-            btnCreateProduct.setDisable(false);
-
+            btnCreatePrice.setDisable(true);
         }
     }
+
+    public void createPriceAction () {
+        //TODO - Create a new price when button is pressed
+    }
+
 
 }
