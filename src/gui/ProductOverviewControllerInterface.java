@@ -32,6 +32,13 @@ public interface ProductOverviewControllerInterface {
     List<ProductCategory> getProductCategories ();
 
     /**
+     * Creates a situation and adds it to the situations list
+     * @param name of the situation
+     * @return situation
+     */
+    public Situation createSituation(String name);
+
+    /**
      * Returns a list of all situations
      * @return a List of Situations
      */

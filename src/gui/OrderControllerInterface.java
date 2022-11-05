@@ -7,12 +7,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface OrderControllerInterface {
-    /**
-     * Creates a situation
-     * @param name name of the situation
-     * @return object of situation
-     */
-    Situation createSituation(String name);
 
     /**
      * Gets all the situations
