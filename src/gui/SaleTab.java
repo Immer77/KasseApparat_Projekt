@@ -335,7 +335,7 @@ public class SaleTab extends GridPane {
         for (OrderLine ol : tempOrder.getOrderLines()) {
 
             //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(0, Double.MAX_VALUE, ol.getAmount());
+            Spinner<Integer> spnAmount = new Spinner<>(0, Integer.MAX_VALUE, ol.getAmount());
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
             ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);

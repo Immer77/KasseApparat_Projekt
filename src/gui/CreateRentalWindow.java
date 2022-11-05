@@ -48,12 +48,13 @@ public class CreateRentalWindow extends Stage {
 
         this.setTitle(title);
         GridPane pane = new GridPane();
-        this.initContent(pane);
+
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
         orderController = new OrderController(Storage.getStorage());
+        this.initContent(pane);
     }
 
     /**
