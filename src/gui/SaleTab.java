@@ -460,6 +460,7 @@ public class SaleTab extends GridPane {
      */
     private void confirmOrderAction() {
         updateFixedPrice();
+        updateDiscount();
 
         EndOrderWindow endOrderWindow = new EndOrderWindow("Ordrebekræftigelse", new Stage(), tempOrder);
         endOrderWindow.showAndWait();
