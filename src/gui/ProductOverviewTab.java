@@ -154,6 +154,7 @@ public class ProductOverviewTab extends GridPane {
 
             updateCategoryList();
             updateProductList();
+            updatePriceList();
 
         } catch (NullPointerException npe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -229,7 +230,16 @@ public class ProductOverviewTab extends GridPane {
     }
 
     public void createPriceAction () {
-        //TODO - Create a new price when button is pressed
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+
+        CreatePriceWindow newPriceWindow = new CreatePriceWindow("Ny Pris", selectedProduct, new Stage());
+        newPriceWindow.showAndWait();
+
+        updateControls();
+
+        lvwCategories.getSelectionModel().select(selectedCategory);
+        lvwProducts.getSelectionModel().select(selectedProduct);
     }
 
 

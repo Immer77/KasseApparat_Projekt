@@ -1,9 +1,8 @@
 package gui;
 
-import model.controller.ProductOverviewController;
-import model.controller.StorageInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public interface ProductOverviewControllerInterface {
      * @param description the description of the product
      * @return returns the new Product.
      */
-    Product createProduct (ProductCategory productCategory, String name, String description);
+    Product createProductForCategory(ProductCategory productCategory, String name, String description);
 
     /**
      * Returns all current ProductCategories
@@ -32,5 +31,10 @@ public interface ProductOverviewControllerInterface {
      */
     List<ProductCategory> getProductCategories ();
 
+    /**
+     * Returns a list of all situations
+     * @return a List of Situations
+     */
+    List<Situation> getSituations ();
 
 }

@@ -3,6 +3,7 @@ package model.controller;
 import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ProductOverviewController implements ProductOverviewControllerInter
      * @param description the description of the product
      * @return returns the new Product.
      */
-    public Product createProduct (ProductCategory productCategory, String name, String description) {
+    public Product createProductForCategory(ProductCategory productCategory, String name, String description) {
         Product current = productCategory.createProduct(name, description);
         return current;
     }
@@ -65,6 +66,15 @@ public class ProductOverviewController implements ProductOverviewControllerInter
     public List<ProductCategory> getProductCategories () {
         return storage.getProductCategories();
     }
+
+    /**
+     * Returns a list of all situations
+     * @return a List of Situations
+     */
+    public List<Situation> getSituations () {
+        return storage.getSituations();
+    }
+
 
     /**
      * Creates initial contents for storage

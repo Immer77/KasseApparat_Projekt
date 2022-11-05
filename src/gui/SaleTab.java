@@ -90,10 +90,6 @@ public class SaleTab extends GridPane {
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
         this.add(vbxOrderTotal, 5, 6);
 
-/*        HBox hbxOrderTotal = new HBox(lblOrderTotal, vbxOrderTotal);
-        hbxOrderTotal.setSpacing(10);
-        hbxOrderTotal.setAlignment(Pos.TOP_RIGHT);*/
-
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
@@ -337,7 +333,7 @@ public class SaleTab extends GridPane {
         for (OrderLine ol : tempOrder.getOrderLines()) {
 
             //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
+            Spinner<Integer> spnAmount = new Spinner<>(0, Double.MAX_VALUE, ol.getAmount());
             spnAmount.setEditable(true);
             spnAmount.setPrefWidth(60);
             ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);

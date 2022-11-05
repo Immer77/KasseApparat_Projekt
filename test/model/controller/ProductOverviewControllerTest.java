@@ -50,7 +50,7 @@ class ProductOverviewControllerTest {
         String description = "6% alc. pride piler";
 
         //Act
-        Product testProduct = controller.createProduct(productCategory, name,description);
+        Product testProduct = controller.createProductForCategory(productCategory, name,description);
 
         //Assert
         assertEquals("Regnbue Bajer",testProduct.getName());
