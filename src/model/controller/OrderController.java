@@ -181,9 +181,13 @@ public class OrderController implements OrderControllerInterface {
         rental3.createOrderLine(5,getProductCategories().get(1).getProducts().get(2).getPrices().get(0));
         rental4.createOrderLine(1,getProductCategories().get(1).getProducts().get(3).getPrices().get(1));
 
+        Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14,30));
+        Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15,00));
+        Tour tour3 = createTour(LocalDate.of(2022, 11, 10), LocalTime.of(10,00));
 
-
-
+        tour1.createOrderLine(1, getProductCategories().get(12).getProducts().get(0).getPrices().get(0));
+//        tour2.createOrderLine(1, getProductCategories().get(10).getProducts().get(1).getPrices().get(1));
+//        tour3.createOrderLine(1, getProductCategories().get(11).getProducts().get(0).getPrices().get(0));
 
     }
 }
