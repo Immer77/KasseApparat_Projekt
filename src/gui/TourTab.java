@@ -46,7 +46,7 @@ public TourTab(){
     this.add(splitPane, 0, 1);
     // All the split in the splitpane left, mid and right
     VBox leftControl = new VBox(new Label("Bestilte Rundvisninger"));
-    VBox midControl = new VBox(new Label("afsluttede Rundvisninger"));
+    VBox midControl = new VBox(new Label("Afsluttede Rundvisninger"));
     VBox rightControl = new VBox(new Label("Rundvisningsinformation"));
 
     // To control the buttons
@@ -102,10 +102,10 @@ public TourTab(){
 private void updateFieldsInfo() {
     String name = lvwActiveTours.getSelectionModel().getSelectedItem().getName();
     String description = lvwActiveTours.getSelectionModel().getSelectedItem().getDescription();
-//    LocalTime time = lvwActiveTours.getSelectionModel().getSelectedItem().getTime();
+    LocalTime time = lvwActiveTours.getSelectionModel().getSelectedItem().getTime();
     txfName.setText(name);
     txaDescription.setText(description + lvwActiveTours.getSelectionModel().getSelectedItem().getOrderLines());
-//    timePicker.setText(String.valueOf(time));
+    timePicker.setText(String.valueOf(time));
 }
 
     /**
@@ -134,7 +134,12 @@ private void createTour(){
      * Updates the listview in the pane
      */
 public void updateControls(){
+//    lvwTours.getItems().setAll(controller.getTours());
     lvwActiveTours.getItems().setAll(controller.getTours());
+//    lvwActiveTours.getItems().setAll(controller.getTours().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate())));
+
 }
+
+
 
 }

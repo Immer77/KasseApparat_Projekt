@@ -43,7 +43,7 @@ public class Tour extends Order{
 
     @Override
     public String toString() {
-        return " Dato: " + getEndDate() + " Tidspunkt: " + time;
+        return "Kunde: " + name + " Dato: " + getEndDate();
     }
 
 }

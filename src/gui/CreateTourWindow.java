@@ -38,7 +38,6 @@ public class CreateTourWindow extends Stage {
     private TextField txfFixedTotal;
     private TextField txfTidspunkt = new TextField();
     private LocalDateTime tidspunkt;
-    // Lav 2 choice boxes istedet for textfield. Måske kombo box.
 
     // Constructor to createRentalWindows
     public CreateTourWindow(String title, Stage owner){

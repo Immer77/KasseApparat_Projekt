@@ -216,7 +216,7 @@ public class OrderController implements OrderControllerInterface {
 
         Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14,30));
         Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15,00));
-        Tour tour3 = createTour(LocalDate.of(2022, 11, 10), LocalTime.of(10,00));
+        Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10,00));
 
         tour1.setName("John");
         tour1.setDescription("Potentiel lærling");
