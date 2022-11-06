@@ -69,7 +69,7 @@ public class RentalTab extends GridPane {
         // List of closed rentals
         lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(300);
-        lvwRentals.getItems().setAll();
+        lvwRentals.getItems().setAll(controller.getDoneRentals());
         midControl.getChildren().add(lvwRentals);
         midControl.setMinWidth(200);
 
@@ -101,7 +101,6 @@ public class RentalTab extends GridPane {
 
         // Updatescontrols
         updateControls();
-
     }
 
     /**
@@ -143,7 +142,8 @@ public class RentalTab extends GridPane {
      * Updates the listview in the pane
      */
     public void updateControls() {
-        lvwActiveRentals.getItems().setAll(controller.getRentals());
+        lvwActiveRentals.getItems().setAll(controller.getActiveRentals());
+        lvwRentals.getItems().setAll(controller.getDoneRentals());
 
     }
 
