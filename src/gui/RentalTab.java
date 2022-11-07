@@ -18,7 +18,6 @@ import model.modelklasser.OrderLine;
 import model.modelklasser.Rental;
 import storage.Storage;
 
-import java.awt.*;
 import java.time.LocalDate;
 
 public class RentalTab extends GridPane {
@@ -29,7 +28,7 @@ public class RentalTab extends GridPane {
     private SplitPane splitPane;
     private final TextField txfName;
     private final TextArea txaDescription;
-    private final TextField datePicker;
+    private final TextField txfDatePicker;
     private Order order;
 
 
@@ -43,7 +42,7 @@ public class RentalTab extends GridPane {
         splitPane = new SplitPane();
         txfName = new TextField();
         txaDescription = new TextArea();
-        datePicker = new TextField();
+        txfDatePicker = new TextField();
         order = controller.createOrder();
 
         this.setPadding(new Insets(20));
@@ -72,12 +71,16 @@ public class RentalTab extends GridPane {
         ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateFieldsInfo();
         lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
 
+
         // List of closed rentals
         lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(300);
         lvwRentals.getItems().setAll(controller.getDoneRentals());
+//        ChangeListener<Order> rentalListener = (ov, o, v) -> this.updateFieldsInfoForClosedRentals();
+        lvwRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
+
         midControl.getChildren().add(lvwRentals);
-        midControl.setMinWidth(200);
+        midControl.setMinWidth(250);
 
         // Button to create a new rental
         Button btnRental = new Button("Opret udlejning");
@@ -92,12 +95,12 @@ public class RentalTab extends GridPane {
         // Textfields and area to hold the information
         txfName.setEditable(false);
         txaDescription.setEditable(false);
-        datePicker.setEditable(false);
+        txfDatePicker.setEditable(false);
 
         // Adding all textfields and area to the right split control pane
         rightControl.getChildren().add(txfName);
         rightControl.getChildren().add(txaDescription);
-        rightControl.getChildren().add(datePicker);
+        rightControl.getChildren().add(txfDatePicker);
 
 
         // Adding all active rentals to leftcontrol split pane
@@ -109,23 +112,63 @@ public class RentalTab extends GridPane {
         updateControls();
     }
 
+    private void updateFieldsInfoForClosedRentals() {
+        try {
+            lvwActiveRentals.getSelectionModel().select(-1);
+            txfName.clear();
+            txaDescription.clear();
+            txfDatePicker.clear();
+            String name = lvwRentals.getSelectionModel().getSelectedItem().getName();
+            String description = lvwRentals.getSelectionModel().getSelectedItem().getDescription();
+            LocalDate date = lvwRentals.getSelectionModel().getSelectedItem().getEndDate();
+
+//            double result = calculateFinalPrice();
+
+            txfName.setText(name);
+            txaDescription.setText(description + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines());
+            txfDatePicker.setText(String.valueOf(date));
+
+        }catch (NullPointerException ne){
+            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
+        }
+    }
+
     /**
      * Updates fields in right control pane
      */
     private void updateFieldsInfo() {
         try {
-            String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
-            String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
-            LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
-            txfName.setText(name);
+            if(!lvwActiveRentals.getSelectionModel().getSelectedItem().getName().isBlank()){
+                txfName.clear();
+                txaDescription.clear();
+                txfDatePicker.clear();
+                String name = lvwActiveRentals.getSelectionModel().getSelectedItem().getName();
+                String description = lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription();
+                LocalDate date = lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate();
+                txfName.setText(name);
 
-            double result = calculateFinalPrice();
+                double result = calculateFinalPrice();
 
-            txaDescription.setText(description + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal:" + result);
-            datePicker.setText(String.valueOf(date));
+                txaDescription.setText(description + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal:" + result);
+                txfDatePicker.setText(String.valueOf(date));
+            }else{
+                txfName.clear();
+                txaDescription.clear();
+                txfDatePicker.clear();
+                String name = lvwRentals.getSelectionModel().getSelectedItem().getName();
+                String description = lvwRentals.getSelectionModel().getSelectedItem().getDescription();
+                LocalDate date = lvwRentals.getSelectionModel().getSelectedItem().getEndDate();
+
+//            double result = calculateFinalPrice();
+
+                txfName.setText(name);
+                txaDescription.setText(description + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines());
+                txfDatePicker.setText(String.valueOf(date));
+            }
+
 
         }catch (NullPointerException ne){
-            throw new RuntimeException("Fejler med navn" ,ne);
+            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
         }
 
     }
@@ -138,22 +181,12 @@ public class RentalTab extends GridPane {
                 finalPrice = lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice();
                 break;
             }
-            if (lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount() != 0) {
-                finalPrice += orderLine.getPrice().getValue();
-            } else {
-                finalPrice += orderLine.getPrice().getValue();
-            }
+            finalPrice += orderLine.getAmount() * orderLine.getPrice().getValue();
 
         }
-        double percentageMultiplier = 1.0;
+
         double percentageDiscount = lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount();
-
-        if (percentageDiscount >= 0 && percentageDiscount <= 100) {
-            percentageMultiplier = (100 - percentageDiscount) / 100;
-        } else {
-            throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
-        }
-        finalPrice *= percentageMultiplier;
+        finalPrice *= (100 - percentageDiscount) / 100;
 
         return finalPrice;
     }
@@ -162,9 +195,17 @@ public class RentalTab extends GridPane {
      * Method to open endrentalwindow where one ends the selectedf rental
      */
     private void finishRental() {
-        Stage stage = new Stage(StageStyle.UTILITY);
-        EndRentalWindow endRentalWindow = new EndRentalWindow("Afslut udlejning", stage, lvwActiveRentals.getSelectionModel().getSelectedItem());
-        endRentalWindow.showAndWait();
+        try {
+            Stage stage = new Stage(StageStyle.UTILITY);
+            EndRentalWindow endRentalWindow = new EndRentalWindow("Afslut udlejning", stage, lvwActiveRentals.getSelectionModel().getSelectedItem());
+            endRentalWindow.showAndWait();
+        }catch (NullPointerException ne){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Vælg en udlejning");
+            alert.setHeaderText("Der skal vælges en udlejning");
+            alert.show();
+        }
+
 
         updateControls();
     }

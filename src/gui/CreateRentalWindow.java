@@ -16,6 +16,7 @@ import javafx.stage.StageStyle;
 import model.controller.OrderController;
 import model.controller.ProductOverviewController;
 import model.modelklasser.*;
+import org.mockito.internal.matchers.Or;
 import storage.Storage;
 
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class CreateRentalWindow extends Stage {
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
     private double calculatedFinalPrice = 0.0;
+    private TextField txfDepositPrice;
 
 
     // Constructor to createRentalWIndows
@@ -104,22 +106,33 @@ public class CreateRentalWindow extends Stage {
         orderLineView.setPrefWidth(400);
         pane.add(orderLineView, 7, 0, 3, 3);
 
+        Label lblDepositPrice = new Label("Pant");
+        lblDepositPrice.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
+        txfDepositPrice = new TextField();
+        txfDepositPrice.setPrefWidth(40);
+        txfDepositPrice.setEditable(false);
+        txfDepositPrice.setBackground(Background.EMPTY);
+        txfDepositPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+        pane.add(lblDepositPrice,8,4);
+        pane.add(txfDepositPrice,9,4);
+
         //Adds field and label for calculated total of the Order
         Label lblOrderTotal = new Label("Total:");
         lblOrderTotal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblOrderTotal, 8, 4);
+        pane.add(lblOrderTotal, 8, 5);
 
         vbxOrderTotal = new VBox();
         vbxOrderTotal.setPrefWidth(75);
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
-        pane.add(vbxOrderTotal, 9, 4);
+        pane.add(vbxOrderTotal, 9, 5);
 
 
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
         lblrabat.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblrabat, 8, 5);
+        pane.add(lblrabat, 8, 6);
 
         txfPercentDiscount = new TextField("" + 0);
         txfPercentDiscount.setPrefWidth(75);
@@ -131,12 +144,12 @@ public class CreateRentalWindow extends Stage {
 
         HBox hbxPercentDiscount = new HBox(txfPercentDiscount, lblPercent);
         hbxPercentDiscount.setAlignment(Pos.BASELINE_RIGHT);
-        pane.add(hbxPercentDiscount, 9, 5);
+        pane.add(hbxPercentDiscount, 9, 6);
 
         //Add field for a fixed total price
         Label lblFixedPrice = new Label("Aftalt Total: ");
         lblFixedPrice.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblFixedPrice, 8, 6);
+        pane.add(lblFixedPrice, 8, 7);
 
         txfFixedTotal = new TextField();
         txfFixedTotal.setPrefWidth(75);
@@ -147,15 +160,15 @@ public class CreateRentalWindow extends Stage {
 
         HBox hbxFixedTotal = new HBox(txfFixedTotal);
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
-        hbxFixedTotal.setPadding(new Insets(4, 8, 5, 0));
+        hbxFixedTotal.setPadding(new Insets(4, 9, 5, 0));
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
-        pane.add(hbxFixedTotal, 9, 6);
+        pane.add(hbxFixedTotal, 9, 7);
 
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblFinal, 8, 7);
+        pane.add(lblFinal, 8, 8);
 
         vbxFinalPrice = new VBox();
         vbxFinalPrice.setPrefWidth(75);
@@ -164,21 +177,21 @@ public class CreateRentalWindow extends Stage {
 
         HBox hbxFinalPrice = new HBox(vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
-        hbxFinalPrice.setPadding(new Insets(32, 8, 0, 0));
-        pane.add(hbxFinalPrice, 9, 7);
+        hbxFinalPrice.setPadding(new Insets(32, 9, 0, 0));
+        pane.add(hbxFinalPrice, 9, 8);
 
 
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Opret Udlejning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
         btnConfirmOrder.setOnAction(event -> oKAction());
-        pane.add(btnConfirmOrder, 7, 8, 3, 1);
+        pane.add(btnConfirmOrder, 7, 10, 3, 1);
 
         // Adds a cancel button
         Button btnCancel = new Button("Afbryd");
         btnCancel.setMaxWidth(Double.MAX_VALUE);
         btnCancel.setOnAction(event -> cancelAction());
-        pane.add(btnCancel, 6, 8, 3, 1);
+        pane.add(btnCancel, 6, 10, 3, 1);
 
 
         //Initiates examples of situations and prices for products
@@ -445,6 +458,10 @@ public class CreateRentalWindow extends Stage {
                 alertNFE.showAndWait();
             }
 
+
+            txfDepositPrice.setText(String.valueOf(calculatDepositPrice()) + Unit.DKK);
+
+            calculatedFinalPrice += calculatDepositPrice();
             String finalPriceText = calculatedFinalPrice + " " + Unit.DKK;
             Label lblFinalPrice = new Label(finalPriceText);
             lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
@@ -460,10 +477,13 @@ public class CreateRentalWindow extends Stage {
             lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
             Label lblManualFinalPrice = new Label(txfFixedTotal.getText() + " " + Unit.DKK);
             lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            Label lblDepositPrice = new Label("Pant: " + calculatDepositPrice());
+            lblDepositPrice.setAlignment(Pos.BASELINE_RIGHT);
             vbxFinalPrice.getChildren().add(lblAgreedTotal);
             vbxFinalPrice.getChildren().add(lblManualFinalPrice);
-        }
+            vbxFinalPrice.getChildren().add(lblDepositPrice);
 
+        }
 
     }
 
@@ -481,6 +501,16 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
+    private double calculatDepositPrice(){
+        double sumOfPant = 0.0;
+        for(OrderLine orderLine : order.getOrderLines()){
+            if(orderLine.getPrice().getProduct().getDepositPrice() != null){
+                sumOfPant += (orderLine.getAmount() * orderLine.getPrice().getProduct().getDepositPrice().getValue());
+            }
+
+        }
+        return sumOfPant;
+    }
 
     /**
      * Method to update discount on the order
@@ -545,5 +575,13 @@ public class CreateRentalWindow extends Stage {
             alertNFE.setContentText(nfe.getMessage());
             alertNFE.showAndWait();
         }
+    }
+
+    private void updateDepositPrice(){
+        double sumOfPant = 0.0;
+        for(OrderLine orderLine : order.getOrderLines()){
+            sumOfPant += orderLine.getPrice().getProduct().getDepositPrice().getValue();
+        }
+        txfDepositPrice.setText(String.valueOf(sumOfPant));
     }
 }
