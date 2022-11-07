@@ -143,7 +143,7 @@ public class EndRentalWindow extends Stage {
         Label lblRabat = new Label("Rabat: ");
         pane.add(lblRabat, 1, 3);
 
-        txfRabat = new TextField();
+        txfRabat = new TextField("" + rental.getPercentDiscount() + "%");
         txfRabat.setPrefWidth(45);
         txfRabat.setMaxWidth(90);
 
@@ -157,7 +157,7 @@ public class EndRentalWindow extends Stage {
         Label lblFixedPrice = new Label("Fixed price: ");
         pane.add(lblFixedPrice, 1, 4);
 
-        txfFixedPrice = new TextField();
+        txfFixedPrice = new TextField("" + rental.getFixedPrice() + " " + rental.getFixedPriceUnit());
         txfFixedPrice.setPrefWidth(45);
         txfFixedPrice.setMaxWidth(90);
 
