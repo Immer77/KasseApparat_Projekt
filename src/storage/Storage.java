@@ -101,4 +101,14 @@ public class Storage implements StorageInterface {
             situations.add(situation);
         }
     }
+
+    /**
+     * Removes the given situation from storage
+     * @param situation the situation object to remove from storage
+     */
+    public void removeSituation (Situation situation) {
+        if(situations.contains(situation)) {
+            situations.remove(situation);
+        }
+    }
 }

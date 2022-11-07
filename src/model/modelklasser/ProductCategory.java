@@ -45,6 +45,22 @@ public class ProductCategory {
         return new ArrayList<>(products);
     }
 
+    /**
+     * Sets a new title for the product.
+     * @param title the new title. Cannot be blank
+     */
+    public void setTitle(String title) {
+        if (title.isBlank()) {
+            throw new IllegalArgumentException("Titlen på en produktkategory kan ikke være blank");
+        } else {
+            this.title = title;
+        }
+
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public String toString() {
