@@ -3,7 +3,7 @@ package model.modelklasser;
 import java.time.LocalDate;
 
 //------- SUBCLASS OF ORDER --------//
-public class Rental extends Order{
+public class Rental extends Order {
     // Fields variables
     private String name;
     private String description;
@@ -47,21 +47,25 @@ public class Rental extends Order{
     }
 
     @Override
-    public LocalDate getEndDate(){
+    public LocalDate getEndDate() {
         return endDate;
     }
 
     /**
      * Method to calculate the deposit
+     *
      * @param unit which unit it uses to calculate the price
      * @return
      */
 
-    public double calculateDeposit(Unit unit){
+    public double calculateDeposit(Unit unit) {
         double sumPrice = 0.0;
-        for (OrderLine orderLine : super.getOrderLines()){
+        for (OrderLine orderLine : super.getOrderLines()) {
             if (orderLine.getPrice().getProduct().getDepositPrice().getUnit().equals(unit)) {
-                sumPrice += orderLine.getPrice().getProduct().getDepositPrice().getValue();
+                sumPrice += orderLine.getPrice().getProduct().getDepositPrice().getValue() * orderLine.getAmount();
+            }
+            else {
+                throw new NullPointerException("Pant blev ikke fundet på produktet: " + orderLine.getPrice().getProduct().getName());
             }
         }
         return sumPrice;
