@@ -16,31 +16,37 @@ import storage.Storage;
 import java.time.LocalTime;
 
 public class TourTab extends GridPane {
-    private final ListView<Tour> lvwTours = new ListView<>();
-    private final ListView<Tour> lvwActiveTours = new ListView<>();
-    private SplitPane splitPane = new SplitPane();
+    private final ListView<Tour> lvwActiveTours;
+    private final ListView<Tour> lvwTours ;
     private OrderControllerInterface controller;
+    private SplitPane splitPane;
+    private final TextField txfName;
+    private final TextArea txaDescription;
+    private final TextField timePicker;
     private Order order;
-    private final TextField txfName = new TextField();
-    private final TextArea txaDescription = new TextArea();
-    private final TextField timePicker = new TextField();
 
     /**
      * Tour tab to control all the tours
      */
 public TourTab(){
+    lvwActiveTours = new ListView<>();
+    lvwTours = new ListView<>();
+    splitPane = new SplitPane();
+    txfName = new TextField();
+    txaDescription = new TextArea();
+    timePicker = new TextField();
+    controller = new OrderController(Storage.getStorage());
+    order = controller.createOrder();
+
     this.setPadding(new Insets(20));
     this.setHgap(10);
     this.setVgap(10);
-
-    controller = new OrderController(Storage.getStorage());
-    order = controller.createOrder();
 
     // Adding a splitpane to the pane
     this.add(splitPane, 0, 1);
     // All the split in the splitpane left, mid and right
     VBox leftControl = new VBox(new Label("Bestilte Rundvisninger"));
-    VBox midControl = new VBox(new Label("afsluttede Rundvisninger"));
+    VBox midControl = new VBox(new Label("Afsluttede Rundvisninger"));
     VBox rightControl = new VBox(new Label("Rundvisningsinformation"));
 
     // To control the buttons
@@ -56,9 +62,9 @@ public TourTab(){
     lvwActiveTours.getSelectionModel().selectedItemProperty().addListener(tourChangeListener);
 
     // List of closed tours
-    lvwActiveTours.setPrefWidth(100);
-    lvwActiveTours.setPrefHeight(300);
-    lvwActiveTours.getItems().setAll();
+    lvwTours.setPrefWidth(100);
+    lvwTours.setPrefHeight(300);
+    lvwTours.getItems().setAll();
     midControl.getChildren().add(lvwTours);
     midControl.setMinWidth(200);
 
@@ -102,16 +108,25 @@ private void updateFieldsInfo() {
     timePicker.setText(String.valueOf(time));
 }
 
+    /**
+     * Method to open endTourWindow where one ends the selectedf tour
+     */
 private void finishTour(){
     Stage stage = new Stage(StageStyle.UTILITY);
-    //TODO MAGNUS> E>R HER
+    EndTourWindow endTourWindow = new EndTourWindow("Afslut rundtur",stage, lvwActiveTours.getSelectionModel().getSelectedItem());
+    endTourWindow.showAndWait();
+
     updateControls();
 }
 
+    /**
+     * Opens up a tour windows where its possible to create a tour
+     */
 private void createTour(){
     Stage stage = new Stage(StageStyle.UTILITY);
     CreateTourWindow tourWindow = new CreateTourWindow("Ny rundvisning", stage);
     tourWindow.showAndWait();
+
     updateControls();
 }
 
@@ -119,7 +134,12 @@ private void createTour(){
      * Updates the listview in the pane
      */
 public void updateControls(){
+//    lvwTours.getItems().setAll(controller.getTours());
     lvwActiveTours.getItems().setAll(controller.getTours());
+//    lvwActiveTours.getItems().setAll(controller.getTours().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate())));
+
 }
+
+
 
 }

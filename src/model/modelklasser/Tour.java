@@ -41,5 +41,9 @@ public class Tour extends Order{
 
     //Methods - Other ------------------------------------------------------------------------------------------------
 
+    @Override
+    public String toString() {
+        return "Kunde: " + name + " Dato: " + getEndDate();
+    }
 
 }

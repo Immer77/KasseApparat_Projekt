@@ -3,6 +3,7 @@ package gui;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -30,12 +31,13 @@ public class CreateTourWindow extends Stage {
     private VBox orderLineView;
     private Order order;
     private VBox vbxOrderTotal;
+    private Accordion accProductOverview;
+
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
     private TextField txfTidspunkt = new TextField();
     private LocalDateTime tidspunkt;
-    // Lav 2 choice boxes istedet for textfield. Måske kombo box.
 
     // Constructor to createRentalWindows
     public CreateTourWindow(String title, Stage owner){
@@ -54,6 +56,7 @@ public class CreateTourWindow extends Stage {
         this.setScene(scene);
 
         orderController = new OrderController(Storage.getStorage());
+        this.initContent(pane);
         //Initialises an order
         order = orderController.createOrder();
     }
@@ -89,6 +92,12 @@ public class CreateTourWindow extends Stage {
 
         //-------------------------------------------
 
+        //Adds Accordion control for showing of categories and products
+        accProductOverview = new Accordion();
+        accProductOverview.setMaxWidth(Double.MAX_VALUE);
+        accProductOverview.setPrefWidth(250);
+        accProductOverview.setPadding(Insets.EMPTY);
+        pane.add(accProductOverview, 4, 0, 3, 2);
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -179,11 +188,23 @@ public class CreateTourWindow extends Stage {
 
     //Updates controls
     public void updateControls() {
-        //TODO
+        //Update productOverview
+        updateProductOverview();
+
+        //Resets the order
+        resetOrder();
     }
 
     public void updateOrder() {
         //TODO
+    }
+
+    // Reset the order an clears the fields
+    private void resetOrder() {
+        order = orderController.createOrder();
+        txfPercentDiscount.setText("" + 0);
+        txfFixedTotal.clear();
+        updateOrder();
     }
 
         /**
@@ -278,6 +299,99 @@ public class CreateTourWindow extends Stage {
      */
     private void cancelAction() {
         this.close();
+    }
+
+    /**
+     * Adds a product from the overview to the current order
+     *
+     * @param price the price to add to the order
+     */
+    private void addProductToOrder(Price price) {
+        if (order == null) {
+            orderController.createOrder();
+        }
+
+        //If product already is has an OrderLine in order, increments the amount
+        boolean foundInOrderLine = false;
+        for (OrderLine ol : order.getOrderLines()) {
+            if (ol.getPrice().equals(price)) {
+                foundInOrderLine = true;
+                ol.setAmount(ol.getAmount() + 1);
+
+            }
+        }
+
+        //Otherwise adds product to order with amount of 1
+        if (!foundInOrderLine) {
+            orderController.createOrderLineForOrder(order, 1, price);
+        }
+
+        //then displays orderlines in OrderLineView
+        updateOrder();
+    }
+
+    private void updateProductOverview() {
+        TitledPane selected = accProductOverview.getExpandedPane();
+
+        accProductOverview.getPanes().clear();
+
+
+        //For each price in each product in each category...
+        for (ProductCategory proCat : orderController.getProductCategories()) {
+            VBox vbxCategory = new VBox();
+            vbxCategory.setPadding(new Insets(5));
+            vbxCategory.setFillWidth(true);
+            vbxCategory.maxWidth(Double.MAX_VALUE);
+            vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
+
+
+            for (Product prod : proCat.getProducts()) {
+                for (Price price : prod.getPrices()) {
+                    //Determine if there is any prices matching unit and situation
+                    if (price.getSituation().equals(orderController.getSituations().get(0))) {
+
+                        //Create a textfield with the product name and description
+                        TextField productDescr = new TextField(prod.toString());
+                        productDescr.setMaxWidth(Double.MAX_VALUE);
+                        productDescr.setEditable(false);
+                        productDescr.setBackground(Background.EMPTY);
+                        HBox.setHgrow(productDescr, Priority.ALWAYS);
+
+                        //Create textfield for price
+                        TextField txfPrice = new TextField(price.getValue() + " " + Unit.DKK);
+                        txfPrice.setEditable(false);
+                        txfPrice.setPrefWidth(75);
+                        txfPrice.setBackground(Background.EMPTY);
+                        txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+                        //Create HBox for holding the entire product line
+                        HBox productLine = new HBox(productDescr, txfPrice);
+                        productLine.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
+                        for (Node ch : productLine.getChildren()) {
+                            ch.setOnMouseClicked(event -> addProductToOrder(price));
+                        }
+                        productLine.setOnMouseClicked(event -> addProductToOrder(price));
+
+                        vbxCategory.getChildren().add(productLine);
+
+                    }
+                }
+            }
+
+            //If category is not empty...
+            if (!vbxCategory.getChildren().isEmpty()) {
+                //Create a titled pane and add the vbox to it
+                TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
+                accProductOverview.getPanes().add(titledPane);
+            }
+
+        }
+
+        if (accProductOverview.getPanes().contains(selected)) {
+            accProductOverview.setExpandedPane(selected);
+        } else if (!accProductOverview.getPanes().isEmpty()) {
+            accProductOverview.setExpandedPane(accProductOverview.getPanes().get(0));
+        }
     }
 
 }

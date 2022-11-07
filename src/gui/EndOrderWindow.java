@@ -99,19 +99,27 @@ public class EndOrderWindow extends Stage {
         hbxOrderlineOverview.setPadding(new Insets(0, 0, 30, 0));
         pane.add(hbxOrderlineOverview, 0, 0);
 
+        //Calculated price total or fixed total
         VBox vbxPriceTotals = new VBox();
-        if (order.getFixedPrice() == -1.0)  {
+        if (order.getFixedPrice() > -1.0) {
+            Label lblAgreed = new Label("Aftalt:");
+            Label lblUnitTotalPrice = new Label("" + order.getFixedPrice() + " " + order.getFixedPriceUnit());
+            vbxPriceTotals.getChildren().add(lblAgreed);
+            vbxPriceTotals.getChildren().add(lblUnitTotalPrice);
+
+
+        } else {
+            if (order.getPercentDiscount() > 0.0) {
+                Label lblDiscount = new Label("Rabat: " + order.getPercentDiscount() + "%");
+                vbxPriceTotals.getChildren().add(lblDiscount);
+            }
+
             for (Unit unit : Unit.values()) {
                 if (order.calculateSumPriceForUnit(unit) > 0) {
-                    Label lblUnitTotalPrice = new Label(order.calculateSumPriceForUnit(unit) + " " + unit);
+                    Label lblUnitTotalPrice = new Label(order.calculateSumPriceForUnit(unit) * (100 - order.getPercentDiscount()) / 100 + " " + unit);
                     vbxPriceTotals.getChildren().add(lblUnitTotalPrice);
                 }
             }
-        } else {
-            Label lblAgreed = new Label("Aftalt:");
-            Label lblUnitTotalPrice = new Label(""+order.getFixedPrice() + " " + order.getFixedPriceUnit());
-            vbxPriceTotals.getChildren().add(lblAgreed);
-            vbxPriceTotals.getChildren().add(lblUnitTotalPrice);
 
         }
 

@@ -87,7 +87,7 @@ public class CreateProductWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createProduct(productCategory, name, description);
+            controller.createProductForCategory(productCategory, name, description);
             this.close();
 
         } else {
