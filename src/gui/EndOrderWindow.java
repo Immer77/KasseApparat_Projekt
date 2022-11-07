@@ -120,7 +120,6 @@ public class EndOrderWindow extends Stage {
                     vbxPriceTotals.getChildren().add(lblUnitTotalPrice);
                 }
             }
-
         }
 
         vbxPriceTotals.setAlignment(Pos.BASELINE_RIGHT);

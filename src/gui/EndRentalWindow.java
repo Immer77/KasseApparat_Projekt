@@ -12,7 +12,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.modelklasser.*;
+import model.modelklasser.OrderLine;
+import model.modelklasser.PaymentMethod;
+import model.modelklasser.Rental;
+import model.modelklasser.Unit;
 import storage.Storage;
 
 public class EndRentalWindow extends Stage {
@@ -31,7 +34,7 @@ public class EndRentalWindow extends Stage {
     private DatePicker endDatePicker;
     private TextField txfRabat, txfFixedPrice;
     private VBox vboxFinalPrice, vboxTotalPrice;
-    private OrderController controller = new OrderController(Storage.getStorage());
+    private double depositPrice;
 
     public EndRentalWindow(String title, Stage owner, Rental rental) {
         this.rental = rental;
@@ -128,7 +131,7 @@ public class EndRentalWindow extends Stage {
         btnCancel.setCancelButton(true);
 
         buttons.getChildren().addAll(btnOK, btnCancel);
-        pane.add(buttons,1,7);
+        pane.add(buttons,1,8);
 
         //vbox and label to show total before price changes
         Label lblTotalBefore = new Label("Total: ");
@@ -171,10 +174,18 @@ public class EndRentalWindow extends Stage {
         // final total for the rental
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblFinal, 1, 5);
+        pane.add(lblFinal, 1, 6);
 
         vboxFinalPrice = new VBox();
-        pane.add(vboxFinalPrice,2,5);
+        pane.add(vboxFinalPrice,2,6);
+
+        // deposit price
+        Label lblDeposit = new Label("Pant: ");
+        pane.add(lblDeposit,1,5);
+
+        depositPrice = displayDepositPrice();
+        Label lblDepositPrice = new Label("" + depositPrice + " " + Unit.DKK);
+        pane.add(lblDepositPrice,2,5);
 
         // to select the payment method for the rental
         chPaymentMethod = new ChoiceBox<>();
@@ -182,11 +193,15 @@ public class EndRentalWindow extends Stage {
         chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
         chPaymentMethod.getItems().setAll(PaymentMethod.values());
         chPaymentMethod.getSelectionModel().select(0);
-        pane.add(chPaymentMethod,1,6);
+        pane.add(chPaymentMethod,1,7);
 
         pane.setGridLinesVisible(false);
         updateControls();
-        pane.setOnMouseClicked(event -> updateControls());
+        ChangeListener<String> updateOnChange = (o,ov,nv) -> {
+            updateControls();
+        };
+        txfRabat.textProperty().addListener(updateOnChange);
+        txfFixedPrice.textProperty().addListener(updateOnChange);
     }
     public void updateControls(){
         updateRentalTotal();
@@ -199,7 +214,8 @@ public class EndRentalWindow extends Stage {
         if (!txfFixedPrice.getText().isBlank()){
             rental.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
             rental.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
-            Label lblFixPri = new Label("" + rental.getFixedPrice() + rental.getFixedPriceUnit());
+            double fixedMinusDeposit = rental.getFixedPrice() - depositPrice;
+            Label lblFixPri = new Label("" + fixedMinusDeposit + " " + rental.getFixedPriceUnit());
             vboxFinalPrice.getChildren().setAll(lblFixPri);
             txfRabat.setDisable(true);
             fixedPrice = true;
@@ -208,8 +224,6 @@ public class EndRentalWindow extends Stage {
             fixedPrice = false;
         }
         return fixedPrice;
-
-
     }
 
     public void updateRentalTotal() {
@@ -262,7 +276,7 @@ public class EndRentalWindow extends Stage {
                         alertNFE.showAndWait();
                     }
 
-                    String finalPriceText = calculatedFinalPrice + " " + unit;
+                    String finalPriceText = calculatedFinalPrice - depositPrice + " " + unit;
                     Label lblFinalPrice = new Label(finalPriceText);
                     lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
                     vboxFinalPrice.getChildren().add(lblFinalPrice);
@@ -270,6 +284,18 @@ public class EndRentalWindow extends Stage {
                 }
             }
         }
+    }
+
+    public double displayDepositPrice(){
+        double result = 0.0;
+        try {
+            if (rental.calculateDeposit(Unit.DKK) > 0) {
+                result = rental.calculateDeposit(Unit.DKK);
+            }
+        } catch (NullPointerException npe){
+            npe.getMessage();
+        }
+        return result;
     }
 
     private void updateOrderLineView() {
