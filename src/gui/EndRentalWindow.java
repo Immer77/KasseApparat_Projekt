@@ -143,7 +143,7 @@ public class EndRentalWindow extends Stage {
         Label lblRabat = new Label("Rabat: ");
         pane.add(lblRabat, 1, 3);
 
-        txfRabat = new TextField("" + rental.getPercentDiscount() + "%");
+        txfRabat = new TextField(rental.getPercentDiscount()+ "");
         txfRabat.setPrefWidth(45);
         txfRabat.setMaxWidth(90);
 
@@ -157,7 +157,10 @@ public class EndRentalWindow extends Stage {
         Label lblFixedPrice = new Label("Fixed price: ");
         pane.add(lblFixedPrice, 1, 4);
 
-        txfFixedPrice = new TextField("" + rental.getFixedPrice() + " " + rental.getFixedPriceUnit());
+        txfFixedPrice = new TextField();
+        if (rental.getFixedPrice() > 0){
+            txfFixedPrice.setText(rental.getFixedPrice() + "");
+        }
         txfFixedPrice.setPrefWidth(45);
         txfFixedPrice.setMaxWidth(90);
 
@@ -196,13 +199,14 @@ public class EndRentalWindow extends Stage {
         pane.add(chPaymentMethod,1,7);
 
         pane.setGridLinesVisible(false);
-        updateControls();
         ChangeListener<String> updateOnChange = (o,ov,nv) -> {
             updateControls();
         };
         txfRabat.textProperty().addListener(updateOnChange);
         txfFixedPrice.textProperty().addListener(updateOnChange);
+        updateUnusedProducts();
     }
+
     public void updateControls(){
         updateRentalTotal();
         updateUnusedProducts();
@@ -215,8 +219,12 @@ public class EndRentalWindow extends Stage {
             rental.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
             rental.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
             double fixedMinusDeposit = rental.getFixedPrice() - depositPrice;
-            Label lblFixPri = new Label("" + fixedMinusDeposit + " " + rental.getFixedPriceUnit());
+            Label lblFixPri = new Label( fixedMinusDeposit + " " + chUnits.getValue());
             vboxFinalPrice.getChildren().setAll(lblFixPri);
+            for (OrderLine ol : rental.getOrderLines()){
+                Label lblResult = new Label(rental.calculateSumPriceForUnit(ol.getPrice().getUnit()) + " " + ol.getPrice().getUnit());
+                vboxTotalPrice.getChildren().setAll(lblResult);
+            }
             txfRabat.setDisable(true);
             fixedPrice = true;
         } else {
@@ -277,10 +285,9 @@ public class EndRentalWindow extends Stage {
                     }
 
                     String finalPriceText = calculatedFinalPrice - depositPrice + " " + unit;
-                    Label lblFinalPrice = new Label(finalPriceText);
+                    Label lblFinalPrice = new Label(finalPriceText + " ");
                     lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
                     vboxFinalPrice.getChildren().add(lblFinalPrice);
-
                 }
             }
         }
