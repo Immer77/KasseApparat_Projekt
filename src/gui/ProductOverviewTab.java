@@ -1,6 +1,8 @@
 package gui;
 
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -9,10 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import model.controller.ProductOverviewController;
 import model.modelklasser.Price;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 import storage.Storage;
 
 public class ProductOverviewTab extends GridPane {
@@ -21,7 +25,7 @@ public class ProductOverviewTab extends GridPane {
     private final ListView<ProductCategory> lvwCategories;
     private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
-    private ListView<HBox> lvwPrices;
+    private ListView<Price> lvwPrices;
     private TextField txfDepositPrices;
 
     private Button btnCreatePrice;
@@ -30,6 +34,8 @@ public class ProductOverviewTab extends GridPane {
     private Button btnEditCategory;
     private Button btnEditProduct;
     private Button btnRemovePrice;
+    private ListView<Situation> lvwSituaions;
+    private Button btnRemoveSituation;
 
     /**
      * Creates a new ProductOverviewTab, for showing an overview of all ProductCategories and Products. Also allows creation of those objects.
@@ -67,6 +73,10 @@ public class ProductOverviewTab extends GridPane {
         ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
         lvwProducts.getSelectionModel().selectedItemProperty().addListener(productListener);
 
+        //Listener for Price list
+        ChangeListener<Price> priceListener = (ov, o, n) -> this.priceItemSelected();
+        lvwPrices.getSelectionModel().selectedItemProperty().addListener(priceListener);
+
 
         //create product button
         btnCreateProduct = new Button("Nyt Produkt");
@@ -82,7 +92,7 @@ public class ProductOverviewTab extends GridPane {
 
         HBox hbxProductButtons = new HBox(btnCreateProduct, btnEditProduct);
         hbxProductButtons.setSpacing(10);
-        this.add(hbxProductButtons, 1,0);
+        this.add(hbxProductButtons, 1, 0);
 
         //CreatePrice button
         btnCreatePrice = new Button("Ny Pris");
@@ -94,7 +104,7 @@ public class ProductOverviewTab extends GridPane {
         btnRemovePrice = new Button("Slet Pris");
         btnRemovePrice.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(btnRemovePrice, Priority.ALWAYS);
-        btnRemovePrice.setOnAction(event->this.removePriceAction());
+        btnRemovePrice.setOnAction(event -> this.removePriceAction());
 
         HBox hbxPiceButtons = new HBox(btnCreatePrice, btnRemovePrice);
         hbxPiceButtons.setSpacing(10);
@@ -120,14 +130,35 @@ public class ProductOverviewTab extends GridPane {
 
         HBox hbxCategoryButtons = new HBox(btnCreateProductCategory, btnEditCategory);
         hbxCategoryButtons.setSpacing(10);
-        this.add(hbxCategoryButtons, 0,0);
+        this.add(hbxCategoryButtons, 0, 0);
 
+        //List view of situations
+        lvwSituaions = new ListView<>();
+        this.add(lvwSituaions, 0,6);
+
+        //Button for creating new situations
+        Button btnCreateSituation = new Button("Ny salgssituation");
+        btnCreateSituation.setMaxWidth(Double.MAX_VALUE);
+        btnCreateSituation.setOnAction(event -> this.createSituationAction());
+        HBox.setHgrow(btnCreateSituation, Priority.ALWAYS);
+
+        //Button for removing a situation
+        btnRemoveSituation = new Button("Slet salgssituation");
+        btnRemoveSituation.setMaxWidth(Double.MAX_VALUE);
+        btnRemoveSituation.setOnAction(event -> this.removeSituationAction());
+        HBox.setHgrow(btnRemoveSituation, Priority.ALWAYS);
+
+        HBox hbxSituationButtons = new HBox(btnCreateSituation, btnRemoveSituation);
+        hbxSituationButtons.setSpacing(10);
+        this.add(hbxSituationButtons, 0, 5);
+
+        //Listener for Situation list
+        ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelected();
+        lvwSituaions.getSelectionModel().selectedItemProperty().addListener(situationListener);
 
         //initial methods
         this.initContent();
         updateControls();
-        productCategoryItemSelected();
-        productItemSelected();
     }
 
     // -------------------------------------------------------------------------
@@ -142,7 +173,6 @@ public class ProductOverviewTab extends GridPane {
             controller.initContent();
         }
 
-        btnCreatePrice.setDisable(true);
         updateControls();
 
     }
@@ -155,8 +185,10 @@ public class ProductOverviewTab extends GridPane {
     private void productCategoryItemSelected() {
         if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
             btnEditCategory.setDisable(true);
+            btnCreateProduct.setDisable(true);
         } else {
             btnEditCategory.setDisable(false);
+            btnCreateProduct.setDisable(false);
         }
 
         updateProductList();
@@ -174,7 +206,7 @@ public class ProductOverviewTab extends GridPane {
         CreateProductCategoryWindow categoryWindow = new CreateProductCategoryWindow("Ny produktkategori", stage);
         categoryWindow.showAndWait();
 
-        updateControls();
+        updateCategoryList();
     }
 
     /**
@@ -187,7 +219,7 @@ public class ProductOverviewTab extends GridPane {
             CreateProductWindow productWindow = new CreateProductWindow("Nyt Produkt", category, stage);
             productWindow.showAndWait();
 
-            updateControls();
+            updateProductList();
             lvwCategories.getSelectionModel().select(category);
 
         } else {
@@ -203,21 +235,25 @@ public class ProductOverviewTab extends GridPane {
      */
     public void updateControls() {
         try {
-            ProductCategory selCategory = lvwCategories.getSelectionModel().getSelectedItem();
+
+            if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
+                btnCreateProduct.setDisable(true);
+                btnEditCategory.setDisable(true);
+            }
+            if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
+                btnEditProduct.setDisable(true);
+                btnCreatePrice.setDisable(true);
+                btnCreateDepositPrice.setDisable(true);
+            }
+            if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
+                btnRemovePrice.setDisable(true);
+            }
+
+            if (lvwSituaions.getSelectionModel().getSelectedItem() == null) {
+                btnRemoveSituation.setDisable(true);
+            }
             updateCategoryList();
-            if (selCategory != null) {
-                lvwCategories.getSelectionModel().select(selCategory);
-            }
-
-            Product selProduct = lvwProducts.getSelectionModel().getSelectedItem();
-            updateProductList();
-            if (selProduct != null) {
-                lvwProducts.getSelectionModel().select(selProduct);
-            }
-
-            updatePriceList();
-            updateDepositList();
-
+            updateSituations();
         } catch (NullPointerException npe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Null Pointer Exception");
@@ -231,13 +267,18 @@ public class ProductOverviewTab extends GridPane {
      */
     private void updateProductList() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
             lvwProducts.getItems().setAll(selectedCategory.getProducts());
-            btnCreateProduct.setDisable(false);
         } else {
             lvwProducts.getItems().clear();
-            btnCreateProduct.setDisable(true);
         }
+        if (selectedProduct != null) {
+            lvwProducts.getSelectionModel().select(selectedProduct);
+        }
+
+        updatePriceList();
+        updateDepositList();
     }
 
 
@@ -245,75 +286,79 @@ public class ProductOverviewTab extends GridPane {
      * Helper method for updating the ProductCategory listview
      */
     private void updateCategoryList() {
-        //Fills the category list
+        ProductCategory selCategory = lvwCategories.getSelectionModel().getSelectedItem();
         lvwCategories.getItems().setAll(productController.getProductCategories());
+        if (selCategory != null) {
+            lvwCategories.getSelectionModel().select(selCategory);
+        }
+
+        updateProductList();
     }
 
+    /**
+     * Called when selection changes in Product listview
+     */
     public void productItemSelected() {
 
         if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
             btnEditProduct.setDisable(true);
+            btnCreatePrice.setDisable(true);
+            btnCreateDepositPrice.setDisable(true);
         } else {
             btnEditProduct.setDisable(false);
+            btnCreatePrice.setDisable(false);
+            btnCreateDepositPrice.setDisable(false);
         }
 
-        updateControls();
+        updatePriceList();
+        updateDepositList();
+    }
+
+    /**
+     * Called when selection changes in Price listview
+     */
+    public void priceItemSelected() {
+        if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
+            btnRemovePrice.setDisable(true);
+        } else {
+            btnRemovePrice.setDisable(false);
+        }
     }
 
     public void updatePriceList() {
-
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
-
-        lvwPrices.getItems().clear();
+        Price selectedPrice = lvwPrices.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null) {
-            for (Price price : selectedProduct.getPrices()) {
-                //Create label for Situation
-                Label lblSituation = new Label(price.getSituation().getName());
-                lblSituation.setPrefWidth(70);
+            lvwPrices.getItems().setAll(selectedProduct.getPrices());
+            lvwPrices.setCellFactory(new Callback<ListView<Price>, ListCell<Price>>() {
+                @Override
+                public ListCell<Price> call(ListView<Price> priceListView) {
+                    return new PriceFormatCell();
+                }
+            });
 
-
-                Label lblseperator = new Label(" - ");
-                lblseperator.setAlignment(Pos.BASELINE_CENTER);
-                lblseperator.setPrefWidth(30);
-
-                //Create label for value
-                Label lblValue = new Label("" + price.getValue());
-                lblValue.setAlignment(Pos.BASELINE_RIGHT);
-                HBox.setHgrow(lblValue, Priority.ALWAYS);
-
-                //Create label for Unit
-                Label lblUnit = new Label("" + price.getUnit());
-                lblUnit.setAlignment(Pos.BASELINE_RIGHT);
-
-                //Hbox to hold the labels
-                HBox hbxPrice = new HBox(lblSituation, lblseperator, lblValue, lblUnit);
-                hbxPrice.setSpacing(5);
-                hbxPrice.setMaxWidth(Double.MAX_VALUE);
-                lvwPrices.getItems().add(hbxPrice);
-
-                btnCreatePrice.setDisable(false);
+            if (selectedPrice != null) {
+                lvwPrices.getSelectionModel().select(selectedPrice);
             }
+
         } else {
-            btnCreatePrice.setDisable(true);
+            lvwPrices.getItems().clear();
         }
     }
 
     public void updateDepositList() {
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
-        txfDepositPrices.clear();
-
         if (selectedProduct != null) {
 
             if (selectedProduct.getDepositPrice() != null) {
-                txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue()+" "+selectedProduct.getDepositPrice().getUnit());
+                txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
             }
 
-            btnCreateDepositPrice.setDisable(false);
-        } else {
 
-            btnCreateDepositPrice.setDisable(true);
+        } else {
+            txfDepositPrices.clear();
         }
     }
 
@@ -324,7 +369,7 @@ public class ProductOverviewTab extends GridPane {
         CreatePriceWindow newPriceWindow = new CreatePriceWindow("Ny Pris", selectedProduct, new Stage());
         newPriceWindow.showAndWait();
 
-        updateControls();
+        updatePriceList();
 
         lvwCategories.getSelectionModel().select(selectedCategory);
         lvwProducts.getSelectionModel().select(selectedProduct);
@@ -337,24 +382,131 @@ public class ProductOverviewTab extends GridPane {
         CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage());
         newDepositPriceWindow.showAndWait();
 
-        updateControls();
+        updateDepositList();
 
         lvwCategories.getSelectionModel().select(selectedCategory);
         lvwProducts.getSelectionModel().select(selectedProduct);
     }
 
-    public void editProductCategoryAction(){
+    public void editProductCategoryAction() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        EditProductCategoryWindow editWindow = new EditProductCategoryWindow("Rediger Produktkategori", new Stage(), selectedCategory);
+        editWindow.showAndWait();
 
+        updateCategoryList();
+
+        lvwCategories.getSelectionModel().select(selectedCategory);
     }
 
     public void editProductAction() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+
+        EditProductWindow editWindow = new EditProductWindow("Rediger Produkt", new Stage(), selectedProduct);
+        editWindow.showAndWait();
+
+        updateProductList();
+
+        lvwProducts.getSelectionModel().select(selectedProduct);
 
     }
 
+    /**
+     * Removes the selected price from the selected products price list
+     */
     public void removePriceAction() {
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+        Price selectedPrice = lvwPrices.getSelectionModel().getSelectedItem();
 
+        productController.removePriceFromProduct(selectedPrice,selectedProduct);
+
+        updatePriceList();
     }
 
+    /**
+     * Creates a new situation
+     */
+    public void createSituationAction () {
+        CreateSituationWindow createSituationWindow = new CreateSituationWindow("Ny salgssituation", new Stage());
+        createSituationWindow.showAndWait();
 
+        updateSituations();
+    }
+
+    /**
+     * Removes the currently selected situation, and all prices for all products connected to it
+     */
+    public void removeSituationAction () {
+        Situation selectedSituation = lvwSituaions.getSelectionModel().getSelectedItem();
+        if (selectedSituation != null) {
+            productController.removeSituation(selectedSituation);
+        }
+
+        updateControls();
+    }
+
+    /**
+     * Called when a new situation is selected
+     */
+    public void situationSelected () {
+        if (lvwSituaions.getSelectionModel().getSelectedItem() == null) {
+            btnRemoveSituation.setDisable(true);
+        } else {
+            btnRemoveSituation.setDisable(false);
+        }
+    }
+
+    public void updateSituations () {
+        lvwSituaions.getItems().setAll(productController.getSituations());
+    }
+
+    /**
+     * Inner class to format the Price display in the listview of prices.
+     */
+    private class PriceFormatCell extends ListCell<Price> {
+        private Label lblSituation;
+        private Label lblValue;
+        private Label lblUnit;
+        private HBox hbxPrice;
+
+        public PriceFormatCell() {
+            //Create label for Situation
+            lblSituation = new Label();
+            lblSituation.setPrefWidth(70);
+
+            Label lblseperator = new Label(" - ");
+            lblseperator.setAlignment(Pos.BASELINE_CENTER);
+            lblseperator.setPrefWidth(30);
+
+            //Create label for value
+            lblValue = new Label();
+            lblValue.setAlignment(Pos.BASELINE_RIGHT);
+            HBox.setHgrow(lblValue, Priority.ALWAYS);
+
+            //Create label for Unit
+            lblUnit = new Label();
+            lblUnit.setAlignment(Pos.BASELINE_RIGHT);
+
+            //Hbox to hold the labels
+            hbxPrice = new HBox(lblSituation, lblseperator, lblValue, lblUnit);
+            hbxPrice.setSpacing(5);
+            hbxPrice.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        @Override
+        protected void updateItem(Price price, boolean empty) {
+            super.updateItem(price, empty);
+
+            if (empty || price ==null) {
+             setGraphic(null);
+            } else {
+                lblSituation.setText(price.getSituation().getName());
+                lblValue.setText("" + price.getValue());
+                lblUnit.setText("" + price.getUnit());
+
+                setGraphic(hbxPrice);
+            }
+        }
+    }
 }
 
