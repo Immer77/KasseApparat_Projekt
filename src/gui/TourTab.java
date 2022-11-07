@@ -66,9 +66,11 @@ public TourTab(){
     // List of closed tours
     lvwTours.setPrefWidth(100);
     lvwTours.setPrefHeight(300);
-    lvwTours.getItems().setAll();
+    //lvwTours.getItems().setAll(controller.);
+    lvwTours.getSelectionModel().selectedItemProperty().addListener(tourChangeListener);
+
     midControl.getChildren().add(lvwTours);
-    midControl.setMinWidth(200);
+    midControl.setMinWidth(250);
 
     // Button to create a new rundvisning
     Button btnTour = new Button("Opret rundtur");
@@ -102,6 +104,9 @@ public TourTab(){
      * Updates fields in right(??) control pane
      */
 private void updateFieldsInfo() {
+    txfName.clear();
+    txaDescription.clear();
+    timePicker.clear();
     String name = lvwActiveTours.getSelectionModel().getSelectedItem().getName();
     String description = lvwActiveTours.getSelectionModel().getSelectedItem().getDescription();
     LocalTime time = lvwActiveTours.getSelectionModel().getSelectedItem().getTime();
@@ -136,13 +141,12 @@ private void createTour(){
      * Updates the listview in the pane
      */
 public void updateControls(){
+
     List<Tour> lvwToursSorted = new ArrayList<>();
     lvwToursSorted = controller.getTours();
     lvwToursSorted.sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
-//    lvwActiveTours.getItems().setAll(controller.getTours());
-//    lvwActiveTours.getItems().setAll(controller.getTours().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate())));
     lvwActiveTours.getItems().setAll(lvwToursSorted);
-//    lvwTours.getItems().setAll(controller.getDoneTours());
+
 }
 
 

@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,6 +18,7 @@ import model.controller.OrderController;
 import model.modelklasser.OrderLine;
 import model.modelklasser.PaymentMethod;
 import model.modelklasser.Tour;
+import model.modelklasser.Unit;
 import storage.Storage;
 
 public class EndTourWindow extends Stage {
@@ -24,13 +26,17 @@ public class EndTourWindow extends Stage {
     private OrderControllerInterface orderController;
     private Tour tour;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
-    private VBox orderLineView, unusedOrderLineView, tourInfoVBox;
+    private VBox orderLineView, unusedOrderLineView, tourInfoVBox, vboxFinalPrice, vboxTotalPrice;
     private SplitPane splitPane = new SplitPane();
     private ListView<HBox> lvwTourOrderlines = new ListView<>();
     private HBox buttons;
-    private TextField txfName;
+    private TextField txfName, txfRabat, txfFixedPrice;
     private TextArea txaDescription;
     private DatePicker endDatePicker;
+    private ChoiceBox<Unit> chUnits;
+    private double depositPrice;
+
+
 
     public EndTourWindow(String title, Stage owner, Tour tour){
         this.tour = tour;
@@ -104,7 +110,6 @@ public class EndTourWindow extends Stage {
 
         //Confirm and cancel buttons with vbox to hold them
         buttons = new HBox();
-        pane.add(buttons,1,2);
         buttons.setSpacing(10);
         buttons.setPrefWidth(200);
 
@@ -119,31 +124,168 @@ public class EndTourWindow extends Stage {
         btnCancel.setCancelButton(true);
 
         buttons.getChildren().addAll(btnOK,btnCancel);
+        pane.add(buttons,1,8);
 
-        //Add field for the final price
+        //vbox and label to show total before price changes
+        Label lblTotalBefore = new Label("Total: ");
+        pane.add(lblTotalBefore, 1, 2);
+        vboxTotalPrice = new VBox();
+        pane.add(vboxTotalPrice,2,2);
+
+        // Percent discount on the rental
+        Label lblRabat = new Label("Rabat: ");
+        pane.add(lblRabat, 1, 3);
+
+        txfRabat = new TextField();
+        txfRabat.setPrefWidth(45);
+        txfRabat.setMaxWidth(90);
+
+        Label lblProcent = new Label(" %");
+
+        HBox hboxRabat = new HBox();
+        hboxRabat.getChildren().setAll(txfRabat,lblProcent);
+        pane.add(hboxRabat,2,3);
+
+        // Fixed price for rental
+        Label lblFixedPrice = new Label("Fixed price: ");
+        pane.add(lblFixedPrice, 1, 4);
+
+        txfFixedPrice = new TextField();
+        txfFixedPrice.setPrefWidth(45);
+        txfFixedPrice.setMaxWidth(90);
+
+        chUnits = new ChoiceBox<>();
+        chUnits.setPrefWidth(50);
+        chUnits.getItems().setAll(Unit.values());
+        chUnits.getSelectionModel().select(0);
+
+        HBox hboxFixPri = new HBox();
+        hboxFixPri.getChildren().setAll(txfFixedPrice,chUnits);
+        pane.add(hboxFixPri,2,4);
+
+        // final total for the rental
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblFinal, 4, 9);
+        pane.add(lblFinal, 1, 6);
 
-        VBox vbxFinalPrice = new VBox();
-        vbxFinalPrice.setPrefWidth(75);
-        vbxFinalPrice.setBackground(Background.EMPTY);
-        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+        vboxFinalPrice = new VBox();
+        pane.add(vboxFinalPrice,2,6);
 
-        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
+        HBox hbxFinalPrice = new HBox(vboxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
         pane.add(hbxFinalPrice, 5, 9);
+
+        vboxFinalPrice = new VBox();
+        pane.add(vboxFinalPrice,2,6);
+
+        // to select the payment method for the rental
+        chPaymentMethod = new ChoiceBox<>();
+        chPaymentMethod.setPrefWidth(150);
+        chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
+        chPaymentMethod.getItems().setAll(PaymentMethod.values());
+        chPaymentMethod.getSelectionModel().select(0);
+        pane.add(chPaymentMethod,1,7);
+
+        pane.setGridLinesVisible(false);
+        updateControls();
+        ChangeListener<String> updateOnChange = (o, ov, nv) -> {
+            updateControls();
+        };
+        txfRabat.textProperty().addListener(updateOnChange);
+        txfFixedPrice.textProperty().addListener(updateOnChange);
     }
 
     //------------------------------------------------
     private void oKAction() {
         orderController.setPaymentMethodForOrder(tour, chPaymentMethod.getSelectionModel().getSelectedItem());
         orderController.saveOrder(tour);
+        this.close();
     }
 
     private void cancelAction() {
         this.close();
+    }
+
+    public void updateControls(){
+        updateTourTotal();
+        fixedPriceTour();
+    }
+
+    public boolean fixedPriceTour(){
+        boolean fixedPrice;
+        if (!txfFixedPrice.getText().isBlank()){
+            tour.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
+            tour.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
+            Label lblFixPri = new Label(" " + tour.getFixedPriceUnit());
+            vboxFinalPrice.getChildren().setAll(lblFixPri);
+            txfRabat.setDisable(true);
+            fixedPrice = true;
+        } else {
+            txfRabat.setDisable(false);
+            fixedPrice = false;
+        }
+        return fixedPrice;
+    }
+
+    public void updateTourTotal() {
+        vboxTotalPrice.getChildren().clear();
+        vboxFinalPrice.getChildren().clear();
+        fixedPriceTour();
+        if (!fixedPriceTour()){
+            for (Unit unit : Unit.values()) {
+
+
+                //Checks if there is any orderlines in the order with this unit
+                boolean currentUnitFound = false;
+                for (OrderLine ol : tour.getOrderLines()) {
+                    if (ol.getPrice().getUnit().equals(unit)) {
+                        currentUnitFound = true;
+                        break;
+                    }
+                }
+
+                //If orderline with this unit exists, create labels for the total of this unit
+                if (currentUnitFound) {
+                    double result = tour.calculateSumPriceForUnit(unit);
+
+                    Label priceTotal = new Label(result + " " + unit);
+                    priceTotal.setAlignment(Pos.BASELINE_RIGHT);
+                    vboxTotalPrice.getChildren().add(priceTotal);
+
+                    //Calculate the total after subtracting the percentage discount
+
+                    double calculatedFinalPrice = result;
+                    try {
+                        if (!txfRabat.getText().isBlank()) {
+                            double percentageDiscount = Double.parseDouble(txfRabat.getText().trim());
+                            double percentageMultiplier = 1.0;
+
+                            if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+                                percentageMultiplier = (100 - percentageDiscount) / 100;
+                            } else {
+                                throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
+                            }
+                            calculatedFinalPrice = result * percentageMultiplier;
+                        }
+
+                    } catch (NumberFormatException nfe) {
+                        txfRabat.setText("" + 0);
+
+                        Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+                        alertNFE.setTitle("Indtastet værdi er ikke et tal");
+                        alertNFE.setContentText(nfe.getMessage());
+                        alertNFE.showAndWait();
+                    }
+
+                    String finalPriceText = calculatedFinalPrice + " " + unit;
+                    Label lblFinalPrice = new Label(finalPriceText);
+                    lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+                    vboxFinalPrice.getChildren().add(lblFinalPrice);
+
+                }
+            }
+        }
     }
 
 }
