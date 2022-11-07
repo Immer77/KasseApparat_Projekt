@@ -1,12 +1,10 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -14,11 +12,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.controller.OrderController;
 import model.controller.ProductOverviewController;
-import model.modelklasser.Product;
-import model.modelklasser.Situation;
-import model.modelklasser.Unit;
+import model.modelklasser.*;
 import storage.Storage;
 
 public class CreateDepositPriceWindow extends Stage {
@@ -26,10 +21,17 @@ public class CreateDepositPriceWindow extends Stage {
     private Product product;
     private ProductOverviewControllerInterface controller;
     private Spinner<Double> spnAmount;
+    private Label lblSelectedOption;
+    private ProductCategory category;
+    private ToggleGroup tglGroup;
+    private RadioButton rbtnProduct;
+    private RadioButton rbtnCategory;
+
 
     //Constructors ---------------------------------------------------------------------------------------------------
-    public CreateDepositPriceWindow(String title, Product product, Stage owner) {
+    public CreateDepositPriceWindow(String title, Product product, Stage owner, ProductCategory category) {
         this.product = product;
+        this.category = category;
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -59,7 +61,32 @@ public class CreateDepositPriceWindow extends Stage {
         pane.setHgap(10);
         pane.setVgap(10);
 
-        spnAmount = new Spinner<>(0.0,Double.MAX_VALUE,0.0);
+        Label lblDepositFor = new Label("Lav ny pantpris for:");
+
+        rbtnProduct = new RadioButton("Produktet "+product.getName());
+        if (!product.getDescription().isBlank()) {
+            rbtnProduct.setText(rbtnProduct.getText()+" ("+product.getDescription()+")");
+        }
+
+        rbtnCategory = new RadioButton("Hele kategorien "+category.getTitle());
+        if (!category.getDescription().isBlank()) {
+            rbtnCategory.setText(rbtnCategory.getText()+" ("+category.getDescription()+")");
+        }
+
+        tglGroup = new ToggleGroup();
+        tglGroup.getToggles().add(rbtnProduct);
+        tglGroup.getToggles().add(rbtnCategory);
+        tglGroup.selectToggle(rbtnProduct);
+
+        VBox vbxRadioButtons = new VBox(lblDepositFor, rbtnProduct, rbtnCategory);
+        vbxRadioButtons.setSpacing(5);
+        pane.add(vbxRadioButtons, 0, 0);
+
+        double startAmount = 0.0;
+        if (product.getDepositPrice() != null) {
+            startAmount = product.getDepositPrice().getValue();
+        }
+        spnAmount = new Spinner<>(0.0, Double.MAX_VALUE, startAmount);
         spnAmount.setEditable(true);
 
         Label lblUnit = new Label("DKK");
@@ -67,24 +94,23 @@ public class CreateDepositPriceWindow extends Stage {
         HBox hbxAmountInUnit = new HBox(spnAmount, lblUnit);
         hbxAmountInUnit.setSpacing(5);
         hbxAmountInUnit.setAlignment(Pos.BASELINE_LEFT);
-        hbxAmountInUnit.setPadding(new Insets(20,0,20,0));
-        pane.add(hbxAmountInUnit,0,1);
+        pane.add(hbxAmountInUnit, 0, 2);
 
         Button btnOK = new Button("Ok");
         btnOK.setOnAction(event -> oKAction());
         btnOK.setDefaultButton(true);
         btnOK.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(btnOK,Priority.ALWAYS);
+        HBox.setHgrow(btnOK, Priority.ALWAYS);
 
         Button btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event -> cancelAction());
         btnCancel.setCancelButton(true);
         btnCancel.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(btnCancel,Priority.ALWAYS);
+        HBox.setHgrow(btnCancel, Priority.ALWAYS);
 
         HBox hbxButtons = new HBox(btnOK, btnCancel);
         hbxButtons.setSpacing(10);
-        pane.add(hbxButtons,0,3);
+        pane.add(hbxButtons, 0, 3);
     }
 
     /**
@@ -95,7 +121,13 @@ public class CreateDepositPriceWindow extends Stage {
         double amount = spnAmount.getValue();
         Situation situation = controller.getSituations().get(0);
 
-        product.createDeposit(amount, unit, situation);
+        if (tglGroup.getSelectedToggle().equals(rbtnProduct)) {
+            product.createDeposit(amount, unit,situation);
+        } else if (tglGroup.getSelectedToggle().equals(rbtnCategory)) {
+            for (Product prod : category.getProducts()) {
+                prod.createDeposit(amount,unit,situation);
+            }
+        }
 
         this.close();
     }
@@ -103,8 +135,10 @@ public class CreateDepositPriceWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction () {
+    public void cancelAction() {
         this.close();
     }
+
+
 
 }
