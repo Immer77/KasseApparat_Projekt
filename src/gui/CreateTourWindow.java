@@ -38,6 +38,9 @@ public class CreateTourWindow extends Stage {
     private TextField txfFixedTotal;
     private TextField txfTidspunkt = new TextField();
     private LocalDateTime tidspunkt;
+    private double calculatedFinalPrice = 0.0;
+
+
 
     // Constructor to createRentalWindows
     public CreateTourWindow(String title, Stage owner){
@@ -48,6 +51,9 @@ public class CreateTourWindow extends Stage {
         this.setMinWidth(500);
         this.setResizable(false);
 
+        // orderController skal være før this.initContent(pana)
+        orderController = new OrderController(Storage.getStorage());
+
         this.setTitle(title);
         GridPane pane = new GridPane();
         this.initContent(pane);
@@ -55,9 +61,6 @@ public class CreateTourWindow extends Stage {
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
-        orderController = new OrderController(Storage.getStorage());
-        this.initContent(pane);
-        //Initialises an order
         order = orderController.createOrder();
     }
 
@@ -73,9 +76,9 @@ public class CreateTourWindow extends Stage {
 
         Label lblName = new Label("Navn:");
         pane.add(lblName, 0, 0);
-        Label lblDato = new Label("Planlagt dato");
+        Label lblDato = new Label("Planlagt dato:");
         pane.add(lblDato, 0, 1);
-        Label lblTidspunkt = new Label("Planlagt tidspunkt");
+        Label lblTidspunkt = new Label("Planlagt tidspunkt:");
         pane.add(lblTidspunkt, 0, 2);
         Label lblDescription = new Label("Beskrivelse:");
         pane.add(lblDescription, 0, 3);
@@ -97,7 +100,7 @@ public class CreateTourWindow extends Stage {
         accProductOverview.setMaxWidth(Double.MAX_VALUE);
         accProductOverview.setPrefWidth(250);
         accProductOverview.setPadding(Insets.EMPTY);
-        pane.add(accProductOverview, 4, 0, 3, 2);
+        pane.add(accProductOverview, 4, 0, 3, 5);
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -164,11 +167,11 @@ public class CreateTourWindow extends Stage {
         HBox hbxFinalPrice = new HBox(vbxFinalPrice);
         hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
         hbxFinalPrice.setPadding(new Insets(32, 8, 0, 0));
+        hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
         pane.add(hbxFinalPrice, 9, 7);
 
-
         //Add confirmation button for order
-        Button btnConfirmOrder = new Button("Opret Udlejning");
+        Button btnConfirmOrder = new Button("Opret Rundvisning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
         btnConfirmOrder.setOnAction(event -> okAction());
         pane.add(btnConfirmOrder, 7, 8, 3, 1);
@@ -197,6 +200,115 @@ public class CreateTourWindow extends Stage {
 
     public void updateOrder() {
         //TODO
+        //Clears list
+        orderLineView.getChildren().clear();
+
+        //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
+        for (OrderLine ol : order.getOrderLines()) {
+
+            //Creates a spinner
+            Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
+            spnAmount.setEditable(true);
+            spnAmount.setPrefWidth(60);
+            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);
+            spnAmount.valueProperty().addListener(spinnerListener);
+
+            //Create a textfield with the product name and description
+            TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
+            txfproductDescr.setMaxWidth(Double.MAX_VALUE);
+            txfproductDescr.setEditable(false);
+            txfproductDescr.setBackground(Background.EMPTY);
+            HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
+
+            //Create textfield for price
+            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + Unit.DKK);
+            txfPrice.setEditable(false);
+            txfPrice.setPrefWidth(75);
+            txfPrice.setBackground(Background.EMPTY);
+            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+
+            //Create textfield for subtotal
+            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + Unit.DKK);
+            txfSubTotal.setEditable(false);
+            txfSubTotal.setPrefWidth(75);
+            txfSubTotal.setBackground(Background.EMPTY);
+            txfSubTotal.setAlignment(Pos.BASELINE_LEFT);
+
+            //Creates HBox to display the orderline
+            HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
+            orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
+            orderLineView.getChildren().add(orderline);
+        }
+
+        //Clears both the calculated total of all the orderlines, and the final total price for the order
+        vbxOrderTotal.getChildren().clear();
+        vbxFinalPrice.getChildren().clear();
+
+        //For each unit, calculates the sum of the orderlines with that unit
+
+
+        //Checks if there is any orderlines in the order with this unit
+        boolean currentUnitFound = false;
+        for (OrderLine ol : order.getOrderLines()) {
+            if (ol.getPrice().getUnit().equals(Unit.DKK)) {
+                currentUnitFound = true;
+                break;
+            }
+        }
+
+        //If orderline with this unit exists, create labels for the total of this unit
+        if (currentUnitFound) {
+            double result = order.calculateSumPriceForUnit(Unit.DKK);
+
+            Label priceTotal = new Label(result + " " + Unit.DKK);
+            priceTotal.setAlignment(Pos.BASELINE_RIGHT);
+            vbxOrderTotal.getChildren().add(priceTotal);
+
+            //Calculate the total after subtracting the percentage discount
+
+            calculatedFinalPrice = result;
+            try {
+                if (!txfPercentDiscount.getText().isBlank()) {
+                    double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
+                    double percentageMultiplier = 1.0;
+
+                    if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+                        percentageMultiplier = (100 - percentageDiscount) / 100;
+                    } else {
+                        throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
+                    }
+                    calculatedFinalPrice = result * percentageMultiplier;
+                }
+
+            } catch (NumberFormatException nfe) {
+                txfPercentDiscount.setText("" + 0);
+
+                Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+                alertNFE.setTitle("Indtastet værdi er ikke et tal");
+                alertNFE.setContentText(nfe.getMessage());
+                alertNFE.showAndWait();
+            }
+
+            String finalPriceText = calculatedFinalPrice + " " + Unit.DKK;
+            Label lblFinalPrice = new Label(finalPriceText);
+            lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            vbxFinalPrice.getChildren().add(lblFinalPrice);
+
+
+        }
+
+        if (!txfFixedTotal.getText().isBlank()) {
+            calculatedFinalPrice = Double.parseDouble(txfFixedTotal.getText());
+            vbxFinalPrice.getChildren().clear();
+            Label lblAgreedTotal = new Label("--AFTALT--");
+            lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
+            Label lblManualFinalPrice = new Label(txfFixedTotal.getText() + " " + Unit.DKK);
+            lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+            vbxFinalPrice.getChildren().add(lblAgreedTotal);
+            vbxFinalPrice.getChildren().add(lblManualFinalPrice);
+        }
+
+
     }
 
     // Reset the order an clears the fields
@@ -284,6 +396,7 @@ public class CreateTourWindow extends Stage {
             for(OrderLine order : order.getOrderLines()){
                 tour.addOrderLine(order);
             }
+            orderController.saveOrder(tour);
             this.close();
 
         } else {
@@ -338,60 +451,70 @@ public class CreateTourWindow extends Stage {
 
         //For each price in each product in each category...
         for (ProductCategory proCat : orderController.getProductCategories()) {
-            VBox vbxCategory = new VBox();
-            vbxCategory.setPadding(new Insets(5));
-            vbxCategory.setFillWidth(true);
-            vbxCategory.maxWidth(Double.MAX_VALUE);
-            vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
+            if (proCat.getTitle().equals("Rundvisning")) {
+                VBox vbxCategory = new VBox();
+                vbxCategory.setPadding(new Insets(5));
+                vbxCategory.setFillWidth(true);
+                vbxCategory.maxWidth(Double.MAX_VALUE);
+                vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
 
 
-            for (Product prod : proCat.getProducts()) {
-                for (Price price : prod.getPrices()) {
-                    //Determine if there is any prices matching unit and situation
-                    if (price.getSituation().equals(orderController.getSituations().get(0))) {
+                for (Product prod : proCat.getProducts()) {
+                    for (Price price : prod.getPrices()) {
+                        //Determine if there is any prices matching unit and situation
+                        if (price.getSituation().equals(orderController.getSituations().get(0))) {
 
-                        //Create a textfield with the product name and description
-                        TextField productDescr = new TextField(prod.toString());
-                        productDescr.setMaxWidth(Double.MAX_VALUE);
-                        productDescr.setEditable(false);
-                        productDescr.setBackground(Background.EMPTY);
-                        HBox.setHgrow(productDescr, Priority.ALWAYS);
+                            //Create a textfield with the product name and description
+                            TextField productDescr = new TextField(prod.toString());
+                            productDescr.setMaxWidth(Double.MAX_VALUE);
+                            productDescr.setEditable(false);
+                            productDescr.setBackground(Background.EMPTY);
+                            HBox.setHgrow(productDescr, Priority.ALWAYS);
 
-                        //Create textfield for price
-                        TextField txfPrice = new TextField(price.getValue() + " " + Unit.DKK);
-                        txfPrice.setEditable(false);
-                        txfPrice.setPrefWidth(75);
-                        txfPrice.setBackground(Background.EMPTY);
-                        txfPrice.setAlignment(Pos.BASELINE_RIGHT);
+                            //Create textfield for price
+                            TextField txfPrice = new TextField(price.getValue() + " " + Unit.DKK);
+                            txfPrice.setEditable(false);
+                            txfPrice.setPrefWidth(75);
+                            txfPrice.setBackground(Background.EMPTY);
+                            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
 
-                        //Create HBox for holding the entire product line
-                        HBox productLine = new HBox(productDescr, txfPrice);
-                        productLine.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-                        for (Node ch : productLine.getChildren()) {
-                            ch.setOnMouseClicked(event -> addProductToOrder(price));
+                            //Create HBox for holding the entire product line
+                            HBox productLine = new HBox(productDescr, txfPrice);
+                            productLine.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
+                            for (Node ch : productLine.getChildren()) {
+                                ch.setOnMouseClicked(event -> addProductToOrder(price));
+                            }
+                            productLine.setOnMouseClicked(event -> addProductToOrder(price));
+
+                            vbxCategory.getChildren().add(productLine);
+
                         }
-                        productLine.setOnMouseClicked(event -> addProductToOrder(price));
-
-                        vbxCategory.getChildren().add(productLine);
-
                     }
                 }
+
+                //If category is not empty...
+                if (!vbxCategory.getChildren().isEmpty()) {
+                    //Create a titled pane and add the vbox to it
+                    TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
+                    accProductOverview.getPanes().add(titledPane);
+                }
+
+                if (accProductOverview.getPanes().contains(selected)) {
+                    accProductOverview.setExpandedPane(selected);
+                } else if (!accProductOverview.getPanes().isEmpty()) {
+                    accProductOverview.setExpandedPane(accProductOverview.getPanes().get(0));
+                }
             }
-
-            //If category is not empty...
-            if (!vbxCategory.getChildren().isEmpty()) {
-                //Create a titled pane and add the vbox to it
-                TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
-                accProductOverview.getPanes().add(titledPane);
-            }
-
         }
+    }
 
-        if (accProductOverview.getPanes().contains(selected)) {
-            accProductOverview.setExpandedPane(selected);
-        } else if (!accProductOverview.getPanes().isEmpty()) {
-            accProductOverview.setExpandedPane(accProductOverview.getPanes().get(0));
+    public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
+        if (newAmount < 1) {
+            order.removeOrderLine(orderLine);
+        } else {
+            orderLine.setAmount(newAmount);
         }
+        updateOrder();
     }
 
 }

@@ -14,10 +14,12 @@ import model.modelklasser.Tour;
 import storage.Storage;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TourTab extends GridPane {
     private final ListView<Tour> lvwActiveTours;
-    private final ListView<Tour> lvwTours ;
+    private final ListView<Tour> lvwTours;
     private OrderControllerInterface controller;
     private SplitPane splitPane;
     private final TextField txfName;
@@ -134,10 +136,13 @@ private void createTour(){
      * Updates the listview in the pane
      */
 public void updateControls(){
-//    lvwTours.getItems().setAll(controller.getTours());
-    lvwActiveTours.getItems().setAll(controller.getTours());
+    List<Tour> lvwToursSorted = new ArrayList<>();
+    lvwToursSorted = controller.getTours();
+    lvwToursSorted.sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
+//    lvwActiveTours.getItems().setAll(controller.getTours());
 //    lvwActiveTours.getItems().setAll(controller.getTours().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate())));
-
+    lvwActiveTours.getItems().setAll(lvwToursSorted);
+//    lvwTours.getItems().setAll(controller.getDoneTours());
 }
 
 

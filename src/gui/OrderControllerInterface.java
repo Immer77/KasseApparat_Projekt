@@ -87,7 +87,7 @@ public interface OrderControllerInterface {
      */
     public List<Tour> getTours();
 
-    public List<ProductCategory> getProductCategories ();
+    public List<ProductCategory> getProductCategories();
 
 
 
