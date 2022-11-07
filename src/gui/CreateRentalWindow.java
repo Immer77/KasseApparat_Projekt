@@ -215,6 +215,14 @@ public class CreateRentalWindow extends Stage {
             Rental rental = orderController.createRental(name, description, LocalDate.from(datePicker.getValue()));
             for(OrderLine order : order.getOrderLines()){
                 rental.addOrderLine(order);
+
+                System.out.println(order.getPrice());
+                System.out.println(calculatedFinalPrice);
+            }
+            if(!txfFixedTotal.getText().isBlank()){
+                rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
+            }else if(!txfPercentDiscount.getText().isBlank()){
+                rental.setPercentDiscount(Double.parseDouble(txfPercentDiscount.getText()));
             }
             this.close();
 
