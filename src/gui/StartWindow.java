@@ -8,8 +8,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-import javax.swing.text.html.CSS;
-
 public class StartWindow extends Application {
 
     private Stage mainStage;
@@ -19,7 +17,7 @@ public class StartWindow extends Application {
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
-        Image image = new Image("file:.\\KasseAparatSystem\\src\\gui\\AB.jpg");
+        Image image = new Image("file:.\\KasseApparat_Projekt\\src\\gui\\AB.jpg");
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         mainStage = stage;
@@ -79,6 +77,18 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(thirdTab);
         //Updates controls when tab selection changes
         thirdTab.setOnSelectionChanged(event -> rentalTab.updateControls());
+        //----------------------------------------------------------------------------
+
+        //-----------Rental overview tab creation-------------------------------------
+        //Creates a new instance of a Rentaltab
+        TourTab tourTab = new TourTab();
+        // Creatas a new tab, with a title and the rentaltab as content
+        Tab fourthTab = new Tab("Rundvisninger", tourTab);
+        //...then adds it to the tabPane
+        tabPane.getTabs().add(fourthTab);
+        //Updates controls when tab selection changes
+        fourthTab.setOnSelectionChanged(event -> tourTab.updateControls());
+        //----------------------------------------------------------------------------
 
 
 

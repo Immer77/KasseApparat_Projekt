@@ -14,7 +14,7 @@ public class CreateProductCategoryWindow extends Stage {
     private TextField txfTitle = new TextField();
     private TextArea txaDescription = new TextArea();
 
-    private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private ProductOverviewControllerInterface controller;
 
     /**
      *
@@ -36,6 +36,8 @@ public class CreateProductCategoryWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        controller = new ProductOverviewController(Storage.getStorage());
     }
 
     /**

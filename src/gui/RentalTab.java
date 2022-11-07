@@ -23,23 +23,34 @@ import java.time.LocalDate;
 
 public class RentalTab extends GridPane {
     // Field variables
-    private final ListView<Rental> lvwActiveRentals = new ListView<>();
-    private final ListView<Rental> lvwRentals = new ListView<>();
-    private OrderControllerInterface controller = OrderController.getOrderController(Storage.getStorage());
-    private SplitPane splitPane = new SplitPane();
-    private final TextField txfName = new TextField();
-    private final TextArea txaDescription = new TextArea();
-    private final TextField datePicker = new TextField();
-    private Order order = controller.createOrder();
+    private final ListView<Rental> lvwActiveRentals;
+    private final ListView<Rental> lvwRentals;
+    private OrderControllerInterface controller;
+    private SplitPane splitPane;
+    private final TextField txfName;
+    private final TextArea txaDescription;
+    private final TextField datePicker;
+    private Order order;
 
 
     /**
      * Rental tab to control all the rentals
      */
     public RentalTab() {
+        lvwActiveRentals = new ListView<>();
+        lvwRentals = new ListView<>();
+        controller = new OrderController(Storage.getStorage());
+        splitPane = new SplitPane();
+        txfName = new TextField();
+        txaDescription = new TextArea();
+        datePicker = new TextField();
+        order = controller.createOrder();
+
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
+
+
 
 
         // Adding a splitpane to the pane
@@ -64,7 +75,7 @@ public class RentalTab extends GridPane {
         // List of closed rentals
         lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(300);
-        lvwRentals.getItems().setAll();
+        lvwRentals.getItems().setAll(controller.getDoneRentals());
         midControl.getChildren().add(lvwRentals);
         midControl.setMinWidth(200);
 
@@ -96,7 +107,6 @@ public class RentalTab extends GridPane {
 
         // Updatescontrols
         updateControls();
-
     }
 
     /**
@@ -175,7 +185,8 @@ public class RentalTab extends GridPane {
      * Updates the listview in the pane
      */
     public void updateControls() {
-        lvwActiveRentals.getItems().setAll(controller.getRentals());
+        lvwActiveRentals.getItems().setAll(controller.getActiveRentals());
+        lvwRentals.getItems().setAll(controller.getDoneRentals());
 
     }
 

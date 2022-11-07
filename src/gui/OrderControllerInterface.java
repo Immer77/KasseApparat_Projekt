@@ -7,12 +7,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface OrderControllerInterface {
-    /**
-     * Creates a situation
-     * @param name name of the situation
-     * @return object of situation
-     */
-    Situation createSituation(String name);
 
     /**
      * Gets all the situations
@@ -73,6 +67,10 @@ public interface OrderControllerInterface {
 
     List<Rental> getRentals();
 
+    List<Rental> getDoneRentals();
+
+    List<Rental> getActiveRentals();
+
     void setEndDateForOrder(Order order, LocalDate date);
 
     /**
@@ -88,6 +86,8 @@ public interface OrderControllerInterface {
      * @return A list of Tours
      */
     public List<Tour> getTours();
+
+    public List<ProductCategory> getProductCategories ();
 
 
 

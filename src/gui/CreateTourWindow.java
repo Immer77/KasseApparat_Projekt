@@ -14,31 +14,33 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.*;
 import storage.Storage;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-public class CreateRentalWindow extends Stage {
+public class CreateTourWindow extends Stage {
 
     // Field variables
     private final TextField txfName = new TextField();
     private final TextArea txaDescription = new TextArea();
+    private final OrderControllerInterface orderController;
     private final DatePicker datePicker = new DatePicker();
-    private OrderControllerInterface orderController;
-    private Accordion accProductOverview;
     private VBox orderLineView;
     private Order order;
     private VBox vbxOrderTotal;
+    private Accordion accProductOverview;
+
     private TextField txfPercentDiscount;
     private VBox vbxFinalPrice;
     private TextField txfFixedTotal;
-    private double calculatedFinalPrice = 0.0;
+    private TextField txfTidspunkt = new TextField();
+    private LocalDateTime tidspunkt;
 
-
-    // Constructor to createRentalWIndows
-    public CreateRentalWindow(String title, Stage owner) {
+    // Constructor to createRentalWindows
+    public CreateTourWindow(String title, Stage owner){
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -48,13 +50,15 @@ public class CreateRentalWindow extends Stage {
 
         this.setTitle(title);
         GridPane pane = new GridPane();
-
+        this.initContent(pane);
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
         orderController = new OrderController(Storage.getStorage());
         this.initContent(pane);
+        //Initialises an order
+        order = orderController.createOrder();
     }
 
     /**
@@ -69,25 +73,24 @@ public class CreateRentalWindow extends Stage {
 
         Label lblName = new Label("Navn:");
         pane.add(lblName, 0, 0);
-        Label lblDato = new Label("Slutdato");
+        Label lblDato = new Label("Planlagt dato");
         pane.add(lblDato, 0, 1);
+        Label lblTidspunkt = new Label("Planlagt tidspunkt");
+        pane.add(lblTidspunkt, 0, 2);
         Label lblDescription = new Label("Beskrivelse:");
-        pane.add(lblDescription, 0, 2);
-
+        pane.add(lblDescription, 0, 3);
 
         pane.add(txfName, 1, 0, 2, 1);
 
         pane.add(datePicker, 1, 1, 2, 1);
 
-        pane.add(txaDescription, 1, 2, 2, 1);
+        pane.add(txfTidspunkt, 1, 2,2,1);
+
+        pane.add(txaDescription, 1, 3, 2, 1);
         txaDescription.setPrefWidth(100);
-        txaDescription.setPrefWidth(100);
 
 
-        //-------------------------------------------------'
-
-        //Initialises an order
-        order = orderController.createOrder();
+        //-------------------------------------------
 
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
@@ -95,7 +98,6 @@ public class CreateRentalWindow extends Stage {
         accProductOverview.setPrefWidth(250);
         accProductOverview.setPadding(Insets.EMPTY);
         pane.add(accProductOverview, 4, 0, 3, 2);
-
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -114,7 +116,6 @@ public class CreateRentalWindow extends Stage {
         vbxOrderTotal.setBackground(Background.EMPTY);
         vbxOrderTotal.setAlignment(Pos.BASELINE_RIGHT);
         pane.add(vbxOrderTotal, 9, 4);
-
 
         //Add field for percent Discount
         Label lblrabat = new Label("Rabat: ");
@@ -144,13 +145,11 @@ public class CreateRentalWindow extends Stage {
         ChangeListener<String> fixedTotalListener = (observable, oldV, newV) -> this.updateFixedPrice();
         txfFixedTotal.textProperty().addListener(fixedTotalListener);
 
-
         HBox hbxFixedTotal = new HBox(txfFixedTotal);
         hbxFixedTotal.setAlignment(Pos.BASELINE_RIGHT);
         hbxFixedTotal.setPadding(new Insets(4, 8, 5, 0));
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
         pane.add(hbxFixedTotal, 9, 6);
-
 
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
@@ -171,7 +170,7 @@ public class CreateRentalWindow extends Stage {
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Opret Udlejning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
-        btnConfirmOrder.setOnAction(event -> oKAction());
+        btnConfirmOrder.setOnAction(event -> okAction());
         pane.add(btnConfirmOrder, 7, 8, 3, 1);
 
         // Adds a cancel button
@@ -181,27 +180,97 @@ public class CreateRentalWindow extends Stage {
         pane.add(btnCancel, 6, 8, 3, 1);
 
 
-        //Initiates examples of situations and prices for products
-
-
         //Updates all controls
         updateControls();
-
-
-    }
-
-    /**
-     * Closes down the window
-     */
-    private void cancelAction() {
-        this.close();
     }
 
 
+
+    //Updates controls
+    public void updateControls() {
+        //Update productOverview
+        updateProductOverview();
+
+        //Resets the order
+        resetOrder();
+    }
+
+    public void updateOrder() {
+        //TODO
+    }
+
+    // Reset the order an clears the fields
+    private void resetOrder() {
+        order = orderController.createOrder();
+        txfPercentDiscount.setText("" + 0);
+        txfFixedTotal.clear();
+        updateOrder();
+    }
+
+        /**
+         * Method to update discount on the order
+         */
+    private void updateDiscount() {
+        try {
+            if (txfPercentDiscount.getText().isBlank()) {
+                txfPercentDiscount.setText("" + 0);
+            }
+
+            double discount = Double.parseDouble(txfPercentDiscount.getText().trim());
+
+            if (discount >= 0.0 && discount <= 100.0) {
+                orderController.setDiscountForOrder(order, discount);
+            } else {
+                throw new NumberFormatException("procentrabat skal være et tal mellem 0.0 og 100");
+            }
+
+        } catch (NumberFormatException nfe) {
+            txfPercentDiscount.setText("" + 0);
+
+            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+            alertNFE.setTitle("Indtastet værdi er ikke et tal");
+            alertNFE.setContentText(nfe.getMessage());
+            alertNFE.showAndWait();
+
+        } catch (RuntimeException rte) {
+            txfPercentDiscount.setText("" + 0);
+
+            Alert alertRTE = new Alert(Alert.AlertType.ERROR);
+            alertRTE.setTitle("Forkert værdi");
+            alertRTE.setContentText("Tal skal være mellem 0 og 100");
+            alertRTE.showAndWait();
+
+        }
+        updateOrder();
+    }
+
     /**
-     * Creates the rental
+     * Method to update the fixedprice if the fixed price is set
      */
-    public void oKAction() {
+    private void updateFixedPrice() {
+        try {
+            if (!txfFixedTotal.getText().isBlank()) {
+                double value = Double.parseDouble(txfFixedTotal.getText());
+                if (Double.parseDouble(txfFixedTotal.getText()) < 0) {
+                    throw new NumberFormatException("Den indtastede værdi kan ikke være mindre end 0");
+                }
+                orderController.setFixedPriceForOrder(order, value, Unit.DKK);
+            } else {
+                orderController.setFixedPriceForOrder(order, -1.0, null);
+            }
+
+            updateOrder();
+        } catch (NumberFormatException nfe) {
+            txfFixedTotal.clear();
+
+            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+            alertNFE.setTitle("Forkert indtastet værdi");
+            alertNFE.setContentText(nfe.getMessage());
+            alertNFE.showAndWait();
+        }
+    }
+
+    public void okAction() {
         String name = "";
         String description = "";
         if (!txfName.getText().isBlank()) {
@@ -211,41 +280,26 @@ public class CreateRentalWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-
-            Rental rental = orderController.createRental(name, description, LocalDate.from(datePicker.getValue()));
+            Tour tour = orderController.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
             for(OrderLine order : order.getOrderLines()){
-                rental.addOrderLine(order);
-
-                System.out.println(order.getPrice());
-                System.out.println(calculatedFinalPrice);
-            }
-            if(!txfFixedTotal.getText().isBlank()){
-                rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
-            }else if(!txfPercentDiscount.getText().isBlank()){
-                rental.setPercentDiscount(Double.parseDouble(txfPercentDiscount.getText()));
+                tour.addOrderLine(order);
             }
             this.close();
 
         } else {
             Alert nameAlert = new Alert(Alert.AlertType.ERROR);
             nameAlert.setTitle("Manglende navn!");
-            nameAlert.setHeaderText("En udlejning skal have et navn før det kan oprettes!");
+            nameAlert.setHeaderText("En rundvisning skal have et navn før det kan oprettes!");
             nameAlert.showAndWait();
         }
     }
 
-    //Updates controls
-    public void updateControls() {
-
-        //Update productOverview
-        updateProductOverview();
-
-        //Resets the order
-        resetOrder();
-
-
+    /**
+     * Closes down the window
+     */
+    private void cancelAction() {
+        this.close();
     }
-
 
     /**
      * Adds a product from the overview to the current order
@@ -276,9 +330,6 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
-    /**
-     * Updates the overview of products, depending on the Situation and the Unit chosen.
-     */
     private void updateProductOverview() {
         TitledPane selected = accProductOverview.getExpandedPane();
 
@@ -343,207 +394,4 @@ public class CreateRentalWindow extends Stage {
         }
     }
 
-
-    // Reset the order an clears the fields
-    private void resetOrder() {
-        order = orderController.createOrder();
-        txfPercentDiscount.setText("" + 0);
-        txfFixedTotal.clear();
-        updateOrder();
-    }
-
-    /**
-     * Updates the display of orderlines
-     */
-    public void updateOrder() {
-        //Clears list
-        orderLineView.getChildren().clear();
-
-        //For each orderline in the order, creates a spinner for amount, a textfield for the product name, a textfield for price and a textfield for total cost
-        for (OrderLine ol : order.getOrderLines()) {
-
-            //Creates a spinner
-            Spinner<Integer> spnAmount = new Spinner<>(0, 999, ol.getAmount());
-            spnAmount.setEditable(true);
-            spnAmount.setPrefWidth(60);
-            ChangeListener<Integer> spinnerListener = (ov, n, o) -> amountChangedForOrderLine(spnAmount.getValue(), ol);
-            spnAmount.valueProperty().addListener(spinnerListener);
-
-            //Create a textfield with the product name and description
-            TextField txfproductDescr = new TextField(ol.getPrice().getProduct().toString());
-            txfproductDescr.setMaxWidth(Double.MAX_VALUE);
-            txfproductDescr.setEditable(false);
-            txfproductDescr.setBackground(Background.EMPTY);
-            HBox.setHgrow(txfproductDescr, Priority.ALWAYS);
-
-            //Create textfield for price
-            TextField txfPrice = new TextField(ol.getPrice().getValue() + " " + Unit.DKK);
-            txfPrice.setEditable(false);
-            txfPrice.setPrefWidth(75);
-            txfPrice.setBackground(Background.EMPTY);
-            txfPrice.setAlignment(Pos.BASELINE_RIGHT);
-
-            //Create textfield for subtotal
-            TextField txfSubTotal = new TextField("" + ol.calculateOrderLinePrice() + " " + Unit.DKK);
-            txfSubTotal.setEditable(false);
-            txfSubTotal.setPrefWidth(75);
-            txfSubTotal.setBackground(Background.EMPTY);
-            txfSubTotal.setAlignment(Pos.BASELINE_LEFT);
-
-            //Creates HBox to display the orderline
-            HBox orderline = new HBox(spnAmount, txfproductDescr, txfPrice, txfSubTotal);
-            orderline.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
-            orderLineView.getChildren().add(orderline);
-        }
-
-        //Clears both the calculated total of all the orderlines, and the final total price for the order
-        vbxOrderTotal.getChildren().clear();
-        vbxFinalPrice.getChildren().clear();
-
-        //For each unit, calculates the sum of the orderlines with that unit
-
-
-        //Checks if there is any orderlines in the order with this unit
-        boolean currentUnitFound = false;
-        for (OrderLine ol : order.getOrderLines()) {
-            if (ol.getPrice().getUnit().equals(Unit.DKK)) {
-                currentUnitFound = true;
-                break;
-            }
-        }
-
-        //If orderline with this unit exists, create labels for the total of this unit
-        if (currentUnitFound) {
-            double result = order.calculateSumPriceForUnit(Unit.DKK);
-
-            Label priceTotal = new Label(result + " " + Unit.DKK);
-            priceTotal.setAlignment(Pos.BASELINE_RIGHT);
-            vbxOrderTotal.getChildren().add(priceTotal);
-
-            //Calculate the total after subtracting the percentage discount
-
-            calculatedFinalPrice = result;
-            try {
-                if (!txfPercentDiscount.getText().isBlank()) {
-                    double percentageDiscount = Double.parseDouble(txfPercentDiscount.getText().trim());
-                    double percentageMultiplier = 1.0;
-
-                    if (percentageDiscount >= 0 && percentageDiscount <= 100) {
-                        percentageMultiplier = (100 - percentageDiscount) / 100;
-                    } else {
-                        throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
-                    }
-                    calculatedFinalPrice = result * percentageMultiplier;
-                }
-
-            } catch (NumberFormatException nfe) {
-                txfPercentDiscount.setText("" + 0);
-
-                Alert alertNFE = new Alert(Alert.AlertType.ERROR);
-                alertNFE.setTitle("Indtastet værdi er ikke et tal");
-                alertNFE.setContentText(nfe.getMessage());
-                alertNFE.showAndWait();
-            }
-
-            String finalPriceText = calculatedFinalPrice + " " + Unit.DKK;
-            Label lblFinalPrice = new Label(finalPriceText);
-            lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-            vbxFinalPrice.getChildren().add(lblFinalPrice);
-
-
-        }
-
-        if (!txfFixedTotal.getText().isBlank()) {
-            calculatedFinalPrice = Double.parseDouble(txfFixedTotal.getText());
-            vbxFinalPrice.getChildren().clear();
-            Label lblAgreedTotal = new Label("--AFTALT--");
-            lblAgreedTotal.setAlignment(Pos.BASELINE_RIGHT);
-            Label lblManualFinalPrice = new Label(txfFixedTotal.getText() + " " + Unit.DKK);
-            lblManualFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
-            vbxFinalPrice.getChildren().add(lblAgreedTotal);
-            vbxFinalPrice.getChildren().add(lblManualFinalPrice);
-        }
-
-
-    }
-
-    /**
-     * Updates orderlines when spinner is used to change amount
-     *
-     * @param orderLine the orderline to update
-     */
-    public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
-        if (newAmount < 1) {
-            order.removeOrderLine(orderLine);
-        } else {
-            orderLine.setAmount(newAmount);
-        }
-        updateOrder();
-    }
-
-
-    /**
-     * Method to update discount on the order
-     */
-    private void updateDiscount() {
-        try {
-            if (txfPercentDiscount.getText().isBlank()) {
-                txfPercentDiscount.setText("" + 0);
-            }
-
-            double discount = Double.parseDouble(txfPercentDiscount.getText().trim());
-
-            if (discount >= 0.0 && discount <= 100.0) {
-                orderController.setDiscountForOrder(order, discount);
-            } else {
-                throw new NumberFormatException("procentrabat skal være et tal mellem 0.0 og 100");
-            }
-
-        } catch (NumberFormatException nfe) {
-            txfPercentDiscount.setText("" + 0);
-
-            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
-            alertNFE.setTitle("Indtastet værdi er ikke et tal");
-            alertNFE.setContentText(nfe.getMessage());
-            alertNFE.showAndWait();
-
-        } catch (RuntimeException rte) {
-            txfPercentDiscount.setText("" + 0);
-
-            Alert alertRTE = new Alert(Alert.AlertType.ERROR);
-            alertRTE.setTitle("Forkert værdi");
-            alertRTE.setContentText("Tal skal være mellem 0 og 100");
-            alertRTE.showAndWait();
-
-        }
-
-
-        updateOrder();
-    }
-
-    /**
-     * Method to update the fixedprice if the fixed price is set
-     */
-    private void updateFixedPrice() {
-        try {
-            if (!txfFixedTotal.getText().isBlank()) {
-                double value = Double.parseDouble(txfFixedTotal.getText());
-                if (Double.parseDouble(txfFixedTotal.getText()) < 0) {
-                    throw new NumberFormatException("Den indtastede værdi kan ikke være mindre end 0");
-                }
-                orderController.setFixedPriceForOrder(order, value, Unit.DKK);
-            } else {
-                orderController.setFixedPriceForOrder(order, -1.0, null);
-            }
-
-            updateOrder();
-        } catch (NumberFormatException nfe) {
-            txfFixedTotal.clear();
-
-            Alert alertNFE = new Alert(Alert.AlertType.ERROR);
-            alertNFE.setTitle("Forkert indtastet værdi");
-            alertNFE.setContentText(nfe.getMessage());
-            alertNFE.showAndWait();
-        }
-    }
 }

@@ -17,7 +17,7 @@ public class CreateProductWindow extends Stage {
     private TextField txfName = new TextField();
     private TextArea txaDescription = new TextArea();
     private ProductCategory productCategory;
-    private ProductOverviewControllerInterface controller = ProductOverviewController.getProductOverviewController(Storage.getStorage());
+    private ProductOverviewControllerInterface controller;
 
     /**
      * Creates a new window used for creating a new Product
@@ -40,6 +40,8 @@ public class CreateProductWindow extends Stage {
 
         Scene scene = new Scene(pane);
         this.setScene(scene);
+
+        controller = new ProductOverviewController(Storage.getStorage());
     }
 
 
@@ -85,7 +87,7 @@ public class CreateProductWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createProduct(productCategory, name, description);
+            controller.createProductForCategory(productCategory, name, description);
             this.close();
 
         } else {
