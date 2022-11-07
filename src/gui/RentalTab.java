@@ -3,6 +3,10 @@ package gui;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -14,6 +18,7 @@ import model.modelklasser.OrderLine;
 import model.modelklasser.Rental;
 import storage.Storage;
 
+import java.awt.*;
 import java.time.LocalDate;
 
 public class RentalTab extends GridPane {
