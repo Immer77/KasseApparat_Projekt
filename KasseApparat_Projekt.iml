@@ -27,5 +27,7 @@
     <orderEntry type="library" name="javafx-sdk-19" level="application" />
     <orderEntry type="library" name="javafx-19-javadoc" level="application" />
     <orderEntry type="library" name="objenesis-3.2" level="application" />
+    <orderEntry type="library" name="JavaFX" level="application" />
+    <orderEntry type="library" name="Mockito" level="application" />
   </component>
 </module>
