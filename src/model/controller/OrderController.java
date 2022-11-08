@@ -6,6 +6,7 @@ import model.modelklasser.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OrderController implements OrderControllerInterface {
@@ -202,6 +203,17 @@ public class OrderController implements OrderControllerInterface {
         return storage.getProductCategories();
     }
 
+    public HashMap<Product, Integer> getSumOfRentalProducts() {
+
+        HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
+        for (Order order : getActiveRentals()) {
+            for (OrderLine orderLine : order.getOrderLines()) {
+                productsAndAmounts.put(orderLine.getPrice().getProduct(), +orderLine.getAmount());
+            }
+        }
+        return productsAndAmounts;
+    }
+
 
     public void initContent() {
         Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften", LocalDate.of(2022, 12, 31));
@@ -214,9 +226,9 @@ public class OrderController implements OrderControllerInterface {
         rental3.createOrderLine(5, getProductCategories().get(1).getProducts().get(2).getPrices().get(0));
         rental4.createOrderLine(1, getProductCategories().get(1).getProducts().get(3).getPrices().get(1));
 
-        Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14,30));
-        Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15,00));
-        Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10,00));
+        Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14, 30));
+        Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15, 00));
+        Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10, 00));
 
         tour1.setName("John");
         tour1.setDescription("Potentiel lærling");
