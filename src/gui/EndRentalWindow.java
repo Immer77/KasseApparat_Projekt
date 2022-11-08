@@ -310,10 +310,10 @@ public class EndRentalWindow extends Stage {
             if (ol.getAmount() > 0) {
                 HBox orderline = new HBox();
                 Label lblOL = new Label();
-                if (ol.getPrice().getProduct().getDepositPrice() != null){
-                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() );
+                if (ol.getPrice().getProduct().getDepositPrice() == null){
+                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
                 } else {
-                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "    Pant pr. stk.: " + ol.getPrice().getProduct().getDepositPrice().getValue() + " " + ol.getPrice().getProduct().getDepositPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice());
+                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "    Pant pr. stk.: " + ol.getPrice().getProduct().getDepositPrice().getValue() + " " + ol.getPrice().getProduct().getDepositPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
                 }
                 orderline.setOnMouseClicked(event -> addToUnusedProducts(ol));
                 orderline.getChildren().setAll(lblOL);
