@@ -1,10 +1,10 @@
 package gui;
 
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,6 +17,7 @@ import model.controller.OrderController;
 import model.modelklasser.OrderLine;
 import model.modelklasser.PaymentMethod;
 import model.modelklasser.Tour;
+import model.modelklasser.Unit;
 import storage.Storage;
 
 public class EndTourWindow extends Stage {
@@ -24,13 +25,19 @@ public class EndTourWindow extends Stage {
     private OrderControllerInterface orderController;
     private Tour tour;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
-    private VBox orderLineView, unusedOrderLineView, tourInfoVBox;
-    private SplitPane splitPane = new SplitPane();
+    private VBox orderLineView, unusedOrderLineView, vboxFinalPrice, vboxTotalPrice, tourInfoVBox;
     private ListView<HBox> lvwTourOrderlines = new ListView<>();
     private HBox buttons;
     private TextField txfName;
     private TextArea txaDescription;
-    private DatePicker endDatePicker;
+    private TextField endDatePicker, txfRabat, txfFixedPrice;
+    private ListView lvwOrderlines = new ListView<>();
+    private ChoiceBox<Unit> chUnits;
+
+    TextField txfFinalPrice = new TextField();
+
+
+
 
     public EndTourWindow(String title, Stage owner, Tour tour){
         this.tour = tour;
@@ -77,38 +84,25 @@ public class EndTourWindow extends Stage {
 
 
         VBox endDateVBox = new VBox();
-        endDatePicker = new DatePicker();
-        endDatePicker.setValue(tour.getEndDate());
+        endDatePicker = new TextField();
+        endDatePicker.setText(String.valueOf(tour.getEndDate()));
+        endDatePicker.setEditable(false);
         Label lblEndDate = new Label("Slut dato");
         endDateVBox.getChildren().addAll(lblEndDate,endDatePicker);
 
-        //TODO - Unødvendig indpakning i HBox. Når du kun har et enkelt element får du ikke rigtig noget ud af at
-        // pakke den ind, andet end mindre læselig kode
-        HBox dateHBox = new HBox();
-        dateHBox.getChildren().addAll(endDateVBox);
-
-        tourInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,dateHBox);
+        tourInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,endDateVBox);
         pane.add(tourInfoVBox,0,0);
 
         //Adds a Vbox to hold all OrderLines
-        orderLineView = new VBox(new Label("Alle rundvisninger"));
+        orderLineView = new VBox(new Label("Rundvisninger"));
         orderLineView.setPrefWidth(300);
-        for (OrderLine ol : tour.getOrderLines()){
-            HBox orderline = new HBox();
-            Label lblOL = new Label(" "+ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit());
-            orderline.getChildren().setAll(lblOL);
-            lvwTourOrderlines.getItems().setAll(orderline);
-        }
-        orderLineView.getChildren().add(lvwTourOrderlines);
-
-        //TODO - Tror det ville gøre dit liv nemmere at bruge et ListView med orderlines, i stedet for en Vbox i et Splitpane.
-        //adds vboxs to splitpane
-        pane.add(splitPane,1,0);
-        splitPane.getItems().addAll(orderLineView);
+        updateOrderLineView();
+        pane.add(lvwOrderlines,1,0);
+        lvwOrderlines.getItems().addAll(orderLineView);
 
         //Confirm and cancel buttons with hbox to hold them
         buttons = new HBox();
-        pane.add(buttons,1,2);
+        pane.add(buttons,1,8);
         buttons.setSpacing(10);
         buttons.setPrefWidth(200);
 
@@ -127,40 +121,180 @@ public class EndTourWindow extends Stage {
         //TODO - I oprettelsen af rundvisningen kan man sætte en procentrabat og/eller en fixed price.
         // Enten skal vi gøre så de to værdier er med på slutningen af rundvisningen, eller også skal vi helt
         // fjerne den mulighed på rundvisninger.
+
+        //vbox and label to show total before price changes
+        Label lblTotalBefore = new Label("Total: ");
+        pane.add(lblTotalBefore, 1, 2);
+        vboxTotalPrice = new VBox();
+        pane.add(vboxTotalPrice,2,2);
+
+        // Percent discount on the rental
+        Label lblRabat = new Label("Rabat: ");
+        pane.add(lblRabat, 1, 3);
+
+        txfRabat = new TextField(tour.getPercentDiscount()+ "");
+        txfRabat.setPrefWidth(45);
+        txfRabat.setMaxWidth(90);
+
+        Label lblProcent = new Label(" %");
+
+        HBox hboxRabat = new HBox();
+        hboxRabat.getChildren().setAll(txfRabat,lblProcent);
+        pane.add(hboxRabat,2,3);
+
+        // Fixed price for rental
+        Label lblFixedPrice = new Label("Aftalt pris: ");
+        pane.add(lblFixedPrice, 1, 4);
+
+        txfFixedPrice = new TextField();
+        if (tour.getFixedPrice() > 0){
+            txfFixedPrice.setText(tour.getFixedPrice() + "");
+        }
+        txfFixedPrice.setPrefWidth(45);
+        txfFixedPrice.setMaxWidth(90);
+
+        chUnits = new ChoiceBox<>();
+        chUnits.setPrefWidth(50);
+        chUnits.getItems().setAll(Unit.values());
+        chUnits.getSelectionModel().select(0);
+
+        HBox hboxFixPri = new HBox();
+        hboxFixPri.getChildren().setAll(txfFixedPrice,chUnits);
+        pane.add(hboxFixPri,2,4);
+
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
         pane.add(lblFinal, 4, 9);
 
-        //TODO - Med mindre man skal kunne købe rundvisninger i klip, så kan du fjerne både vboxen og hboxen her,
-        // og bare lave et almindeligt Textfield som udregner den samlede total for ordrelinjerne (evt med rabat
-        // og/eller fixed price, hvis det skal med)
-        VBox vbxFinalPrice = new VBox();
-        vbxFinalPrice.setPrefWidth(75);
-        vbxFinalPrice.setBackground(Background.EMPTY);
-        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+        txfFinalPrice.setPadding(new Insets(10, 10, 0, 0));
+        pane.add(txfFinalPrice, 5, 9);
 
-        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
-        hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
-        hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
-        pane.add(hbxFinalPrice, 5, 9);
+        chPaymentMethod = new ChoiceBox<>();
+        chPaymentMethod.setPrefWidth(150);
+        chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
+        chPaymentMethod.getItems().setAll(PaymentMethod.values());
+        chPaymentMethod.getSelectionModel().select(0);
+        pane.add(chPaymentMethod,1,7);
 
-        //TODO - Instantier chPaymentMethod og add den til panen et sted. Sæt den til at blive udfyldt med
-        // alle paymentmethods fra storage. Din oKAction virker ikke før dette er gjort.
+        pane.setGridLinesVisible(false);
+        ChangeListener<String> updateOnChange = (o, ov, nv) -> {
+            updateControls();
+        };
+
+        txfRabat.textProperty().addListener(updateOnChange);
+        txfFixedPrice.textProperty().addListener(updateOnChange);
     }
 
-    //------------------------------------------------
+    //----------------------------------------------------------------------------------------------------
     private void oKAction() {
-        //TODO - Du har en datepicker, hvor man kan vælge en anden dato end den der egentlig følger med den aktive
-        // rundvisning. Hvis du gerne vil have at man kan det, så skal du lige huske at sætte endDate på Tour her
-        // når man confirmer. Hvis ikke, så skal du disable input i datepickeren.
-
         orderController.setPaymentMethodForOrder(tour, chPaymentMethod.getSelectionModel().getSelectedItem());
         orderController.saveOrder(tour);
+        this.close();
     }
 
     private void cancelAction() {
         this.close();
+    }
+
+    private void updateOrderLineView() {
+        orderLineView = new VBox(new Label("Rundvisninger"));
+        orderLineView.setPrefWidth(300);
+        for (OrderLine ol : tour.getOrderLines()){
+            HBox orderline = new HBox();
+            Label lblOL = new Label(" "+ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit());
+            orderline.getChildren().setAll(lblOL);
+            lvwTourOrderlines.getItems().setAll(orderline);
+        }
+        orderLineView.getChildren().add(lvwTourOrderlines);
+    }
+
+    public void updateControls(){
+        //TODO
+        updateTourTotal();
+        fixedPriceTour();
+
+    }
+
+    public boolean fixedPriceTour(){
+        //TODO
+        boolean fixedPrice;
+        if (!txfFixedPrice.getText().isBlank()){
+            tour.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
+            tour.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
+            Label lblFixPri = new Label(" " + chUnits.getValue());
+            vboxFinalPrice.getChildren().setAll(lblFixPri);
+            for (OrderLine ol : tour.getOrderLines()){
+                Label lblResult = new Label(tour.calculateSumPriceForUnit(ol.getPrice().getUnit()) + " " + ol.getPrice().getUnit());
+                vboxTotalPrice.getChildren().setAll(lblResult);
+            }
+            txfRabat.setDisable(true);
+            fixedPrice = true;
+        } else {
+            txfRabat.setDisable(false);
+            fixedPrice = false;
+        }
+        return fixedPrice;
+    }
+
+    public void updateTourTotal() {
+        //TODO
+        vboxTotalPrice.getChildren().clear();
+        vboxFinalPrice.getChildren().clear();
+        fixedPriceTour();
+        if (!fixedPriceTour()){
+            for (Unit unit : Unit.values()) {
+
+
+                //Checks if there is any orderlines in the order with this unit
+                boolean currentUnitFound = false;
+                for (OrderLine ol : tour.getOrderLines()) {
+                    if (ol.getPrice().getUnit().equals(unit)) {
+                        currentUnitFound = true;
+                        break;
+                    }
+                }
+
+                //If orderline with this unit exists, create labels for the total of this unit
+                if (currentUnitFound) {
+                    double result = tour.calculateSumPriceForUnit(unit);
+
+                    Label priceTotal = new Label(result + " " + unit);
+                    priceTotal.setAlignment(Pos.BASELINE_RIGHT);
+                    vboxTotalPrice.getChildren().add(priceTotal);
+
+                    //Calculate the total after subtracting the percentage discount
+
+                    double calculatedFinalPrice = result;
+                    try {
+                        if (!txfRabat.getText().isBlank()) {
+                            double percentageDiscount = Double.parseDouble(txfRabat.getText().trim());
+                            double percentageMultiplier = 1.0;
+
+                            if (percentageDiscount >= 0 && percentageDiscount <= 100) {
+                                percentageMultiplier = (100 - percentageDiscount) / 100;
+                            } else {
+                                throw new NumberFormatException("Procentrabatten skal være et tal mellem 0 og 100");
+                            }
+                            calculatedFinalPrice = result * percentageMultiplier;
+                        }
+
+                    } catch (NumberFormatException nfe) {
+                        txfRabat.setText("" + 0);
+
+                        Alert alertNFE = new Alert(Alert.AlertType.ERROR);
+                        alertNFE.setTitle("Indtastet værdi er ikke et tal");
+                        alertNFE.setContentText(nfe.getMessage());
+                        alertNFE.showAndWait();
+                    }
+
+                    String finalPriceText = calculatedFinalPrice + " " + unit;
+                    Label lblFinalPrice = new Label(finalPriceText + " ");
+                    lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+                    vboxFinalPrice.getChildren().add(lblFinalPrice);
+                }
+            }
+        }
     }
 
 }
