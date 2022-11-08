@@ -109,7 +109,7 @@ public class StartWindow extends Application {
         // adding orderOverviewTab to the tabPane
         tabPane.getTabs().add(sixthTab);
         // updates the tab when selecting it
-//        sixthTab.setOnSelectionChanged(event -> orderOverviewTab.updateControls());
+        sixthTab.setOnSelectionChanged(event -> orderOverviewTab.updateOrderList());
 
 
     }
