@@ -14,9 +14,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.*;
-import org.mockito.internal.matchers.Or;
 import storage.Storage;
 
 import java.time.LocalDate;
@@ -233,9 +231,9 @@ public class CreateRentalWindow extends Stage {
                 System.out.println(calculatedFinalPrice);
             }
             if(!txfFixedTotal.getText().isBlank()){
-                rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
+                rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText().trim()));
             }else if(!txfPercentDiscount.getText().isBlank()){
-                rental.setPercentDiscount(Double.parseDouble(txfPercentDiscount.getText()));
+                rental.setPercentDiscount(Double.parseDouble(txfPercentDiscount.getText().trim()));
             }
             this.close();
 
