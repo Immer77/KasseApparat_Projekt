@@ -84,10 +84,11 @@ public class EndTourWindow extends Stage {
 
         //TODO - Unødvendig indpakning i HBox. Når du kun har et enkelt element får du ikke rigtig noget ud af at
         // pakke den ind, andet end mindre læselig kode
-        HBox dateHBox = new HBox();
-        dateHBox.getChildren().addAll(endDateVBox);
+        // Done?
+//        HBox dateHBox = new HBox();
+//        dateHBox.getChildren().addAll(endDateVBox);
 
-        tourInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,dateHBox);
+        tourInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,endDateVBox);
         pane.add(tourInfoVBox,0,0);
 
         //Adds a Vbox to hold all OrderLines
@@ -149,7 +150,7 @@ public class EndTourWindow extends Stage {
         // alle paymentmethods fra storage. Din oKAction virker ikke før dette er gjort.
     }
 
-    //------------------------------------------------
+    //----------------------------------------------------------------------------------------------------
     private void oKAction() {
         //TODO - Du har en datepicker, hvor man kan vælge en anden dato end den der egentlig følger med den aktive
         // rundvisning. Hvis du gerne vil have at man kan det, så skal du lige huske at sætte endDate på Tour her
