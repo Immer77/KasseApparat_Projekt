@@ -61,6 +61,7 @@ public class CreateRentalWindow extends Stage {
 
     /**
      * Initilizes the pane to display lbls, textfields etc.
+     *
      * @param pane
      */
     public void initContent(GridPane pane) {
@@ -114,8 +115,8 @@ public class CreateRentalWindow extends Stage {
         txfDepositPrice.setBackground(Background.EMPTY);
         txfDepositPrice.setAlignment(Pos.BASELINE_RIGHT);
 
-        pane.add(lblDepositPrice,8,4);
-        pane.add(txfDepositPrice,9,4);
+        pane.add(lblDepositPrice, 8, 4);
+        pane.add(txfDepositPrice, 9, 4);
 
         //Adds field and label for calculated total of the Order
         Label lblOrderTotal = new Label("Total:");
@@ -226,15 +227,18 @@ public class CreateRentalWindow extends Stage {
 
 
             Rental rental = orderController.createRental(name, description, LocalDate.from(datePicker.getValue()));
-            for(OrderLine order : order.getOrderLines()){
-                rental.addOrderLine(order);
+            for (OrderLine order : order.getOrderLines()) {
 
-                System.out.println(order.getPrice());
-                System.out.println(calculatedFinalPrice);
+                rental.addOrderLine(order);
+//                if(Double.parseDouble(txfPercentDiscount.getText()) != 0){
+//                    orderController.setDiscountForOrder(rental,Double.parseDouble(txfPercentDiscount.getText()));
+//                }else if(!txfFixedTotal.getText().isBlank()){
+//                    rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
+//                }
             }
-            if(!txfFixedTotal.getText().isBlank()){
+            if (!txfFixedTotal.getText().isBlank()) {
                 rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
-            }else if(!txfPercentDiscount.getText().isBlank()){
+            } else if (!txfPercentDiscount.getText().isBlank()) {
                 rental.setPercentDiscount(Double.parseDouble(txfPercentDiscount.getText()));
             }
             this.close();
@@ -501,10 +505,10 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
-    private double calculatDepositPrice(){
+    private double calculatDepositPrice() {
         double sumOfPant = 0.0;
-        for(OrderLine orderLine : order.getOrderLines()){
-            if(orderLine.getPrice().getProduct().getDepositPrice() != null){
+        for (OrderLine orderLine : order.getOrderLines()) {
+            if (orderLine.getPrice().getProduct().getDepositPrice() != null) {
                 sumOfPant += (orderLine.getAmount() * orderLine.getPrice().getProduct().getDepositPrice().getValue());
             }
 
@@ -575,13 +579,5 @@ public class CreateRentalWindow extends Stage {
             alertNFE.setContentText(nfe.getMessage());
             alertNFE.showAndWait();
         }
-    }
-
-    private void updateDepositPrice(){
-        double sumOfPant = 0.0;
-        for(OrderLine orderLine : order.getOrderLines()){
-            sumOfPant += orderLine.getPrice().getProduct().getDepositPrice().getValue();
-        }
-        txfDepositPrice.setText(String.valueOf(sumOfPant));
     }
 }
