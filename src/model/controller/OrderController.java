@@ -12,7 +12,7 @@ public class OrderController implements OrderControllerInterface {
 
     //Field Variables
     private StorageInterface storage;
-
+    private static int orderNumber = 1000;
 
     /**
      * Private ordercontroller supporting singleton pattern
@@ -39,7 +39,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Order createOrder() {
-        Order order = new Order();
+        orderNumber++;
+        Order order = new Order(orderNumber);
         return order;
     }
 
@@ -109,7 +110,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Rental createRental(String name, String description, LocalDate endDate) {
-        Rental rental = new Rental(name, description, endDate);
+        orderNumber++;
+        Rental rental = new Rental(name, description, endDate, orderNumber);
         storage.addOrder(rental);
         return rental;
     }
@@ -161,7 +163,8 @@ public class OrderController implements OrderControllerInterface {
      * @return the new Tour object
      */
     public Tour createTour(LocalDate endDate, LocalTime time) {
-        Tour tour = new Tour(endDate, time);
+        orderNumber++;
+        Tour tour = new Tour(endDate, time,orderNumber);
         return tour;
     }
 

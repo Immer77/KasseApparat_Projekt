@@ -10,8 +10,8 @@ public class Tour extends Order{
     private LocalTime time;
 
     //Constructors ---------------------------------------------------------------------------------------------------
-    public Tour(LocalDate endDate, LocalTime time) {
-        super();
+    public Tour(LocalDate endDate, LocalTime time, int orderNumber) {
+        super(orderNumber);
         this.setEndDate(endDate);
         this.time = time;
     }

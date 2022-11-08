@@ -3,9 +3,8 @@ package model.modelklasser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.security.PrivateKey;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -17,7 +16,8 @@ class OrderTest {
     @BeforeEach
     void setUp() {
         price = mock(Price.class);
-        order = new Order();
+        int orderNumber = 10000;
+        order = new Order(orderNumber);
     }
 
     @Test
