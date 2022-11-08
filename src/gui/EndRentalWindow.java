@@ -66,14 +66,14 @@ public class EndRentalWindow extends Stage {
 
         //adds labels, textfields, textarea and datepicker for rentalinfo
         VBox nameVBox = new VBox();
-        Label lblName = new Label("Name");
+        Label lblName = new Label("Navn");
         txfName = new TextField();
         txfName.setEditable(false);
         txfName.appendText(rental.getName());
         nameVBox.getChildren().addAll(lblName, txfName);
 
         VBox descriptionVBox = new VBox();
-        Label lblDescription = new Label("Description");
+        Label lblDescription = new Label("Beskrivelse");
         txaDescription = new TextArea();
         txaDescription.setEditable(false);
         txaDescription.appendText(rental.getDescription());
@@ -154,7 +154,7 @@ public class EndRentalWindow extends Stage {
         pane.add(hboxRabat,2,3);
 
         // Fixed price for rental
-        Label lblFixedPrice = new Label("Fixed price: ");
+        Label lblFixedPrice = new Label("Aftalt pris: ");
         pane.add(lblFixedPrice, 1, 4);
 
         txfFixedPrice = new TextField();
