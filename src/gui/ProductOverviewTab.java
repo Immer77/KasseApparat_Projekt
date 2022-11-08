@@ -3,30 +3,40 @@ package gui;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import model.controller.ProductOverviewController;
 import model.modelklasser.Price;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 import storage.Storage;
 
 public class ProductOverviewTab extends GridPane {
 
-    private final ListView<Product> lvwProducts = new ListView<>();
-    private final ListView<ProductCategory> lvwCategories = new ListView<>();
+    private final ListView<Product> lvwProducts;
+    private final ListView<ProductCategory> lvwCategories;
     private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
-    private ListView<HBox> lvwPrices = new ListView<>();
+    private ListView<Price> lvwPrices;
+    private TextField txfDepositPrices;
 
     private Button btnCreatePrice;
+    private Button btnCreateDepositPrice;
+    private Button btnCreateProductCategory;
+    private Button btnEditCategory;
+    private Button btnEditProduct;
+    private Button btnRemovePrice;
+    private ListView<Situation> lvwSituations;
+    private Button btnRemoveSituation;
 
     /**
      * Creates a new ProductOverviewTab, for showing an overview of all ProductCategories and Products. Also allows creation of those objects.
@@ -35,53 +45,172 @@ public class ProductOverviewTab extends GridPane {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
+        this.setAlignment(Pos.TOP_CENTER);
 
         productController = new ProductOverviewController(Storage.getStorage());
 
+        //-----Category Controls-----
+        //Label
+        Label lblCategory = new Label("Produktkategorier");
+        lblCategory.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize() + 5));
+        lblCategory.setMaxWidth(Double.MAX_VALUE);
+        lblCategory.setAlignment(Pos.BASELINE_CENTER);
+
+        //create category button
+        btnCreateProductCategory = new Button("Ny Kategori");
+        btnCreateProductCategory.setMaxWidth(Double.MAX_VALUE);
+        btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
+        HBox.setHgrow(btnCreateProductCategory, Priority.ALWAYS);
+
+        //Edit Category button
+        btnEditCategory = new Button("Rediger Kategori");
+        btnEditCategory.setMaxWidth(Double.MAX_VALUE);
+        btnEditCategory.setOnAction(event -> this.editProductCategoryAction());
+        HBox.setHgrow(btnEditCategory, Priority.ALWAYS);
+
+        //Hbox for buttons
+        HBox hbxCategoryButtons = new HBox(btnCreateProductCategory, btnEditCategory);
+        hbxCategoryButtons.setSpacing(10);
+
         //List View of categories
-        this.add(lvwCategories, 0, 1);
-        lvwCategories.setPrefWidth(200);
-        lvwCategories.setPrefHeight(300);
+        lvwCategories = new ListView<>();
         lvwCategories.getItems().setAll();
-
-        //List View of products
-        this.add(lvwProducts, 1, 1);
-        lvwProducts.setPrefWidth(200);
-        lvwProducts.setPrefHeight(300);
-
-        //List view of Prices
-        this.add(lvwPrices, 2, 1);
-        lvwPrices.setPrefWidth(200);
-        lvwPrices.setPrefHeight(300);
 
         //Listener for category list
         ChangeListener<ProductCategory> categoryListener = (ov, o, n) -> this.productCategoryItemSelected();
         lvwCategories.getSelectionModel().selectedItemProperty().addListener(categoryListener);
 
-        //Listener for product list
-        ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
-        lvwProducts.getSelectionModel().selectedItemProperty().addListener(productListener);
+        //Vbox for all Category controls
+        VBox vbxCategory = new VBox(lblCategory, hbxCategoryButtons, lvwCategories);
+        vbxCategory.setSpacing(5);
+        this.add(vbxCategory, 0, 0, 1, 2);
 
-        //create category button
-        Button btnCreateProductCategory = new Button("Ny Produktkategori");
-        btnCreateProductCategory.setMaxWidth(Double.MAX_VALUE);
-        this.add(btnCreateProductCategory, 0, 0);
-        btnCreateProductCategory.setOnAction(event -> this.createProductCategoryAction());
+        //-----Products Controls-----
+        //Label
+        Label lblProducts = new Label("Produkter");
+        lblProducts.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize() + 5));
+        lblProducts.setMaxWidth(Double.MAX_VALUE);
+        lblProducts.setAlignment(Pos.BASELINE_CENTER);
 
         //create product button
         btnCreateProduct = new Button("Nyt Produkt");
         btnCreateProduct.setMaxWidth(Double.MAX_VALUE);
-        this.add(btnCreateProduct, 1, 0);
         btnCreateProduct.setOnAction(event -> this.createProductAction());
+        HBox.setHgrow(btnCreateProduct, Priority.ALWAYS);
+
+        //Edit Product Button
+        btnEditProduct = new Button("Rediger Produkt");
+        btnEditProduct.setMaxWidth(Double.MAX_VALUE);
+        btnEditProduct.setOnAction(event -> this.editProductAction());
+        HBox.setHgrow(btnEditProduct, Priority.ALWAYS);
+
+        HBox hbxProductButtons = new HBox(btnCreateProduct, btnEditProduct);
+        hbxProductButtons.setSpacing(10);
+
+        //List View of products
+        lvwProducts = new ListView<>();
+
+        //Listener for product list
+        ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
+        lvwProducts.getSelectionModel().selectedItemProperty().addListener(productListener);
+
+        //Vbox to hold Product Controls
+        VBox vbxProduct = new VBox(lblProducts, hbxProductButtons, lvwProducts);
+        vbxProduct.setSpacing(5);
+        this.add(vbxProduct, 1, 0, 1, 2);
+
+        //-----Prices Controls
+        //Label
+        Label lblPrices = new Label("Priser");
+        lblPrices.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize() + 5));
+        lblPrices.setMaxWidth(Double.MAX_VALUE);
+        lblPrices.setAlignment(Pos.BASELINE_CENTER);
 
         //CreatePrice button
         btnCreatePrice = new Button("Ny Pris");
         btnCreatePrice.setMaxWidth(Double.MAX_VALUE);
-        this.add(btnCreatePrice, 2,0);
+        HBox.setHgrow(btnCreatePrice, Priority.ALWAYS);
         btnCreatePrice.setOnAction(event -> this.createPriceAction());
 
-        //initial methods
+        //Remove Price Button
+        btnRemovePrice = new Button("Slet Pris");
+        btnRemovePrice.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(btnRemovePrice, Priority.ALWAYS);
+        btnRemovePrice.setOnAction(event -> this.removePriceAction());
+
+        HBox hbxPiceButtons = new HBox(btnCreatePrice, btnRemovePrice);
+        hbxPiceButtons.setSpacing(10);
+
+        //List view of Prices
+        lvwPrices = new ListView<>();
+
+        //Listener for Price list
+        ChangeListener<Price> priceListener = (ov, o, n) -> this.priceItemSelected();
+        lvwPrices.getSelectionModel().selectedItemProperty().addListener(priceListener);
+
+        //Vbox to hold Price controls
+        VBox vbxPrices = new VBox(lblPrices, hbxPiceButtons, lvwPrices);
+        vbxPrices.setSpacing(5);
+        this.add(vbxPrices, 2, 0);
+
+        //-----Deposit price controls-----
+        //Label
+        Label lblDeposit = new Label("Pant");
+        lblDeposit.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize() + 5));
+        lblDeposit.setMaxWidth(Double.MAX_VALUE);
+        lblDeposit.setAlignment(Pos.BASELINE_CENTER);
+
+        //Create Deposit Price button
+        btnCreateDepositPrice = new Button("Ny Pant");
+        btnCreateDepositPrice.setMaxWidth(Double.MAX_VALUE);
+        btnCreateDepositPrice.setOnAction(event -> this.createDepositPriceAction());
+
+        //List view of Deposit prices
+        txfDepositPrices = new TextField();
+        txfDepositPrices.setEditable(false);
+
+        //Vbox to hold deposit controls
+        VBox vbxDeposit = new VBox(lblDeposit, btnCreateDepositPrice, txfDepositPrices);
+        vbxDeposit.setSpacing(5);
+        this.add(vbxDeposit, 2, 1);
+
+        //-----Situation controls-----
+        //Label
+        Label lblSituation = new Label("Salgssituationer");
+        lblSituation.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize() + 5));
+        lblSituation.setMaxWidth(Double.MAX_VALUE);
+        lblSituation.setAlignment(Pos.BASELINE_CENTER);
+
+        //Button for creating new situations
+        Button btnCreateSituation = new Button("Ny salgssituation");
+        btnCreateSituation.setMaxWidth(Double.MAX_VALUE);
+        btnCreateSituation.setOnAction(event -> this.createSituationAction());
+        HBox.setHgrow(btnCreateSituation, Priority.ALWAYS);
+
+        //Button for removing a situation
+        btnRemoveSituation = new Button("Slet salgssituation");
+        btnRemoveSituation.setMaxWidth(Double.MAX_VALUE);
+        btnRemoveSituation.setOnAction(event -> this.removeSituationAction());
+        HBox.setHgrow(btnRemoveSituation, Priority.ALWAYS);
+
+        HBox hbxSituationButtons = new HBox(btnCreateSituation, btnRemoveSituation);
+        hbxSituationButtons.setSpacing(10);
+
+        //List view of situations
+        lvwSituations = new ListView<>();
+
+        //Listener for Situation list
+        ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelected();
+        lvwSituations.getSelectionModel().selectedItemProperty().addListener(situationListener);
+
+        //Vbox to hold situation controls
+        VBox vbxSituationList = new VBox(lblSituation, hbxSituationButtons, lvwSituations);
+        vbxSituationList.setSpacing(5);
+        this.add(vbxSituationList, 1, 2);
+
+        //-----Initial methods-----
         this.initContent();
+        updateControls();
     }
 
     // -------------------------------------------------------------------------
@@ -96,7 +225,6 @@ public class ProductOverviewTab extends GridPane {
             controller.initContent();
         }
 
-        btnCreatePrice.setDisable(true);
         updateControls();
 
     }
@@ -107,6 +235,14 @@ public class ProductOverviewTab extends GridPane {
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
     private void productCategoryItemSelected() {
+        if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
+            btnEditCategory.setDisable(true);
+            btnCreateProduct.setDisable(true);
+        } else {
+            btnEditCategory.setDisable(false);
+            btnCreateProduct.setDisable(false);
+        }
+
         updateProductList();
     }
 
@@ -122,7 +258,7 @@ public class ProductOverviewTab extends GridPane {
         CreateProductCategoryWindow categoryWindow = new CreateProductCategoryWindow("Ny produktkategori", stage);
         categoryWindow.showAndWait();
 
-        updateControls();
+        updateCategoryList();
     }
 
     /**
@@ -135,7 +271,7 @@ public class ProductOverviewTab extends GridPane {
             CreateProductWindow productWindow = new CreateProductWindow("Nyt Produkt", category, stage);
             productWindow.showAndWait();
 
-            updateControls();
+            updateProductList();
             lvwCategories.getSelectionModel().select(category);
 
         } else {
@@ -152,10 +288,24 @@ public class ProductOverviewTab extends GridPane {
     public void updateControls() {
         try {
 
-            updateCategoryList();
-            updateProductList();
-            updatePriceList();
+            if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
+                btnCreateProduct.setDisable(true);
+                btnEditCategory.setDisable(true);
+            }
+            if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
+                btnEditProduct.setDisable(true);
+                btnCreatePrice.setDisable(true);
+                btnCreateDepositPrice.setDisable(true);
+            }
+            if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
+                btnRemovePrice.setDisable(true);
+            }
 
+            if (lvwSituations.getSelectionModel().getSelectedItem() == null) {
+                btnRemoveSituation.setDisable(true);
+            }
+            updateCategoryList();
+            updateSituations();
         } catch (NullPointerException npe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Null Pointer Exception");
@@ -169,13 +319,18 @@ public class ProductOverviewTab extends GridPane {
      */
     private void updateProductList() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
         if (selectedCategory != null) {
             lvwProducts.getItems().setAll(selectedCategory.getProducts());
-            btnCreateProduct.setDisable(false);
         } else {
             lvwProducts.getItems().clear();
-            btnCreateProduct.setDisable(true);
         }
+        if (selectedProduct != null) {
+            lvwProducts.getSelectionModel().select(selectedProduct);
+        }
+
+        updatePriceList();
+        updateDepositField();
     }
 
 
@@ -183,64 +338,243 @@ public class ProductOverviewTab extends GridPane {
      * Helper method for updating the ProductCategory listview
      */
     private void updateCategoryList() {
+        ProductCategory selCategory = lvwCategories.getSelectionModel().getSelectedItem();
         lvwCategories.getItems().setAll(productController.getProductCategories());
+        if (selCategory != null) {
+            lvwCategories.getSelectionModel().select(selCategory);
+        }
+
+        updateProductList();
     }
 
+    /**
+     * Called when selection changes in Product listview
+     */
     public void productItemSelected() {
+
+        if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
+            btnEditProduct.setDisable(true);
+            btnCreatePrice.setDisable(true);
+            btnCreateDepositPrice.setDisable(true);
+        } else {
+            btnEditProduct.setDisable(false);
+            btnCreatePrice.setDisable(false);
+            btnCreateDepositPrice.setDisable(false);
+        }
+
         updatePriceList();
+        updateDepositField();
     }
 
-    public void updatePriceList() {
-
-        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
-
-        lvwPrices.getItems().clear();
-
-        if (selectedProduct != null) {
-            for (Price price : selectedProduct.getPrices()) {
-                //Create label for Situation
-                Label lblSituation = new Label(price.getSituation().getName());
-                lblSituation.setPrefWidth(70);
-
-
-                Label lblseperator = new Label(" - ");
-                lblseperator.setAlignment(Pos.BASELINE_CENTER);
-                lblseperator.setPrefWidth(30);
-
-                //Create label for value
-                Label lblValue = new Label("" + price.getValue());
-                lblValue.setAlignment(Pos.BASELINE_RIGHT);
-                HBox.setHgrow(lblValue, Priority.ALWAYS);
-
-                //Create label for Unit
-                Label lblUnit = new Label("" + price.getUnit());
-                lblUnit.setAlignment(Pos.BASELINE_RIGHT);
-
-                //Hbox to hold the labels
-                HBox hbxPrice = new HBox(lblSituation, lblseperator, lblValue, lblUnit);
-                hbxPrice.setSpacing(5);
-                hbxPrice.setMaxWidth(Double.MAX_VALUE);
-                lvwPrices.getItems().add(hbxPrice);
-
-                btnCreatePrice.setDisable(false);
-            }
+    /**
+     * Called when selection changes in Price listview
+     */
+    public void priceItemSelected() {
+        if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
+            btnRemovePrice.setDisable(true);
         } else {
-            btnCreatePrice.setDisable(true);
+            btnRemovePrice.setDisable(false);
         }
     }
 
-    public void createPriceAction () {
+    /**
+     * Updates the list of prices for a product
+     */
+    public void updatePriceList() {
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+        Price selectedPrice = lvwPrices.getSelectionModel().getSelectedItem();
+
+        if (selectedProduct != null) {
+            lvwPrices.getItems().setAll(selectedProduct.getPrices());
+            lvwPrices.setCellFactory(new Callback<ListView<Price>, ListCell<Price>>() {
+                @Override
+                public ListCell<Price> call(ListView<Price> priceListView) {
+                    return new PriceFormatCell();
+                }
+            });
+
+            if (selectedPrice != null) {
+                lvwPrices.getSelectionModel().select(selectedPrice);
+            }
+
+        } else {
+            lvwPrices.getItems().clear();
+        }
+    }
+
+    /**
+     * Updates the field with the deposit price
+     */
+    public void updateDepositField() {
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+
+        if (selectedProduct != null && selectedProduct.getDepositPrice() != null) {
+                txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
+        } else {
+            txfDepositPrices.setText("0.0 DKK");
+        }
+    }
+
+    /**
+     * Called when the create price button is pressed
+     */
+    public void createPriceAction() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
         CreatePriceWindow newPriceWindow = new CreatePriceWindow("Ny Pris", selectedProduct, new Stage());
         newPriceWindow.showAndWait();
 
-        updateControls();
+        updatePriceList();
 
         lvwCategories.getSelectionModel().select(selectedCategory);
         lvwProducts.getSelectionModel().select(selectedProduct);
     }
 
+    /**
+     * Called when the create deposit button is pressed.
+     */
+    public void createDepositPriceAction() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
+        CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage(), selectedCategory);
+        newDepositPriceWindow.showAndWait();
+
+        lvwCategories.getSelectionModel().select(selectedCategory);
+        lvwProducts.getSelectionModel().select(selectedProduct);
+
+        updateDepositField();
+    }
+
+    /**
+     * Called when the edit categories button is pressed
+     */
+    public void editProductCategoryAction() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        EditProductCategoryWindow editWindow = new EditProductCategoryWindow("Rediger Produktkategori", new Stage(), selectedCategory);
+        editWindow.showAndWait();
+
+        updateCategoryList();
+
+        lvwCategories.getSelectionModel().select(selectedCategory);
+    }
+
+    /**
+     * Called when the edit product button is pressed.
+     */
+    public void editProductAction() {
+        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+
+        EditProductWindow editWindow = new EditProductWindow("Rediger Produkt", new Stage(), selectedProduct);
+        editWindow.showAndWait();
+
+        updateProductList();
+
+        lvwProducts.getSelectionModel().select(selectedProduct);
+
+    }
+
+    /**
+     * Removes the selected price from the selected products price list
+     */
+    public void removePriceAction() {
+        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+        Price selectedPrice = lvwPrices.getSelectionModel().getSelectedItem();
+
+        productController.removePriceFromProduct(selectedPrice, selectedProduct);
+
+        updatePriceList();
+    }
+
+    /**
+     * Creates a new situation
+     */
+    public void createSituationAction() {
+        CreateSituationWindow createSituationWindow = new CreateSituationWindow("Ny salgssituation", new Stage());
+        createSituationWindow.showAndWait();
+
+        updateSituations();
+    }
+
+    /**
+     * Removes the currently selected situation, and all prices for all products connected to it
+     */
+    public void removeSituationAction() {
+        Situation selectedSituation = lvwSituations.getSelectionModel().getSelectedItem();
+        if (selectedSituation != null) {
+            productController.removeSituation(selectedSituation);
+        }
+
+        updateControls();
+    }
+
+    /**
+     * Called when a new situation is selected
+     */
+    public void situationSelected() {
+        if (lvwSituations.getSelectionModel().getSelectedItem() == null) {
+            btnRemoveSituation.setDisable(true);
+        } else {
+            btnRemoveSituation.setDisable(false);
+        }
+    }
+
+    /**
+     * Updates the Situationlist
+     */
+    public void updateSituations() {
+        lvwSituations.getItems().setAll(productController.getSituations());
+    }
+
+    /**
+     * Inner class to format the Price display in the listview of prices.
+     */
+    private class PriceFormatCell extends ListCell<Price> {
+        private Label lblSituation;
+        private Label lblValue;
+        private Label lblUnit;
+        private HBox hbxPrice;
+
+        public PriceFormatCell() {
+            //Create label for Situation
+            lblSituation = new Label();
+            lblSituation.setPrefWidth(70);
+
+            Label lblseperator = new Label(" - ");
+            lblseperator.setAlignment(Pos.BASELINE_CENTER);
+            lblseperator.setPrefWidth(30);
+
+            //Create label for value
+            lblValue = new Label();
+            lblValue.setAlignment(Pos.BASELINE_RIGHT);
+            HBox.setHgrow(lblValue, Priority.ALWAYS);
+
+            //Create label for Unit
+            lblUnit = new Label();
+            lblUnit.setAlignment(Pos.BASELINE_RIGHT);
+
+            //Hbox to hold the labels
+            hbxPrice = new HBox(lblSituation, lblseperator, lblValue, lblUnit);
+            hbxPrice.setSpacing(5);
+            hbxPrice.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        @Override
+        protected void updateItem(Price price, boolean empty) {
+            super.updateItem(price, empty);
+
+            if (empty || price == null) {
+                setGraphic(null);
+            } else {
+                lblSituation.setText(price.getSituation().getName());
+                lblValue.setText("" + price.getValue());
+                lblUnit.setText("" + price.getUnit());
+
+                setGraphic(hbxPrice);
+            }
+        }
+    }
 }
+

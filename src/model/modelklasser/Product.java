@@ -80,4 +80,19 @@ public class Product {
         return deposit;
     }
 
+    /**
+     * Sets a new name for the product.
+     * @param name the new name. Cannot be blank
+     */
+    public void setName(String name) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("Navnet på et produkt kan ikke være blankt.");
+        } else {
+            this.name = name;
+        }
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

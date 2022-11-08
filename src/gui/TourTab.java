@@ -102,6 +102,8 @@ public TourTab(){
      * Updates fields in right(??) control pane
      */
 private void updateFieldsInfo() {
+    //TODO - Lav et if-statement som tjekker om der overhovedet er en Tour selected i lvwActiveTours.
+    // Opdater kun felterne hvis selected != null.
     String name = lvwActiveTours.getSelectionModel().getSelectedItem().getName();
     String description = lvwActiveTours.getSelectionModel().getSelectedItem().getDescription();
     LocalTime time = lvwActiveTours.getSelectionModel().getSelectedItem().getTime();
@@ -114,6 +116,8 @@ private void updateFieldsInfo() {
      * Method to open endTourWindow where one ends the selectedf tour
      */
 private void finishTour(){
+    //TODO - Tjek evt om der er en selected Tour før man kan afslutte en tour.
+    // Alternativt kan du disable knappen så længe der ikke er en tour selected.
     Stage stage = new Stage(StageStyle.UTILITY);
     EndTourWindow endTourWindow = new EndTourWindow("Afslut rundtur",stage, lvwActiveTours.getSelectionModel().getSelectedItem());
     endTourWindow.showAndWait();
@@ -136,6 +140,11 @@ private void createTour(){
      * Updates the listview in the pane
      */
 public void updateControls(){
+    //TODO - Du skal finde en måde kun at sætte de aktive rundvisninger i det ene vindue, og de afsluttede i det andet.
+    // Forskellen på dem er at de afsluttede har en paymentmethod, mens de aktives paymentmethod er null. Lav evt to
+    // lister, løb alle tours igennem, og sorter dem i de korrekte lister, og kald så setAll() på de korrekte listview,
+    // med den passende liste. Det kan muligvis også først betale sig at sortere dem efter du har fordelt dem, men det
+    // kan jeg ikke lige overskue
     List<Tour> lvwToursSorted = new ArrayList<>();
     lvwToursSorted = controller.getTours();
     lvwToursSorted.sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));

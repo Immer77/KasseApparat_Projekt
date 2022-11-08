@@ -8,21 +8,24 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.ProductOverviewController;
+import model.modelklasser.ProductCategory;
 import storage.Storage;
 
-public class CreateProductCategoryWindow extends Stage {
+public class EditProductCategoryWindow extends Stage {
+    private ProductCategory category;
     private TextField txfTitle = new TextField();
     private TextArea txaDescription = new TextArea();
 
     private ProductOverviewControllerInterface controller;
 
     /**
+     * Creates a new window used for editing a ProductCategory
      *
-     * Creates a new window used for creating a new ProductCategory
      * @param title The title of the window
      * @param owner The Stage owning this window
      */
-    public CreateProductCategoryWindow (String title, Stage owner) {
+    public EditProductCategoryWindow(String title, Stage owner, ProductCategory category) {
+        this.category = category;
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -43,6 +46,7 @@ public class CreateProductCategoryWindow extends Stage {
 
     /**
      * Initialises the content in the window.
+     *
      * @param pane The Gridpane parent of the content
      */
     public void initContent(GridPane pane) {
@@ -52,11 +56,14 @@ public class CreateProductCategoryWindow extends Stage {
         pane.setVgap(10);
 
         Label lblTitle = new Label("Kategorinavn:");
-        pane.add(lblTitle, 0,0);
+        pane.add(lblTitle, 0, 0);
         Label lblDescription = new Label("Beskrivelse:");
-        pane.add(lblDescription, 0,1);
+        pane.add(lblDescription, 0, 1);
 
-        pane.add(txfTitle, 1,0, 2, 1);
+        txfTitle.setText(category.getTitle());
+        pane.add(txfTitle, 1, 0, 2, 1);
+
+        txaDescription.setText(category.getDescription());
         pane.add(txaDescription, 1, 1, 2, 2);
 
         Button btnOK = new Button("Ok");
@@ -72,25 +79,28 @@ public class CreateProductCategoryWindow extends Stage {
     }
 
     /**
-     * Creates a new ProductCategory object with the entered title and description, then closes the window. If no title is given, an alert is shown and nothing happens instead.
+     * Updates the title and description of the current Product Category
      */
     public void oKAction() {
-        String title = "";
-        String description = "";
-        if (!txfTitle.getText().isBlank()) {
-            title = txfTitle.getText().trim();
-
+        try {
+            String title = "";
+            String description = "";
+            if (!txfTitle.getText().isBlank()) {
+                title = txfTitle.getText().trim();
+            }
             if (!txaDescription.getText().isBlank()) {
                 description = txaDescription.getText().trim();
             }
 
-            controller.createProductCategory(title, description);
+            controller.setTitleForCategory(title, category);
+            controller.setDescriptionForCategory(description, category);
+
             this.close();
 
-        } else {
+        } catch (IllegalArgumentException iae) {
             Alert titleAlert = new Alert(Alert.AlertType.ERROR);
-            titleAlert.setTitle("Manglende titel!");
-            titleAlert.setHeaderText("En produktkategori skal have en titel før det kan oprettes!");
+            titleAlert.setTitle("Advarsel!");
+            titleAlert.setHeaderText(iae.getMessage());
             titleAlert.showAndWait();
         }
     }
@@ -98,7 +108,7 @@ public class CreateProductCategoryWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction () {
+    public void cancelAction() {
         this.close();
     }
 }

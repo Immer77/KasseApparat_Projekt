@@ -387,15 +387,21 @@ public class CreateTourWindow extends Stage {
         String description = "";
         if (!txfName.getText().isBlank()) {
             name = txfName.getText().trim();
+            //TODO - navn bliver aldrig sat på Tour objektet. Det er lige nu ikke en del af dens constructor
+            // (som du kalder nedenfor), så du skal enten tilføje den til constructoren i Tour, eller kalde setName()
+            // på Tour.
 
             if (!txaDescription.getText().isBlank()) {
                 description = txaDescription.getText().trim();
             }
+            //TODO - Ligesom navn sætted description aldrig på objektet. Enten tilføj den i constructoren, eller kald setDescription().
 
             Tour tour = orderController.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
             for(OrderLine order : order.getOrderLines()){
                 tour.addOrderLine(order);
             }
+
+
             orderController.saveOrder(tour);
             this.close();
 

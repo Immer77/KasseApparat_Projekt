@@ -1,10 +1,7 @@
 package model.controller;
 
 import gui.ProductOverviewControllerInterface;
-import model.modelklasser.Product;
-import model.modelklasser.ProductCategory;
-import model.modelklasser.Situation;
-import model.modelklasser.Unit;
+import model.modelklasser.*;
 
 import java.util.List;
 
@@ -88,9 +85,77 @@ public class ProductOverviewController implements ProductOverviewControllerInter
      * @return situation
      */
     public Situation createSituation(String name) {
-        Situation situation = new Situation(name);
-        storage.addSituation(situation);
-        return situation;
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("En ny salgssituation skal have et navn");
+        } else {
+            Situation situation = new Situation(name);
+            storage.addSituation(situation);
+            return situation;
+        }
+    }
+
+    /**
+     * Removes the price from the product
+     * @param price the price to remove
+     * @param product the product from which to remove the price
+     */
+    public void removePriceFromProduct (Price price, Product product) {
+        product.removePrice(price);
+    }
+
+    /**
+     * Sets a new title for this category
+     * @param title the new title of the category
+     * @param category the category to get an updated title
+     */
+    public void setTitleForCategory (String title, ProductCategory category) {
+        category.setTitle(title);
+    }
+
+    /**
+     * Sets a new description for a ProductCategory
+     * @param description the new description
+     * @param category the category to recieve the new description
+     */
+    public void setDescriptionForCategory (String description, ProductCategory category) {
+        category.setDescription(description);
+    }
+
+    /**
+     * Sets a new name for the provided Product
+     * @param name the new name of the product
+     * @param product the product to rename
+     */
+    public void setNameForProduct (String name, Product product) {
+        product.setName(name);
+    }
+
+    /**
+     * sets a new description for the provided Product
+     * @param description the new description
+     * @param product the product to describe
+     */
+    public void setDescriptionForProduct (String description, Product product) {
+        product.setDescription(description);
+    }
+
+    /**
+     * Removes all Price objects connected to the situation, then removes the given Situation object from storage
+     * @param situation the object to remove
+     */
+    public void removeSituation (Situation situation) {
+        if (situation != null) {
+            for (ProductCategory proCat : getProductCategories()) {
+                for (Product prod : proCat.getProducts()) {
+                    for (Price price : prod.getPrices()) {
+                        if (price.getSituation().equals(situation)) {
+                            prod.removePrice(price);
+                        }
+                    }
+                }
+            }
+            storage.removeSituation(situation);
+        }
     }
 
 
@@ -245,31 +310,25 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         ProductCategory pc5 = createProductCategory("Fustage", "");
         Product P501 = pc5.createProduct("Klosterbryg", "20 l");
         P501.createPrice(775, Unit.DKK, sitStand);
-        P501.createDeposit(200, Unit.DKK, sitStand);
         Product P502 = pc5.createProduct("Jazz Classic", "25 l");
         P502.createPrice(625, Unit.DKK, sitStand);
-        P502.createDeposit(200, Unit.DKK, sitStand);
         Product P503 = pc5.createProduct("Extra Pilsner", "25");
         P503.createPrice(575, Unit.DKK, sitStand);
-        P503.createDeposit(200, Unit.DKK, sitStand);
         Product P504 = pc5.createProduct("Celebration", "20");
         P504.createPrice(775, Unit.DKK, sitStand);
-        P504.createDeposit(200, Unit.DKK, sitStand);
         Product P505 = pc5.createProduct("Blondie", "25");
         P505.createPrice(700, Unit.DKK, sitStand);
-        P505.createDeposit(200, Unit.DKK, sitStand);
         Product P506 = pc5.createProduct("Forårsbryg", "20");
         P506.createPrice(775, Unit.DKK, sitStand);
-        P506.createDeposit(200, Unit.DKK, sitStand);
         Product P507 = pc5.createProduct("India Pale Ale", "20");
         P507.createPrice(775, Unit.DKK, sitStand);
-        P507.createDeposit(200, Unit.DKK, sitStand);
         Product P508 = pc5.createProduct("Julebryg", "20");
         P508.createPrice(775, Unit.DKK, sitStand);
-        P508.createDeposit(200, Unit.DKK, sitStand);
         Product P509 = pc5.createProduct("Imperial Stout", "20");
         P509.createPrice(775, Unit.DKK, sitStand);
-        P509.createDeposit(200, Unit.DKK, sitStand);
+         for (Product p : pc5.getProducts()) {
+            p.createDeposit(200, Unit.DKK, sitStand);
+        }
 
         ProductCategory pc6 = createProductCategory("Kulsyre", "");
         Product P601 = pc6.createProduct("Kulsyre - 6 kg", "");
@@ -278,6 +337,9 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P601.createDeposit(1000, Unit.DKK, sitStand);
         Product P602 = pc6.createProduct("Kulsyre - 4 kg", "");
         Product P603 = pc6.createProduct("Kulsyre - 10 kg", "");
+        for (Product p : pc6.getProducts()) {
+            p.createDeposit(1000, Unit.DKK, sitStand);
+        }
 
         ProductCategory pc7 = createProductCategory("Malt", "");
         Product P701 = pc7.createProduct("Malt", "25 kg");
