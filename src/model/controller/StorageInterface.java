@@ -3,6 +3,7 @@ package model.controller;
 import model.modelklasser.Order;
 import model.modelklasser.ProductCategory;
 import model.modelklasser.Situation;
+import storage.Storage;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ public interface StorageInterface {
      * Methods that needs to be added to storage classes
      * @return
      */
+
+
     // Gets all productcategories aswell as adding a productcategory to storage
     List<ProductCategory> getProductCategories();
     void addProductCategory(ProductCategory productCategory);
@@ -30,7 +33,7 @@ public interface StorageInterface {
      * Removes the given situation from storage
      * @param situation the situation object to remove from storage
      */
-    public void removeSituation (Situation situation);
+    void removeSituation (Situation situation);
 
 
 

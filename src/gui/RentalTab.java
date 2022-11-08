@@ -83,7 +83,7 @@ public class RentalTab extends GridPane {
         midControl.setMinWidth(250);
 
         // Button to create a new rental
-        Button btnRental = new Button("Opret udlejning");
+        Button btnRental = new Button("Ny udlejning");
         btnRental.setOnAction(event -> this.createRental());
         btnBox.getChildren().add(btnRental);
 
@@ -110,27 +110,6 @@ public class RentalTab extends GridPane {
 
         // Updatescontrols
         updateControls();
-    }
-
-    private void updateFieldsInfoForClosedRentals() {
-        try {
-            lvwActiveRentals.getSelectionModel().select(-1);
-            txfName.clear();
-            txaDescription.clear();
-            txfDatePicker.clear();
-            String name = lvwRentals.getSelectionModel().getSelectedItem().getName();
-            String description = lvwRentals.getSelectionModel().getSelectedItem().getDescription();
-            LocalDate date = lvwRentals.getSelectionModel().getSelectedItem().getEndDate();
-
-//            double result = calculateFinalPrice();
-
-            txfName.setText(name);
-            txaDescription.setText(description + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines());
-            txfDatePicker.setText(String.valueOf(date));
-
-        }catch (NullPointerException ne){
-            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
-        }
     }
 
     /**
