@@ -1,14 +1,10 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
-import model.modelklasser.Situation;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import storage.Storage;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 class OrderControllerTest {
 

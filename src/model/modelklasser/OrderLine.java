@@ -26,16 +26,12 @@ public class OrderLine {
 
     /**
      * Calculates the orderlineprice
+     *
      * @return the result of the price for the orderline
      */
-    public double calculateOrderLinePrice(){
+    public double calculateOrderLinePrice() {
         double result = 0.0;
-        if(amount >= 0){
-            result = price.getValue() * amount;
-        }else{
-            throw new IllegalArgumentException("Number must not be negative");
-        }
-
+        result = price.getValue() * amount;
         return result;
     }
 

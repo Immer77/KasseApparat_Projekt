@@ -35,4 +35,15 @@ class ProductCategoryTest {
         assertEquals("5,1% alc. En pilsner der er lidt mere pilsner", productTest.getDescription());
         assertTrue(productCategory.getProducts().contains(productTest));
     }
+
+    @Test
+    void TC2_setTitle_BlankTitleError () {
+        //Arrange
+        String blankTitle = "";
+        String expectedMessage = "Titlen på en produktkategory kan ikke være blank";
+
+        //Act & Assert
+        Exception thrownExteption = assertThrows(IllegalArgumentException.class, () -> productCategory.setTitle(blankTitle));
+        assertEquals(expectedMessage, thrownExteption.getMessage());
+    }
 }
