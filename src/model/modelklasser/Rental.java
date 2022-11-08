@@ -50,19 +50,14 @@ public class Rental extends Order {
 
     /**
      * Method to calculate the deposit
-     *
-     * @param unit which unit it uses to calculate the price
      * @return
      */
 
-    public double calculateDeposit(Unit unit) {
+    public double calculateDeposit() {
         double sumPrice = 0.0;
         for (OrderLine orderLine : super.getOrderLines()) {
-            if (orderLine.getPrice().getProduct().getDepositPrice().getUnit().equals(unit)) {
+            if (orderLine.getPrice().getProduct().getDepositPrice() != null) {
                 sumPrice += orderLine.getPrice().getProduct().getDepositPrice().getValue() * orderLine.getAmount();
-            }
-            else {
-                throw new NullPointerException("Pant blev ikke fundet på produktet: " + orderLine.getPrice().getProduct().getName());
             }
         }
         return sumPrice;

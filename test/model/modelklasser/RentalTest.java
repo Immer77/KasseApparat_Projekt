@@ -43,7 +43,7 @@ public class RentalTest {
 
 
         // Act
-        double result = rental.calculateDeposit(Unit.DKK);
+        double result = rental.calculateDeposit();
 
         //Assert
         assertEquals(1.0,result);
@@ -69,7 +69,7 @@ public class RentalTest {
 
 
         // Act
-        double result = rental.calculateDeposit(Unit.DKK);
+        double result = rental.calculateDeposit();
 
         //Assert
         assertEquals(5.5,result);
