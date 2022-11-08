@@ -296,8 +296,8 @@ public class EndRentalWindow extends Stage {
     public double displayDepositPrice(){
         double result = 0.0;
         try {
-            if (rental.calculateDeposit(Unit.DKK) > 0) {
-                result = rental.calculateDeposit(Unit.DKK);
+            if (rental.calculateDeposit() > 0) {
+                result = rental.calculateDeposit();
             }
         } catch (NullPointerException npe){
             npe.getMessage();

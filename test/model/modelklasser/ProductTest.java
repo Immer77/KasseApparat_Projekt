@@ -53,4 +53,15 @@ class ProductTest {
         assertTrue(product.getPrices().contains(price));
         assertEquals(situation,price.getSituation());
     }
+
+    @Test
+    void TC3_setName_BlankNameError () {
+        //Arrange
+        String blankName = "";
+        String expectedMessage = "Navnet på et produkt kan ikke være blankt.";
+
+        //Act & Assert
+        Exception thrownExteption = assertThrows(IllegalArgumentException.class, () -> product.setName(blankName));
+        assertEquals(expectedMessage, thrownExteption.getMessage());
+    }
 }
