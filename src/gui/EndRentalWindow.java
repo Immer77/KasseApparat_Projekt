@@ -309,7 +309,12 @@ public class EndRentalWindow extends Stage {
         for (OrderLine ol : rental.getOrderLines()) {
             if (ol.getAmount() > 0) {
                 HBox orderline = new HBox();
-                Label lblOL = new Label(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit());
+                Label lblOL = new Label();
+                if (ol.getPrice().getProduct().getDepositPrice() != null){
+                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() );
+                } else {
+                    lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "    Pant pr. stk.: " + ol.getPrice().getProduct().getDepositPrice().getValue() + " " + ol.getPrice().getProduct().getDepositPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice());
+                }
                 orderline.setOnMouseClicked(event -> addToUnusedProducts(ol));
                 orderline.getChildren().setAll(lblOL);
                 lvwRentalOrderlines.getItems().add(orderline);
