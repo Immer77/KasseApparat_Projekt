@@ -25,19 +25,6 @@ public class OrderController implements OrderControllerInterface {
 
 
     /**
-     * Bruges til test for ikke at have singleton pattern til at melde fejl
-     *
-     * @param storage
-     * @return
-     */
-    public static OrderControllerInterface getOrderControllerTest(StorageInterface storage) {
-        OrderControllerInterface unique_OrderController = new OrderController(storage);
-        return unique_OrderController;
-
-    }
-
-
-    /**
      * Gets a list of all the situation there is from storage
      *
      * @return
