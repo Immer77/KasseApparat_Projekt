@@ -42,9 +42,6 @@ public class Rental extends Order {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
 
     @Override
     public LocalDate getEndDate() {

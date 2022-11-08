@@ -33,12 +33,12 @@ public class RentalTest {
         // Arrange
         Situation situation = mock(Situation.class);
         Product product1 = new Product("Øl1","noget øl");
-        Price pantPris1 = product1.createDeposit(1.0,Unit.DKK,situation); // Dette bliver til en integrationstest vil jeg mene
+        Price pantPris1 = product1.createDeposit(1.0,Unit.DKK,situation);
 
 
 
         // Setting up our orderlines
-        OrderLine orderLine1 = rental.createOrderLine(1,pantPris1); // Også her, men hør Esben om hvorvidt man godt må dette
+        OrderLine orderLine1 = rental.createOrderLine(1,pantPris1);
 
 
 
