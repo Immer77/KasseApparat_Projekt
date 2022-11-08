@@ -104,9 +104,6 @@ public class TourTab extends GridPane {
      * Updates fields in right(??) control pane
      */
     private void updateFieldsInfo() {
-        //TODO - Lav et if-statement som tjekker om der overhovedet er en Tour selected i lvwActiveTours.
-        // Opdater kun felterne hvis selected != null.
-        // Done?
         try {
             if (!lvwActiveTours.getSelectionModel().getSelectedItem().getName().isBlank()) {
                 txfName.clear();
@@ -138,9 +135,6 @@ public class TourTab extends GridPane {
      * Method to open endTourWindow where one ends the selectedf tour
      */
     private void finishTour() {
-        //TODO - Tjek evt om der er en selected Tour før man kan afslutte en tour.
-        // Alternativt kan du disable knappen så længe der ikke er en tour selected.
-        // Done?
         try{
             Stage stage = new Stage(StageStyle.UTILITY);
             EndTourWindow endTourWindow = new EndTourWindow("Afslut rundtur", stage, lvwActiveTours.getSelectionModel().getSelectedItem());
@@ -169,19 +163,19 @@ public class TourTab extends GridPane {
      * Updates the listview in the pane
      */
     public void updateControls() {
-        //TODO - Du skal finde en måde kun at sætte de aktive rundvisninger i det ene vindue, og de afsluttede i det andet.
-        // Forskellen på dem er at de afsluttede har en paymentmethod, mens de aktives paymentmethod er null. Lav evt to
-        // lister, løb alle tours igennem, og sorter dem i de korrekte lister, og kald så setAll() på de korrekte listview,
-        // med den passende liste. Det kan muligvis også først betale sig at sortere dem efter du har fordelt dem, men det
-        // kan jeg ikke lige overskue
-        List<Tour> lvwToursSorted = new ArrayList<>();
-        lvwToursSorted = controller.getTours();
-        lvwToursSorted.sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
-//    lvwActiveTours.getItems().setAll(controller.getTours());
-//    lvwActiveTours.getItems().setAll(controller.getTours().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate())));
-        lvwActiveTours.getItems().setAll(lvwToursSorted);
-//    lvwTours.getItems().setAll(controller.getDoneTours());
-    }
+        lvwActiveTours.getItems().clear();
+        lvwTours.getItems().clear();
 
+        for (Tour tour : controller.getTours()) {
+            if (tour.getPaymentMethod() != null){
+                lvwTours.getItems().add(tour);
+            }else {
+                lvwActiveTours.getItems().add(tour);
+            }
+        }
+
+        lvwTours.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
+        lvwActiveTours.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
+    }
 
 }

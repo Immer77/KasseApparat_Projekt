@@ -25,12 +25,14 @@ public class EndTourWindow extends Stage {
     private Tour tour;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
     private VBox orderLineView, unusedOrderLineView, tourInfoVBox;
-    private SplitPane splitPane = new SplitPane();
     private ListView<HBox> lvwTourOrderlines = new ListView<>();
     private HBox buttons;
     private TextField txfName;
     private TextArea txaDescription;
-    private DatePicker endDatePicker;
+    private TextField endDatePicker;
+    private ListView lvwOrderlines = new ListView<>();
+    TextField txfFinalPrice = new TextField();
+
 
     public EndTourWindow(String title, Stage owner, Tour tour){
         this.tour = tour;
@@ -77,16 +79,11 @@ public class EndTourWindow extends Stage {
 
 
         VBox endDateVBox = new VBox();
-        endDatePicker = new DatePicker();
-        endDatePicker.setValue(tour.getEndDate());
+        endDatePicker = new TextField();
+        endDatePicker.setText(String.valueOf(tour.getEndDate()));
+        endDatePicker.setEditable(false);
         Label lblEndDate = new Label("Slut dato");
         endDateVBox.getChildren().addAll(lblEndDate,endDatePicker);
-
-        //TODO - Unødvendig indpakning i HBox. Når du kun har et enkelt element får du ikke rigtig noget ud af at
-        // pakke den ind, andet end mindre læselig kode
-        // Done?
-//        HBox dateHBox = new HBox();
-//        dateHBox.getChildren().addAll(endDateVBox);
 
         tourInfoVBox.getChildren().addAll(nameVBox,descriptionVBox,endDateVBox);
         pane.add(tourInfoVBox,0,0);
@@ -102,10 +99,8 @@ public class EndTourWindow extends Stage {
         }
         orderLineView.getChildren().add(lvwTourOrderlines);
 
-        //TODO - Tror det ville gøre dit liv nemmere at bruge et ListView med orderlines, i stedet for en Vbox i et Splitpane.
-        //adds vboxs to splitpane
-        pane.add(splitPane,1,0);
-        splitPane.getItems().addAll(orderLineView);
+        pane.add(lvwOrderlines,1,0);
+        lvwOrderlines.getItems().addAll(orderLineView);
 
         //Confirm and cancel buttons with hbox to hold them
         buttons = new HBox();
@@ -133,31 +128,22 @@ public class EndTourWindow extends Stage {
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
         pane.add(lblFinal, 4, 9);
 
-        //TODO - Med mindre man skal kunne købe rundvisninger i klip, så kan du fjerne både vboxen og hboxen her,
-        // og bare lave et almindeligt Textfield som udregner den samlede total for ordrelinjerne (evt med rabat
-        // og/eller fixed price, hvis det skal med)
-        VBox vbxFinalPrice = new VBox();
-        vbxFinalPrice.setPrefWidth(75);
-        vbxFinalPrice.setBackground(Background.EMPTY);
-        vbxFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
+        txfFinalPrice.setPadding(new Insets(10, 10, 0, 0));
+        pane.add(txfFinalPrice, 5, 9);
 
-        HBox hbxFinalPrice = new HBox(vbxFinalPrice);
-        hbxFinalPrice.setAlignment(Pos.TOP_RIGHT);
-        hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
-        pane.add(hbxFinalPrice, 5, 9);
-
-        //TODO - Instantier chPaymentMethod og add den til panen et sted. Sæt den til at blive udfyldt med
-        // alle paymentmethods fra storage. Din oKAction virker ikke før dette er gjort.
+        chPaymentMethod = new ChoiceBox<>();
+        chPaymentMethod.setPrefWidth(150);
+        chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
+        chPaymentMethod.getItems().setAll(PaymentMethod.values());
+        chPaymentMethod.getSelectionModel().select(0);
+        pane.add(chPaymentMethod,1,7);
     }
 
     //----------------------------------------------------------------------------------------------------
     private void oKAction() {
-        //TODO - Du har en datepicker, hvor man kan vælge en anden dato end den der egentlig følger med den aktive
-        // rundvisning. Hvis du gerne vil have at man kan det, så skal du lige huske at sætte endDate på Tour her
-        // når man confirmer. Hvis ikke, så skal du disable input i datepickeren.
-
         orderController.setPaymentMethodForOrder(tour, chPaymentMethod.getSelectionModel().getSelectedItem());
         orderController.saveOrder(tour);
+        this.close();
     }
 
     private void cancelAction() {
