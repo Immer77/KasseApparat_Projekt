@@ -14,7 +14,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.*;
 import storage.Storage;
 
@@ -43,7 +42,7 @@ public class CreateRentalWindow extends Stage {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
-        this.setMinHeight(300);
+        this.setHeight(700);
         this.setMinWidth(500);
         this.setResizable(false);
 
@@ -64,7 +63,7 @@ public class CreateRentalWindow extends Stage {
      * @param pane
      */
     public void initContent(GridPane pane) {
-        //pane.setGridLinesVisible(true);
+//        pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
         pane.setVgap(10);
@@ -96,7 +95,7 @@ public class CreateRentalWindow extends Stage {
         accProductOverview.setMaxWidth(Double.MAX_VALUE);
         accProductOverview.setPrefWidth(250);
         accProductOverview.setPadding(Insets.EMPTY);
-        pane.add(accProductOverview, 4, 0, 3, 2);
+        pane.add(accProductOverview, 4, 0, 3, 16);
 
 
         //Adds a Vbox to hold OrderLines
@@ -181,17 +180,22 @@ public class CreateRentalWindow extends Stage {
         pane.add(hbxFinalPrice, 9, 8);
 
 
+        HBox btnHbox = new HBox();
+        btnHbox.setSpacing(20);
+        btnHbox.setAlignment(Pos.BASELINE_RIGHT);
         //Add confirmation button for order
-        Button btnConfirmOrder = new Button("Opret Udlejning");
+        Button btnConfirmOrder = new Button("Ny Udlejning");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
         btnConfirmOrder.setOnAction(event -> oKAction());
-        pane.add(btnConfirmOrder, 7, 10, 3, 1);
+        btnHbox.getChildren().add(btnConfirmOrder);
 
         // Adds a cancel button
         Button btnCancel = new Button("Afbryd");
         btnCancel.setMaxWidth(Double.MAX_VALUE);
         btnCancel.setOnAction(event -> cancelAction());
-        pane.add(btnCancel, 6, 10, 3, 1);
+        btnHbox.getChildren().add(btnCancel);
+        pane.add(btnHbox, 9,8);
+//        pane.add(btnCancel, 6, 10, 3, 1);
 
 
         //Initiates examples of situations and prices for products
@@ -224,16 +228,15 @@ public class CreateRentalWindow extends Stage {
                 description = txaDescription.getText().trim();
             }
 
-
             Rental rental = orderController.createRental(name, description, LocalDate.from(datePicker.getValue()));
             for (OrderLine order : order.getOrderLines()) {
 
                 rental.addOrderLine(order);
-//                if(Double.parseDouble(txfPercentDiscount.getText()) != 0){
-//                    orderController.setDiscountForOrder(rental,Double.parseDouble(txfPercentDiscount.getText()));
-//                }else if(!txfFixedTotal.getText().isBlank()){
-//                    rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
-//                }
+                if(Double.parseDouble(txfPercentDiscount.getText()) != 0){
+                    orderController.setDiscountForOrder(rental,Double.parseDouble(txfPercentDiscount.getText()));
+                }else if(!txfFixedTotal.getText().isBlank()){
+                    rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
+                }
             }
             if (!txfFixedTotal.getText().isBlank()) {
                 rental.setFixedPrice(Double.parseDouble(txfFixedTotal.getText()));
