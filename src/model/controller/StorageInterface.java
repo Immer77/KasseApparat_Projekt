@@ -26,6 +26,12 @@ public interface StorageInterface {
     List<Situation> getSituations();
     void addSituation(Situation situation);
 
+    /**
+     * Removes the given situation from storage
+     * @param situation the situation object to remove from storage
+     */
+    public void removeSituation (Situation situation);
+
 
 
 
