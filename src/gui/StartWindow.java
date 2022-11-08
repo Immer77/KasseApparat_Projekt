@@ -90,6 +90,26 @@ public class StartWindow extends Application {
         fourthTab.setOnSelectionChanged(event -> tourTab.updateControls());
         //----------------------------------------------------------------------------
 
+        //-----------Product Overview Tab creation------------------------------------
+        //Creates a new instance of a SaleTab
+        StatTab statTab = new StatTab();
+        //Creates a new Tab, with a title and the saleTab as content
+        Tab fifthTab = new Tab("Salgsstatistik", statTab);
+        //...then adds it to the tabPane
+        tabPane.getTabs().add(fifthTab);
+        //Updates controls when tab selection changes
+        fifthTab.setOnSelectionChanged(event -> statTab.resetTab());
+        //----------------------------------------------------------------------------
+
+        //-----------Order overview tab creation-------------------------------------
+        // Creates a new instance of the OrderOverviewTab
+        OrderOverviewTab orderOverviewTab = new OrderOverviewTab();
+        // Creates a new tab, with a title and the orderOverviewTab as content
+        Tab sixthTab = new Tab("Ordrer Oversigt", orderOverviewTab);
+        // adding orderOverviewTab to the tabPane
+        tabPane.getTabs().add(sixthTab);
+        // updates the tab when selecting it
+        sixthTab.setOnSelectionChanged(event -> orderOverviewTab.updateOrderList());
 
 
     }

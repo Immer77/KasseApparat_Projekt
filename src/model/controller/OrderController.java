@@ -13,7 +13,7 @@ public class OrderController implements OrderControllerInterface {
 
     //Field Variables
     private StorageInterface storage;
-
+    private static int orderNumber = 1000;
 
     /**
      * Private ordercontroller supporting singleton pattern
@@ -22,19 +22,6 @@ public class OrderController implements OrderControllerInterface {
      */
     public OrderController(StorageInterface storage) {
         this.storage = storage;
-    }
-
-
-    /**
-     * Bruges til test for ikke at have singleton pattern til at melde fejl
-     *
-     * @param storage
-     * @return
-     */
-    public static OrderControllerInterface getOrderControllerTest(StorageInterface storage) {
-        OrderControllerInterface unique_OrderController = new OrderController(storage);
-        return unique_OrderController;
-
     }
 
 
@@ -53,7 +40,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Order createOrder() {
-        Order order = new Order();
+        orderNumber++;
+        Order order = new Order(orderNumber);
         return order;
     }
 
@@ -123,7 +111,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Rental createRental(String name, String description, LocalDate endDate) {
-        Rental rental = new Rental(name, description, endDate);
+        orderNumber++;
+        Rental rental = new Rental(name, description, endDate, orderNumber);
         storage.addOrder(rental);
         return rental;
     }
@@ -175,7 +164,8 @@ public class OrderController implements OrderControllerInterface {
      * @return the new Tour object
      */
     public Tour createTour(LocalDate endDate, LocalTime time) {
-        Tour tour = new Tour(endDate, time);
+        orderNumber++;
+        Tour tour = new Tour(endDate, time,orderNumber);
         return tour;
     }
 

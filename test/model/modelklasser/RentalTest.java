@@ -1,13 +1,13 @@
 package model.modelklasser;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class RentalTest {
 
@@ -21,8 +21,9 @@ public class RentalTest {
         String name = "ØlTilHavefest";
         String description = "Øl til min solo havefest";
         LocalDate endDate = LocalDate.of(2022,12,1);
-        order = new Order();
-        rental = new Rental(name,description,endDate);
+        int orderNumber = 1000;
+        order = new Order(orderNumber);
+        rental = new Rental(name, description, endDate, orderNumber);
     }
 
     /**
