@@ -91,7 +91,7 @@ public class TourTab extends GridPane {
         rightControl.getChildren().add(txaDescription);
         rightControl.getChildren().add(timePicker);
 
-        // Adding all active rentals to leftcontrol split pane
+        // Adding all active tours to leftcontrol split pane
         leftControl.getChildren().add(lvwActiveTours);
         splitPane.getItems().addAll(leftControl, midControl, rightControl);
 
@@ -106,9 +106,8 @@ public class TourTab extends GridPane {
     private void updateFieldsInfo() {
         try {
             if (!lvwActiveTours.getSelectionModel().getSelectedItem().getName().isBlank()) {
-                txfName.clear();
-                txaDescription.clear();
-                timePicker.clear();
+                clearTextFields();
+
                 String name = lvwActiveTours.getSelectionModel().getSelectedItem().getName();
                 String description = lvwActiveTours.getSelectionModel().getSelectedItem().getDescription();
                 LocalTime time = lvwActiveTours.getSelectionModel().getSelectedItem().getTime();
@@ -117,9 +116,8 @@ public class TourTab extends GridPane {
                 timePicker.setText(String.valueOf(time));
 
             } else {
-                txfName.clear();
-                txaDescription.clear();
-                timePicker.clear();
+                clearTextFields();
+
                 String name = lvwTours.getSelectionModel().getSelectedItem().getName();
                 String description = lvwTours.getSelectionModel().getSelectedItem().getDescription();
                 LocalTime time = lvwTours.getSelectionModel().getSelectedItem().getTime();
@@ -129,6 +127,15 @@ public class TourTab extends GridPane {
             System.out.println("Systemet blev lukket ned uden at foretage ændringer");
         }
 
+    }
+
+    /**
+     * Method to clear textfields
+     */
+    private void clearTextFields() {
+        txfName.clear();
+        txaDescription.clear();
+        timePicker.clear();
     }
 
     /**
