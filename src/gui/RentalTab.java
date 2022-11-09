@@ -67,7 +67,7 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.setPrefWidth(100);
         lvwActiveRentals.setPrefHeight(500);
         lvwActiveRentals.getItems().setAll();
-        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateFieldsInfo();
+        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateOpenRentalInfo();
         lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
 
 
@@ -75,7 +75,7 @@ public class RentalTab extends GridPane {
         lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(500);
         lvwRentals.getItems().setAll();
-        ChangeListener<Order> rentalListener = (ov, o, v) -> this.updateFieldsInfo();
+        ChangeListener<Order> rentalListener = (ov, o, v) -> this.updateFinishedRentalInfo();
         lvwRentals.getSelectionModel().selectedItemProperty().addListener(rentalListener);
 
         midControl.getChildren().add(lvwRentals);
@@ -160,28 +160,49 @@ public class RentalTab extends GridPane {
     /**
      * Updates fields in right control pane
      */
-    private void updateFieldsInfo() {
+//    private void updateFieldsInfo() {
+//
+//        try {
+//            if (lvwActiveRentals.getSelectionModel().getSelectedItem() != null) {
+//                clearTextFields();
+//
+//
+//                txfName.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getName());
+//                txaDescription.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription() + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+//                txfDatePicker.setText(String.valueOf(lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate()));
+//            }
+//            else if (lvwRentals.getSelectionModel().getSelectedItem() != null) {
+//                clearTextFields();
+//
+//                txfName.setText(lvwRentals.getSelectionModel().getSelectedItem().getName());
+//                txaDescription.setText(lvwRentals.getSelectionModel().getSelectedItem().getDescription() + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+//                txfDatePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getEndDate()));
+//            }
+//
+//        } catch (NullPointerException ne) {
+//            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
+//        }
+//    }
 
-        try {
-            if (lvwActiveRentals.getSelectionModel().getSelectedItem() != null) {
-                clearTextFields();
 
+    private void updateFinishedRentalInfo(){
+        Rental selectedRental;
+        clearTextFields();
 
-                txfName.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getName());
-                txaDescription.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription() + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-                txfDatePicker.setText(String.valueOf(lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate()));
-            }
-            else if (lvwRentals.getSelectionModel().getSelectedItem() != null) {
-                clearTextFields();
+        selectedRental = lvwRentals.getSelectionModel().getSelectedItem();
+        txfName.setText(selectedRental.getName());
+        txaDescription.setText(selectedRental.getDescription() + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+        txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
+    }
 
-                txfName.setText(lvwRentals.getSelectionModel().getSelectedItem().getName());
-                txaDescription.setText(lvwRentals.getSelectionModel().getSelectedItem().getDescription() + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-                txfDatePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getEndDate()));
-            }
+    private void updateOpenRentalInfo(){
+        Rental selectedRental;
+        clearTextFields();
 
-        } catch (NullPointerException ne) {
-            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
-        }
+        selectedRental = lvwActiveRentals.getSelectionModel().getSelectedItem();
+        txfName.setText(selectedRental.getName());
+        txaDescription.setText(selectedRental.getDescription() + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+        txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
     }
 
     /**

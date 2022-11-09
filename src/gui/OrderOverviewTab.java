@@ -153,7 +153,7 @@ public class OrderOverviewTab extends GridPane {
     }
 
     public void updateControls(){
-        updateOrderInfo();
+        updateOrderList();
     }
 
     public void clearFields(){
