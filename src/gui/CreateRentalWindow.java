@@ -507,6 +507,10 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
+    /**
+     * Calculates the deposit price for all products in the orderline
+     * @return
+     */
     private double calculatDepositPrice() {
         double sumOfPant = 0.0;
         for (OrderLine orderLine : order.getOrderLines()) {

@@ -109,7 +109,6 @@ public class RentalTab extends GridPane {
         Label lblDate = new Label("Date");
         rightControl.getChildren().add(lblDate);
         rightControl.getChildren().add(txfDatePicker);
-        Label lblDivider = new Label("");
         Label lblProductrented = new Label("----------------------------------------------------------\nAlle udlejede produkter");
         rightControl.getChildren().add(lblProductrented);
         rightControl.getChildren().add(txaAllRentalsMade);
@@ -123,6 +122,10 @@ public class RentalTab extends GridPane {
         // Updatescontrols
         updateControls();
     }
+
+    /**
+     * Method to update the textare with the sum of all current rentals
+     */
 
     public void updateSumOfRentedProducts() {
 
@@ -154,10 +157,6 @@ public class RentalTab extends GridPane {
 
     }
 
-    public static String bold(String text) {
-        return String.format("<b>%s</b>", text);
-    }
-
     /**
      * Updates fields in right control pane
      */
@@ -185,6 +184,9 @@ public class RentalTab extends GridPane {
         }
     }
 
+    /**
+     * Method to clear textfields
+     */
     private void clearTextFields() {
         txfName.clear();
         txaDescription.clear();
@@ -192,6 +194,10 @@ public class RentalTab extends GridPane {
     }
 
 
+    /**
+     * Calculates the final price for rental made
+     * @return finalprice which contains all rentals orderlines price
+     */
     private double calculateFinalPrice() {
         double finalPrice = 0.0;
         for (OrderLine orderLine : lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines()) {
