@@ -158,50 +158,27 @@ public class RentalTab extends GridPane {
     }
 
     /**
-     * Updates fields in right control pane
+     * Updates fields in middle control pane
      */
-//    private void updateFieldsInfo() {
-//
-//        try {
-//            if (lvwActiveRentals.getSelectionModel().getSelectedItem() != null) {
-//                clearTextFields();
-//
-//
-//                txfName.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getName());
-//                txaDescription.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription() + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-//                txfDatePicker.setText(String.valueOf(lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate()));
-//            }
-//            else if (lvwRentals.getSelectionModel().getSelectedItem() != null) {
-//                clearTextFields();
-//
-//                txfName.setText(lvwRentals.getSelectionModel().getSelectedItem().getName());
-//                txaDescription.setText(lvwRentals.getSelectionModel().getSelectedItem().getDescription() + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-//                txfDatePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getEndDate()));
-//            }
-//
-//        } catch (NullPointerException ne) {
-//            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
-//        }
-//    }
-
-
     private void updateFinishedRentalInfo(){
         Rental selectedRental;
         clearTextFields();
 
         selectedRental = lvwRentals.getSelectionModel().getSelectedItem();
         txfName.setText(selectedRental.getName());
-        txaDescription.setText(selectedRental.getDescription() + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines());
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
     }
-
+    /**
+     * Updates fields in right control pane
+     */
     private void updateOpenRentalInfo(){
         Rental selectedRental;
         clearTextFields();
 
         selectedRental = lvwActiveRentals.getSelectionModel().getSelectedItem();
         txfName.setText(selectedRental.getName());
-        txaDescription.setText(selectedRental.getDescription() + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
     }
 
