@@ -129,13 +129,21 @@ public class RentalTab extends GridPane {
 
     public void updateSumOfRentedProducts() {
 
+        // Hashmap to contain the amount of products
         HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
+        // For each order there is in the active rentals
         for (Order order : controller.getActiveRentals()) {
+            // For each orderline there is in the order
             for (OrderLine orderLine : order.getOrderLines()) {
+                // We get the product through the coupling of price to product
                 Product product = orderLine.getPrice().getProduct();
+                // Checking if there already is a key product in the hashmap
                 if (productsAndAmounts.containsKey(product)) {
+                    // In case there already is a product in the hashmap we need to merge the .getamount so that we update it with more amount of the product
+                    // eg. if we have 2 rentals who have the product "Ekstra pilsner" and both have the amount 5, we will need to merge those 2 so that we get 10
                     productsAndAmounts.merge(product, orderLine.getAmount(), Integer::sum);
                 } else {
+                    // If it doesnt exist we just put it in the hashmap
                     productsAndAmounts.put(orderLine.getPrice().getProduct(), orderLine.getAmount());
                 }
 
@@ -143,16 +151,24 @@ public class RentalTab extends GridPane {
             }
         }
 
+        // The stringbuilder for creating a better overview over the hashmap product and amount
         StringBuilder sb = new StringBuilder();
+        // Creating a entryset to iterate over
         Set entryset = productsAndAmounts.entrySet();
+        // Creating a iterator to iterate through each entryset there is in productsandamounts hashmap
         Iterator iterator = entryset.iterator();
 
+
+        // While the entryset has a next line
         while (iterator.hasNext()) {
+            // Divide the entryset in 2 where regex '=' is the splitter
             String[] linedivider = iterator.next().toString().split("=");
 
+            // Append to Stringbuilder
             sb.append("Produkt: " + linedivider[0] + " Antal: " + linedivider[1] + "\n");
 
         }
+        // Finally we set the text for the Textarea
         txaAllRentalsMade.setText(String.valueOf(sb));
 
     }
@@ -200,18 +216,19 @@ public class RentalTab extends GridPane {
      */
     private double calculateFinalPrice() {
         double finalPrice = 0.0;
-        for (OrderLine orderLine : lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines()) {
-            if (lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice() != 0) {
-                finalPrice = lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice();
-                break;
+        if(lvwActiveRentals.getSelectionModel().getSelectedItem() != null){
+            for (OrderLine orderLine : lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines()) {
+                if (lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice() != 0) {
+                    finalPrice = lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice();
+                    break;
+                }
+                finalPrice += orderLine.getAmount() * orderLine.getPrice().getValue();
+
             }
-            finalPrice += orderLine.getAmount() * orderLine.getPrice().getValue();
 
+            double percentageDiscount = lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount();
+            finalPrice *= (100 - percentageDiscount) / 100;
         }
-
-        double percentageDiscount = lvwActiveRentals.getSelectionModel().getSelectedItem().getPercentDiscount();
-        finalPrice *= (100 - percentageDiscount) / 100;
-
         return finalPrice;
     }
 
