@@ -22,8 +22,8 @@ import storage.Storage;
 
 public class ProductOverviewTab extends GridPane {
 
-    private final ListView<Product> lvwProducts;
-    private final ListView<ProductCategory> lvwCategories;
+    private ListView<Product> lvwProducts;
+    private ListView<ProductCategory> lvwCategories;
     private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
     private ListView<Price> lvwPrices;
@@ -48,6 +48,23 @@ public class ProductOverviewTab extends GridPane {
         this.setAlignment(Pos.TOP_CENTER);
 
         productController = new ProductOverviewController(Storage.getStorage());
+
+        //-----Initial methods-----
+        this.initContent();
+        updateControls();
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates initial products and categories
+     */
+    private void initContent() {
+        //TODO - Remove this from final version. It creates initial objects to storage
+        if (productController instanceof ProductOverviewController) {
+            ProductOverviewController controller = (ProductOverviewController) productController;
+            controller.initContent();
+        }
 
         //-----Category Controls-----
         //Label
@@ -75,6 +92,8 @@ public class ProductOverviewTab extends GridPane {
         //List View of categories
         lvwCategories = new ListView<>();
         lvwCategories.getItems().setAll();
+        lvwCategories.setMinHeight(200);
+        lvwCategories.setPrefHeight(250);
 
         //Listener for category list
         ChangeListener<ProductCategory> categoryListener = (ov, o, n) -> this.productCategoryItemSelected();
@@ -84,6 +103,7 @@ public class ProductOverviewTab extends GridPane {
         VBox vbxCategory = new VBox(lblCategory, hbxCategoryButtons, lvwCategories);
         vbxCategory.setSpacing(5);
         this.add(vbxCategory, 0, 0, 1, 2);
+
 
         //-----Products Controls-----
         //Label
@@ -109,6 +129,8 @@ public class ProductOverviewTab extends GridPane {
 
         //List View of products
         lvwProducts = new ListView<>();
+        lvwProducts.setMinHeight(200);
+        lvwProducts.setPrefHeight(250);
 
         //Listener for product list
         ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
@@ -143,6 +165,7 @@ public class ProductOverviewTab extends GridPane {
 
         //List view of Prices
         lvwPrices = new ListView<>();
+        lvwPrices.setPrefHeight(150);
 
         //Listener for Price list
         ChangeListener<Price> priceListener = (ov, o, n) -> this.priceItemSelected();
@@ -151,7 +174,7 @@ public class ProductOverviewTab extends GridPane {
         //Vbox to hold Price controls
         VBox vbxPrices = new VBox(lblPrices, hbxPiceButtons, lvwPrices);
         vbxPrices.setSpacing(5);
-        this.add(vbxPrices, 2, 0);
+
 
         //-----Deposit price controls-----
         //Label
@@ -172,7 +195,12 @@ public class ProductOverviewTab extends GridPane {
         //Vbox to hold deposit controls
         VBox vbxDeposit = new VBox(lblDeposit, btnCreateDepositPrice, txfDepositPrices);
         vbxDeposit.setSpacing(5);
-        this.add(vbxDeposit, 2, 1);
+
+
+        //VBox to group prices and deposit control
+        VBox vbxPriceAndDeposit = new VBox(vbxPrices, vbxDeposit);
+        vbxPriceAndDeposit.setSpacing(15);
+        this.add(vbxPriceAndDeposit, 2, 0,1,2);
 
         //-----Situation controls-----
         //Label
@@ -198,6 +226,7 @@ public class ProductOverviewTab extends GridPane {
 
         //List view of situations
         lvwSituations = new ListView<>();
+        lvwSituations.setPrefHeight(75);
 
         //Listener for Situation list
         ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelected();
@@ -207,25 +236,6 @@ public class ProductOverviewTab extends GridPane {
         VBox vbxSituationList = new VBox(lblSituation, hbxSituationButtons, lvwSituations);
         vbxSituationList.setSpacing(5);
         this.add(vbxSituationList, 1, 2);
-
-        //-----Initial methods-----
-        this.initContent();
-        updateControls();
-    }
-
-    // -------------------------------------------------------------------------
-
-    /**
-     * Creates initial products and categories
-     */
-    private void initContent() {
-        //TODO - Remove this from final version. It creates initial objects to storage
-        if (productController instanceof ProductOverviewController) {
-            ProductOverviewController controller = (ProductOverviewController) productController;
-            controller.initContent();
-        }
-
-        updateControls();
 
     }
 
