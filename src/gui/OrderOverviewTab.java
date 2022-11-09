@@ -61,7 +61,7 @@ public class OrderOverviewTab extends GridPane {
         lvwTour.setPrefHeight(70);
 
         // Labels for defining listviews
-        Label lblOrders = new Label("Ordrer");
+        Label lblOrders = new Label("Ordernummer");
         Label lblRentals = new Label("Udlejninger");
         Label lblTours = new Label("Rundvisninger");
 
@@ -93,8 +93,10 @@ public class OrderOverviewTab extends GridPane {
 
         ChangeListener<Order> orderChangeListener = (ov,o,v) -> this.updateOrderInfo();
         lvwOrders.getSelectionModel().selectedItemProperty().addListener(orderChangeListener);
-        lvwRental.getSelectionModel().selectedItemProperty().addListener(orderChangeListener);
-        lvwTour.getSelectionModel().selectedItemProperty().addListener(orderChangeListener);
+        ChangeListener<Order> rentalChangeListener = (ov,o,v) -> this.updateRentalInfo();
+        lvwRental.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
+        ChangeListener<Order> tourChangeListener = (ov,o,v) -> this.updateTourInfo();
+        lvwTour.getSelectionModel().selectedItemProperty().addListener(tourChangeListener);
 
         updateControls();
         updateOrderList();
@@ -124,36 +126,31 @@ public class OrderOverviewTab extends GridPane {
 
     public void updateOrderInfo(){
         Order selectedOrder;
-        if (lvwOrders.isFocused()){
-            clearFields();
-
-            selectedOrder = lvwOrders.getSelectionModel().getSelectedItem();
-            txfOrderName.setText(selectedOrder.getOrderNumber() + "");
-            txaOrderDescription.setText("");
-            lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
-
-        } else if(lvwRental.isFocused()){
-            clearFields();
-
-            selectedOrder = lvwRental.getSelectionModel().getSelectedItem();
-            txfOrderName.setText(selectedOrder.getOrderNumber() + "");
-            txaOrderDescription.setText(((Rental) selectedOrder).getDescription());
-            lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
-
-        } else if (lvwTour.isFocused()){
-            clearFields();
-            lvwTour.getFocusModel();
-
-            selectedOrder = lvwTour.getSelectionModel().getSelectedItem();
-            txfOrderName.setText(selectedOrder.getOrderNumber() + "");
-            txaOrderDescription.setText(((Tour) selectedOrder).getDescription());
-            lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
-
-        } else {
-            clearFields();
-        }
+        clearFields();
+        selectedOrder = lvwOrders.getSelectionModel().getSelectedItem();
+        txfOrderName.setText(selectedOrder.getOrderNumber() + "");
+        txaOrderDescription.setText("");
+        lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
     }
 
+    public void updateRentalInfo(){
+        Order selectedOrder;
+        clearFields();
+        selectedOrder = lvwRental.getSelectionModel().getSelectedItem();
+        txfOrderName.setText(selectedOrder.getOrderNumber() + "");
+        txaOrderDescription.setText(((Rental) selectedOrder).getDescription());
+        lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
+    }
+
+    public void updateTourInfo(){
+        Order selectedOrder;
+        clearFields();
+        selectedOrder = lvwTour.getSelectionModel().getSelectedItem();
+        txfOrderName.setText(selectedOrder.getOrderNumber() + "");
+        txaOrderDescription.setText(((Tour) selectedOrder).getDescription());
+        lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
+
+    }
 
     public void updateControls(){
         updateOrderInfo();
