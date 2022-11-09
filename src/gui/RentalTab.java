@@ -194,8 +194,18 @@ public class RentalTab extends GridPane {
 
         selectedRental = lvwActiveRentals.getSelectionModel().getSelectedItem();
         txfName.setText(selectedRental.getName());
-        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
+        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
+
+        if (selectedRental.getFixedPrice() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
+        }
+        if (selectedRental.getPercentDiscount() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\n Rabat givet: " + selectedRental.getPercentDiscount() + "%");
+        }
+
     }
 
     /**
