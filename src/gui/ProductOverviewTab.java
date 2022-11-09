@@ -245,6 +245,8 @@ public class ProductOverviewTab extends GridPane {
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
     private void productCategoryItemSelected() {
+        lvwProducts.getSelectionModel().clearSelection();
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
             btnEditCategory.setDisable(true);
             btnCreateProduct.setDisable(true);
@@ -361,7 +363,7 @@ public class ProductOverviewTab extends GridPane {
      * Called when selection changes in Product listview
      */
     public void productItemSelected() {
-
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
             btnEditProduct.setDisable(true);
             btnCreatePrice.setDisable(true);

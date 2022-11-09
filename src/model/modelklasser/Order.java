@@ -14,6 +14,9 @@ public class Order {
     private PaymentMethod paymentMethod;
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
+    /**
+     * The date for which the order is completed.
+     */
     private LocalDate endDate;
     private int orderNumber;
 
