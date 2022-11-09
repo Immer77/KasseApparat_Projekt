@@ -203,7 +203,7 @@ public class RentalTab extends GridPane {
         }
         if (selectedRental.getPercentDiscount() > 0){
             txaDescription.clear();
-            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\n Rabat givet: " + selectedRental.getPercentDiscount() + "%");
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
         }
 
     }
