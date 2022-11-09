@@ -60,12 +60,6 @@ public class ProductOverviewTab extends GridPane {
      * Creates initial products and categories
      */
     private void initContent() {
-        //TODO - Remove this from final version. It creates initial objects to storage
-        if (productController instanceof ProductOverviewController) {
-            ProductOverviewController controller = (ProductOverviewController) productController;
-            controller.initContent();
-        }
-
         //-----Category Controls-----
         //Label
         Label lblCategory = new Label("Produktkategorier");
