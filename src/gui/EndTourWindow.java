@@ -25,7 +25,7 @@ public class EndTourWindow extends Stage {
     private OrderControllerInterface orderController;
     private Tour tour;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
-    private VBox orderLineView, unusedOrderLineView, vboxFinalPrice, vboxTotalPrice, tourInfoVBox;
+    private VBox orderLineView, vboxFinalPrice, vboxTotalPrice, tourInfoVBox;
     private ListView<HBox> lvwTourOrderlines = new ListView<>();
     private HBox buttons;
     private TextField txfName;
@@ -69,19 +69,18 @@ public class EndTourWindow extends Stage {
 
         //adds labels, textfields, textarea and timepicker for tourinfo
         VBox nameVBox = new VBox();
-        Label lblName = new Label("Name");
+        Label lblName = new Label("Navn");
         txfName =  new TextField();
         txfName.setEditable(false);
         txfName.appendText(tour.getName());
         nameVBox.getChildren().addAll(lblName, txfName);
 
         VBox descriptionVBox = new VBox();
-        Label lblDescription = new Label("Description");
+        Label lblDescription = new Label("Beskrivelse");
         txaDescription = new TextArea();
         txaDescription.setEditable(false);
         txaDescription.appendText(tour.getDescription());
         descriptionVBox.getChildren().setAll(lblDescription,txaDescription);
-
 
         VBox endDateVBox = new VBox();
         endDatePicker = new TextField();
@@ -96,9 +95,9 @@ public class EndTourWindow extends Stage {
         //Adds a Vbox to hold all OrderLines
         orderLineView = new VBox(new Label("Rundvisninger"));
         orderLineView.setPrefWidth(300);
-        updateOrderLineView();
         pane.add(lvwOrderlines,1,0);
         lvwOrderlines.getItems().addAll(orderLineView);
+        updateOrderLineView();
 
         //Confirm and cancel buttons with hbox to hold them
         buttons = new HBox();
@@ -169,7 +168,12 @@ public class EndTourWindow extends Stage {
 
         txfFinalPrice.setPadding(new Insets(10, 10, 0, 0));
         pane.add(txfFinalPrice, 5, 9);
+//        txfFinalPrice.setText(" " + tour.);
 
+//        vboxFinalPrice = new VBox();
+//        pane.add(vboxFinalPrice,2,6);
+
+        // to select the payment method for the rental
         chPaymentMethod = new ChoiceBox<>();
         chPaymentMethod.setPrefWidth(150);
         chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
@@ -210,19 +214,17 @@ public class EndTourWindow extends Stage {
     }
 
     public void updateControls(){
-        //TODO
         updateTourTotal();
         fixedPriceTour();
 
     }
 
     public boolean fixedPriceTour(){
-        //TODO
         boolean fixedPrice;
         if (!txfFixedPrice.getText().isBlank()){
             tour.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
             tour.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
-            Label lblFixPri = new Label(" " + chUnits.getValue());
+            Label lblFixPri = new Label(tour.getFixedPrice() + " " + chUnits.getValue());
             vboxFinalPrice.getChildren().setAll(lblFixPri);
             for (OrderLine ol : tour.getOrderLines()){
                 Label lblResult = new Label(tour.calculateSumPriceForUnit(ol.getPrice().getUnit()) + " " + ol.getPrice().getUnit());
