@@ -28,7 +28,7 @@ public class StatTab extends GridPane {
     private Label lblTourResult;
     private Label lblCardsSoldResult;
     private Label lblPunchesSpentResult;
-    private  ListView<BorderPane> lvwProductsSold;
+    private Accordion accProductsSold;
 
 
     //Constructors ---------------------------------------------------------------------------------------------------
@@ -134,13 +134,13 @@ public class StatTab extends GridPane {
         Label lblProductsSold = new Label("Produkter solgt i denne periode:");
         this.add(lblProductsSold, 2,1);
 
-        lvwProductsSold = new ListView<>();
-        this.add(lvwProductsSold, 2,2,1,3);
+        accProductsSold = new Accordion();
+
 
     }
 
     public void updateControls() {
-        lvwProductsSold.getItems().clear();
+        accProductsSold.getPanes().clear();
         Map<Product, Integer> soldProductsMap = new HashMap<>();
 
         int allOrders = 0;
@@ -190,22 +190,49 @@ public class StatTab extends GridPane {
         lblCardsSoldResult.setText(""+punchCardsSold);
         lblPunchesSpentResult.setText(""+punchesSpent);
 
-        for (Map.Entry<Product, Integer> e : soldProductsMap.entrySet()) {
-            
-            Label lblName = new Label(e.getKey().getName());
-            if (!e.getKey().getDescription().isBlank()) {
-                lblName.setText(lblName.getText() + " ("+e.getKey().getDescription()+")");
+
+        if (soldProductsMap.size() == 0) {
+            Label lblNoProductsSold = new Label("Ingen produkter solgt i denne periode");
+            this.add(lblNoProductsSold,2,2);
+        } else {
+            accProductsSold = new Accordion();
+            accProductsSold.setBorder(Border.stroke(Color.BLACK));
+            this.add(accProductsSold, 2,2,1,3);
+
+            for (ProductCategory category : controller.getProductCategories()) {
+                VBox vbxSoldProductsInCategory = new VBox();
+                vbxSoldProductsInCategory.setBackground(Background.fill(Color.WHITE));
+                int soldInCategoryCounter = 0;
+
+                for (Product product : soldProductsMap.keySet()) {
+                    if (category.getProducts().contains(product)) {
+                        soldInCategoryCounter += soldProductsMap.get(product);
+
+                        Label lblName = new Label(product.getName());
+                        if (!product.getDescription().isBlank()) {
+                            lblName.setText(lblName.getText() + " ("+product.getDescription()+")");
+
+                        }
+
+                        Label lblAmount = new Label(""+soldProductsMap.get(product));
+                        lblAmount.setAlignment(Pos.BASELINE_RIGHT);
+
+
+                        BorderPane bpListItem = new BorderPane(null,null,lblAmount,null,lblName);
+                        vbxSoldProductsInCategory.getChildren().add(bpListItem);
+
+                    }
+                }
+
+                if (!vbxSoldProductsInCategory.getChildren().isEmpty()) {
+                    TitledPane tpCategory = new TitledPane(category.getTitle()+ " ("+soldInCategoryCounter+")", vbxSoldProductsInCategory);
+                    accProductsSold.getPanes().add(tpCategory);
+                }
 
             }
-
-            Label lblAmount = new Label(""+e.getValue());
-            lblAmount.setAlignment(Pos.BASELINE_RIGHT);
-
-
-            BorderPane bpListItem = new BorderPane(null,null,lblAmount,null,lblName);
-
-            lvwProductsSold.getItems().add(bpListItem);
         }
+
+        accProductsSold.getPanes().get(0).setExpanded(true);
     }
 
     public void resetTab() {
