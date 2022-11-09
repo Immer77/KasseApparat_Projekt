@@ -184,6 +184,15 @@ public class RentalTab extends GridPane {
         txfName.setText(selectedRental.getName());
         txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines());
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
+
+        if (selectedRental.getFixedPrice() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
+        }
+        if (selectedRental.getPercentDiscount() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
+        }
     }
     /**
      * Updates fields in right control pane
