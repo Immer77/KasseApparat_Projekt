@@ -200,7 +200,7 @@ public class ProductOverviewTab extends GridPane {
         //VBox to group prices and deposit control
         VBox vbxPriceAndDeposit = new VBox(vbxPrices, vbxDeposit);
         vbxPriceAndDeposit.setSpacing(15);
-        this.add(vbxPriceAndDeposit, 2, 0,1,2);
+        this.add(vbxPriceAndDeposit, 2, 0, 1, 2);
 
         //-----Situation controls-----
         //Label
@@ -419,7 +419,7 @@ public class ProductOverviewTab extends GridPane {
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null && selectedProduct.getDepositPrice() != null) {
-                txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
+            txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
         } else {
             txfDepositPrices.setText("0.0 DKK");
         }
@@ -445,14 +445,22 @@ public class ProductOverviewTab extends GridPane {
      * Called when the create deposit button is pressed.
      */
     public void createDepositPriceAction() {
-        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
-        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+        if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
+            Alert noProductAlert = new Alert(Alert.AlertType.ERROR);
+            noProductAlert.setTitle("Der er ikke valgt et produkt");
+            noProductAlert.setContentText("Du skal vælge et produkt før du kan oprette pant");
+            noProductAlert.showAndWait();
 
-        CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage(), selectedCategory);
-        newDepositPriceWindow.showAndWait();
+        } else {
+            ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+            Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
-        lvwCategories.getSelectionModel().select(selectedCategory);
-        lvwProducts.getSelectionModel().select(selectedProduct);
+            CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage(), selectedCategory);
+            newDepositPriceWindow.showAndWait();
+
+            lvwCategories.getSelectionModel().select(selectedCategory);
+            lvwProducts.getSelectionModel().select(selectedProduct);
+        }
 
         updateDepositField();
     }
