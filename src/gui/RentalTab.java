@@ -287,6 +287,8 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.getItems().setAll(controller.getActiveRentals());
         lvwRentals.getItems().setAll(controller.getDoneRentals());
         updateSumOfRentedProducts();
+        lvwActiveRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
+        lvwRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
 
 
     }
