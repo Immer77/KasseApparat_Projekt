@@ -11,7 +11,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import model.controller.OrderController;
-import model.controller.ProductOverviewController;
 import model.modelklasser.*;
 import storage.Storage;
 
@@ -326,7 +325,7 @@ public class SaleTab extends GridPane {
     /**
      * Updates the display of orderlines
      */
-    public void updateOrder() {
+    private void updateOrder() {
         //Clears list
         orderLineView.getChildren().clear();
 
@@ -443,7 +442,7 @@ public class SaleTab extends GridPane {
      *
      * @param orderLine the orderline to update
      */
-    public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
+    private void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
         if (newAmount < 1) {
             tempOrder.removeOrderLine(orderLine);
         } else {

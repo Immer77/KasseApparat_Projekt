@@ -12,11 +12,8 @@ import model.controller.OrderController;
 import model.modelklasser.Order;
 import model.modelklasser.Tour;
 import storage.Storage;
-
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class TourTab extends GridPane {
     private final ListView<Tour> lvwActiveTours;

@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.controller.OrderController;
@@ -21,11 +20,9 @@ public class StartWindow extends Application {
         BorderPane pane = new BorderPane();
         this.initContent(pane);
 
-        Image image = new Image("file:.\\KasseApparat_Projekt\\src\\gui\\AB.jpg");
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         mainStage = stage;
-        stage.getIcons().add(image);
         stage.show();
     }
 

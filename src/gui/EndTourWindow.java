@@ -118,10 +118,6 @@ public class EndTourWindow extends Stage {
         pane.add(buttons,1,8);
 
 
-        //TODO - I oprettelsen af rundvisningen kan man sætte en procentrabat og/eller en fixed price.
-        // Enten skal vi gøre så de to værdier er med på slutningen af rundvisningen, eller også skal vi helt
-        // fjerne den mulighed på rundvisninger.
-
         //vbox and label to show total before price changes
         Label lblTotalBefore = new Label("Total: ");
         pane.add(lblTotalBefore, 1, 2);
@@ -218,7 +214,7 @@ public class EndTourWindow extends Stage {
 
     }
 
-    public boolean fixedPriceTour(){
+    private boolean fixedPriceTour(){
         boolean fixedPrice;
         if (!txfFixedPrice.getText().isBlank()){
             tour.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
@@ -238,8 +234,8 @@ public class EndTourWindow extends Stage {
         return fixedPrice;
     }
 
-    public void updateTourTotal() {
-        //TODO
+    private void updateTourTotal() {
+
         vboxTotalPrice.getChildren().clear();
         vboxFinalPrice.getChildren().clear();
         fixedPriceTour();

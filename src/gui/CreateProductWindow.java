@@ -49,7 +49,7 @@ public class CreateProductWindow extends Stage {
      * Initialises the content in the window.
      * @param pane The Gridpane parent of the content
      */
-    public void initContent(GridPane pane) {
+    private void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
@@ -77,7 +77,7 @@ public class CreateProductWindow extends Stage {
     /**
      * Creates a new Product object with the entered name and description, then closes the window. If no name is given, an alert is shown and nothing happens instead.
      */
-    public void oKAction() {
+    private void oKAction() {
         String name = "";
         String description = "";
         if (!txfName.getText().isBlank()) {
@@ -101,7 +101,7 @@ public class CreateProductWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction () {
+    private void cancelAction () {
         this.close();
     }
 

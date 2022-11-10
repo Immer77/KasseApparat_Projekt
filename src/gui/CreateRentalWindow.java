@@ -62,7 +62,7 @@ public class CreateRentalWindow extends Stage {
      *
      * @param pane
      */
-    public void initContent(GridPane pane) {
+    private void initContent(GridPane pane) {
 //        pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
@@ -195,7 +195,6 @@ public class CreateRentalWindow extends Stage {
         btnCancel.setOnAction(event -> cancelAction());
         btnHbox.getChildren().add(btnCancel);
         pane.add(btnHbox, 9,8);
-//        pane.add(btnCancel, 6, 10, 3, 1);
 
 
         //Initiates examples of situations and prices for products
@@ -218,7 +217,7 @@ public class CreateRentalWindow extends Stage {
     /**
      * Creates the rental
      */
-    public void oKAction() {
+    private void oKAction() {
         String name = "";
         String description = "";
         if (!txfName.getText().isBlank()) {
@@ -231,7 +230,7 @@ public class CreateRentalWindow extends Stage {
             Rental rental = orderController.createRental(name, description, LocalDate.from(datePicker.getValue()));
             for (OrderLine order : order.getOrderLines()) {
 
-                rental.addOrderLine(order);
+                rental.createOrderLine(order.getAmount(),order.getPrice());
                 if(Double.parseDouble(txfPercentDiscount.getText()) != 0){
                     orderController.setDiscountForOrder(rental,Double.parseDouble(txfPercentDiscount.getText()));
                 }else if(!txfFixedTotal.getText().isBlank()){
@@ -387,7 +386,7 @@ public class CreateRentalWindow extends Stage {
     /**
      * Updates the display of orderlines
      */
-    public void updateOrder() {
+    private void updateOrder() {
         //Clears list
         orderLineView.getChildren().clear();
 
@@ -511,7 +510,7 @@ public class CreateRentalWindow extends Stage {
      *
      * @param orderLine the orderline to update
      */
-    public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
+    private void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
         if (newAmount < 1) {
             order.removeOrderLine(orderLine);
         } else {
