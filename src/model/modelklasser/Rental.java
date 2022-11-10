@@ -61,6 +61,6 @@ public class Rental extends Order {
 
     @Override
     public String toString() {
-        return "Udlejer: " + name + " Slutdato: " + endDate;
+        return super.getOrderNumber() + "        Slutdato: " + endDate;
     }
 }

@@ -42,6 +42,6 @@ public class Tour extends Order {
 
     @Override
     public String toString() {
-        return "Kunde: " + name + " Dato: " + getEndDate();
+        return super.getOrderNumber() + "        Dato: " + getEndDate();
     }
 }
