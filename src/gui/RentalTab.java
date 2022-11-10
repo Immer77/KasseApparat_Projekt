@@ -67,7 +67,7 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.setPrefWidth(100);
         lvwActiveRentals.setPrefHeight(500);
         lvwActiveRentals.getItems().setAll();
-        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateFieldsInfo();
+        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateOpenRentalInfo();
         lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
 
 
@@ -75,7 +75,7 @@ public class RentalTab extends GridPane {
         lvwRentals.setPrefWidth(100);
         lvwRentals.setPrefHeight(500);
         lvwRentals.getItems().setAll();
-        ChangeListener<Order> rentalListener = (ov, o, v) -> this.updateFieldsInfo();
+        ChangeListener<Order> rentalListener = (ov, o, v) -> this.updateFinishedRentalInfo();
         lvwRentals.getSelectionModel().selectedItemProperty().addListener(rentalListener);
 
         midControl.getChildren().add(lvwRentals);
@@ -174,30 +174,47 @@ public class RentalTab extends GridPane {
     }
 
     /**
+     * Updates fields in middle control pane
+     */
+    private void updateFinishedRentalInfo(){
+        Rental selectedRental;
+        clearTextFields();
+
+        selectedRental = lvwRentals.getSelectionModel().getSelectedItem();
+        txfName.setText(selectedRental.getName());
+        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines());
+        txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
+
+        if (selectedRental.getFixedPrice() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
+        }
+        if (selectedRental.getPercentDiscount() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
+        }
+    }
+    /**
      * Updates fields in right control pane
      */
-    private void updateFieldsInfo() {
+    private void updateOpenRentalInfo(){
+        Rental selectedRental;
+        clearTextFields();
 
-        try {
-            if (lvwActiveRentals.getSelectionModel().getSelectedItem() != null) {
-                clearTextFields();
+        selectedRental = lvwActiveRentals.getSelectionModel().getSelectedItem();
+        txfName.setText(selectedRental.getName());
+        txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
+        txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
 
-
-                txfName.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getName());
-                txaDescription.setText(lvwActiveRentals.getSelectionModel().getSelectedItem().getDescription() + lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-                txfDatePicker.setText(String.valueOf(lvwActiveRentals.getSelectionModel().getSelectedItem().getEndDate()));
-            }
-            else if (lvwRentals.getSelectionModel().getSelectedItem() != null) {
-                clearTextFields();
-
-                txfName.setText(lvwRentals.getSelectionModel().getSelectedItem().getName());
-                txaDescription.setText(lvwRentals.getSelectionModel().getSelectedItem().getDescription() + lvwRentals.getSelectionModel().getSelectedItem().getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
-                txfDatePicker.setText(String.valueOf(lvwRentals.getSelectionModel().getSelectedItem().getEndDate()));
-            }
-
-        } catch (NullPointerException ne) {
-            System.out.println("Systemet blev lukket ned uden at foretage ændringer");
+        if (selectedRental.getFixedPrice() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
         }
+        if (selectedRental.getPercentDiscount() > 0){
+            txaDescription.clear();
+            txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
+        }
+
     }
 
     /**

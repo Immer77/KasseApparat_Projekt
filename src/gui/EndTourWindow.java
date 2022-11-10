@@ -34,10 +34,7 @@ public class EndTourWindow extends Stage {
     private ListView lvwOrderlines = new ListView<>();
     private ChoiceBox<Unit> chUnits;
 
-    TextField txfFinalPrice = new TextField();
-
-
-
+    private SplitPane splitPane = new SplitPane();
 
     public EndTourWindow(String title, Stage owner, Tour tour){
         this.tour = tour;
@@ -62,7 +59,6 @@ public class EndTourWindow extends Stage {
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
         pane.setVgap(10);
-
         //adds vbox for tour info
         tourInfoVBox = new VBox();
         tourInfoVBox.setPrefWidth(200);
@@ -95,13 +91,16 @@ public class EndTourWindow extends Stage {
         //Adds a Vbox to hold all OrderLines
         orderLineView = new VBox(new Label("Rundvisninger"));
         orderLineView.setPrefWidth(300);
-        pane.add(lvwOrderlines,1,0);
-        lvwOrderlines.getItems().addAll(orderLineView);
+//        pane.add(lvwOrderlines,1,0);
+//        lvwOrderlines.getItems().addAll(orderLineView);
         updateOrderLineView();
+
+        //adds vboxs to splitpane
+        pane.add(splitPane, 1, 0, 2, 2);
+        splitPane.getItems().addAll(orderLineView);
 
         //Confirm and cancel buttons with hbox to hold them
         buttons = new HBox();
-        pane.add(buttons,1,8);
         buttons.setSpacing(10);
         buttons.setPrefWidth(200);
 
@@ -116,6 +115,8 @@ public class EndTourWindow extends Stage {
         btnCancel.setCancelButton(true);
 
         buttons.getChildren().addAll(btnOK,btnCancel);
+        pane.add(buttons,1,8);
+
 
         //TODO - I oprettelsen af rundvisningen kan man sætte en procentrabat og/eller en fixed price.
         // Enten skal vi gøre så de to værdier er med på slutningen af rundvisningen, eller også skal vi helt
@@ -164,14 +165,10 @@ public class EndTourWindow extends Stage {
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
-        pane.add(lblFinal, 4, 9);
+        pane.add(lblFinal, 1, 6);
 
-        txfFinalPrice.setPadding(new Insets(10, 10, 0, 0));
-        pane.add(txfFinalPrice, 5, 9);
-//        txfFinalPrice.setText(" " + tour.);
-
-//        vboxFinalPrice = new VBox();
-//        pane.add(vboxFinalPrice,2,6);
+        vboxFinalPrice = new VBox();
+        pane.add(vboxFinalPrice,2,6);
 
         // to select the payment method for the rental
         chPaymentMethod = new ChoiceBox<>();
@@ -188,6 +185,8 @@ public class EndTourWindow extends Stage {
 
         txfRabat.textProperty().addListener(updateOnChange);
         txfFixedPrice.textProperty().addListener(updateOnChange);
+        updateControls();
+
     }
 
     //----------------------------------------------------------------------------------------------------

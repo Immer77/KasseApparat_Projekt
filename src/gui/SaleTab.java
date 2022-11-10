@@ -155,8 +155,7 @@ public class SaleTab extends GridPane {
         btnConfirmOrder.setAlignment(Pos.TOP_LEFT);
         this.add(btnConfirmOrder, 7, 5, 2, 1);
 
-        //Initiates examples of situations and prices for products
-        orderController.initContent();
+
 
         //Updates all controls
         updateControls();
