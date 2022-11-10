@@ -163,7 +163,7 @@ public class OrderOverviewTab extends GridPane {
 
     private void printReceipt(){
         String currentWorkingPath = System.getProperty("user.dir");
-        String fileName = "receipt.txt";
+        String fileName = startDate.getValue() + "_til_" + endDate.getValue();
         String path = currentWorkingPath  + File.separator+ fileName;
         File file = new File(path);
         try {
@@ -185,11 +185,13 @@ public class OrderOverviewTab extends GridPane {
                         betaling = "Total pris: " + order.calculateSumPriceForUnit(Unit.DKK) + "\n";
                     }
                     fileWriter.write("type af salg: " + salgstype + "\nOrdernummer: " + order.getOrderNumber() + "\n" + order.getOrderLines() + "\n" + betaling + "\n");
-                    Alert fileMessage = new Alert(Alert.AlertType.INFORMATION);
-                    fileMessage.setHeaderText("Periodeopgørelse kan findes i projekt mappen");
-                    fileMessage.showAndWait();
                 }
             }
+            Alert fileMessage = new Alert(Alert.AlertType.INFORMATION);
+            fileMessage.setHeaderText("Periodeopgørelse kan findes i projekt mappen");
+            fileMessage.setHeaderText("Filens navn: " + fileName);
+            fileMessage.showAndWait();
+
             fileWriter.close();
         } catch (IOException ioe){
             Alert alert = new Alert(Alert.AlertType.ERROR);
