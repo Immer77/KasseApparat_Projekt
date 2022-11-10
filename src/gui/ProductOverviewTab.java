@@ -60,12 +60,6 @@ public class ProductOverviewTab extends GridPane {
      * Creates initial products and categories
      */
     private void initContent() {
-        //TODO - Remove this from final version. It creates initial objects to storage
-        if (productController instanceof ProductOverviewController) {
-            ProductOverviewController controller = (ProductOverviewController) productController;
-            controller.initContent();
-        }
-
         //-----Category Controls-----
         //Label
         Label lblCategory = new Label("Produktkategorier");
@@ -245,6 +239,8 @@ public class ProductOverviewTab extends GridPane {
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
     private void productCategoryItemSelected() {
+        lvwProducts.getSelectionModel().clearSelection();
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
             btnEditCategory.setDisable(true);
             btnCreateProduct.setDisable(true);
@@ -360,8 +356,8 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when selection changes in Product listview
      */
-    public void productItemSelected() {
-
+    private void productItemSelected() {
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
             btnEditProduct.setDisable(true);
             btnCreatePrice.setDisable(true);
@@ -379,7 +375,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when selection changes in Price listview
      */
-    public void priceItemSelected() {
+    private void priceItemSelected() {
         if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
             btnRemovePrice.setDisable(true);
         } else {
@@ -390,7 +386,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Updates the list of prices for a product
      */
-    public void updatePriceList() {
+    private void updatePriceList() {
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
         Price selectedPrice = lvwPrices.getSelectionModel().getSelectedItem();
 
@@ -415,7 +411,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Updates the field with the deposit price
      */
-    public void updateDepositField() {
+    private void updateDepositField() {
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null && selectedProduct.getDepositPrice() != null) {
@@ -428,7 +424,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when the create price button is pressed
      */
-    public void createPriceAction() {
+    private void createPriceAction() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
@@ -444,7 +440,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when the create deposit button is pressed.
      */
-    public void createDepositPriceAction() {
+    private void createDepositPriceAction() {
         if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
             Alert noProductAlert = new Alert(Alert.AlertType.ERROR);
             noProductAlert.setTitle("Der er ikke valgt et produkt");
@@ -468,7 +464,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when the edit categories button is pressed
      */
-    public void editProductCategoryAction() {
+    private void editProductCategoryAction() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         EditProductCategoryWindow editWindow = new EditProductCategoryWindow("Rediger Produktkategori", new Stage(), selectedCategory);
         editWindow.showAndWait();
@@ -481,7 +477,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when the edit product button is pressed.
      */
-    public void editProductAction() {
+    private void editProductAction() {
         ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
@@ -509,7 +505,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Creates a new situation
      */
-    public void createSituationAction() {
+    private void createSituationAction() {
         CreateSituationWindow createSituationWindow = new CreateSituationWindow("Ny salgssituation", new Stage());
         createSituationWindow.showAndWait();
 
@@ -519,7 +515,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Removes the currently selected situation, and all prices for all products connected to it
      */
-    public void removeSituationAction() {
+    private void removeSituationAction() {
         Situation selectedSituation = lvwSituations.getSelectionModel().getSelectedItem();
         if (selectedSituation != null) {
             productController.removeSituation(selectedSituation);
@@ -531,7 +527,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Called when a new situation is selected
      */
-    public void situationSelected() {
+    private void situationSelected() {
         if (lvwSituations.getSelectionModel().getSelectedItem() == null) {
             btnRemoveSituation.setDisable(true);
         } else {
@@ -542,7 +538,7 @@ public class ProductOverviewTab extends GridPane {
     /**
      * Updates the Situationlist
      */
-    public void updateSituations() {
+    private void updateSituations() {
         lvwSituations.getItems().setAll(productController.getSituations());
     }
 

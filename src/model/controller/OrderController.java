@@ -2,11 +2,9 @@ package model.controller;
 
 import gui.OrderControllerInterface;
 import model.modelklasser.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class OrderController implements OrderControllerInterface {
@@ -53,6 +51,12 @@ public class OrderController implements OrderControllerInterface {
     public void saveOrder(Order order) {
         storage.addOrder(order);
     }
+
+    /**
+     * Sets an enddate for the order
+     * @param order
+     * @param date
+     */
 
     public void setEndDateForOrder(Order order, LocalDate date) {
         order.setEndDate(date);
@@ -132,6 +136,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Loops through all orders and checks if its an instance of rental and adds it to the list of rentals
+     * @return
+     */
     public List<Rental> getActiveRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -144,6 +152,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Gets all done rentals by seeing if there has been added a paymentmethod, meaning it has been paid for
+     * @return
+     */
     public List<Rental> getDoneRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -193,43 +205,38 @@ public class OrderController implements OrderControllerInterface {
         return storage.getProductCategories();
     }
 
-    public HashMap<Product, Integer> getSumOfRentalProducts() {
-
-        HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
-        for (Order order : getActiveRentals()) {
-            for (OrderLine orderLine : order.getOrderLines()) {
-                productsAndAmounts.put(orderLine.getPrice().getProduct(), +orderLine.getAmount());
-            }
-        }
-        return productsAndAmounts;
-    }
 
 
     public void initContent() {
-        Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften", LocalDate.of(2022, 12, 31));
-        Rental rental2 = createRental("Peter Immersen", "Udlejer 2 mokai", LocalDate.now());
-        Rental rental3 = createRental("Magnus Mejlgaard", "Udlejer 300 Sweet temptations fustager", LocalDate.now());
-        Rental rental4 = createRental("Kristoffer Frank", "Udlejer en halv øl som han har svært ved at få ned, svagdrikker", LocalDate.now());
+        Rental rental1 = createRental("Jens Hansen", "Lejer 1 hane, 1 fustage Klosterbryg og 2 krus", LocalDate.of(2022, 12, 31));
+        Rental rental2 = createRental("Peter Pedal", "Lejer 1 bar med flere haner og 2 fustager Blondie", LocalDate.of(2022, 11, 15));
+        Rental rental3 = createRental("Klods Hans", "Lejer 2 haner og 1 fustage med India Pale Ale", LocalDate.of(2022, 11, 29));
+        Rental rental4 = createRental("Frank Stein", "Lejer 2 Trækasser med 12 øl og 24 glas", LocalDate.now());
 
-        rental1.createOrderLine(3, getProductCategories().get(1).getProducts().get(0).getPrices().get(0));
-        rental2.createOrderLine(4, getProductCategories().get(1).getProducts().get(1).getPrices().get(1));
-        rental3.createOrderLine(5, getProductCategories().get(1).getProducts().get(2).getPrices().get(0));
-        rental4.createOrderLine(1, getProductCategories().get(1).getProducts().get(3).getPrices().get(1));
+        rental1.createOrderLine(1, getProductCategories().get(9).getProducts().get(0).getPrices().get(0));
+        rental1.createOrderLine(1, getProductCategories().get(5).getProducts().get(0).getPrices().get(0));
+        rental1.createOrderLine(2, getProductCategories().get(10).getProducts().get(0).getPrices().get(0));
+        rental2.createOrderLine(1, getProductCategories().get(9).getProducts().get(2).getPrices().get(0));
+        rental2.createOrderLine(2, getProductCategories().get(5).getProducts().get(4).getPrices().get(0));
+        rental3.createOrderLine(1, getProductCategories().get(9).getProducts().get(1).getPrices().get(0));
+        rental3.createOrderLine(1, getProductCategories().get(5).getProducts().get(6).getPrices().get(0));
+        rental4.createOrderLine(2, getProductCategories().get(11).getProducts().get(5).getPrices().get(0));
+        rental4.createOrderLine(24, getProductCategories().get(10).getProducts().get(0).getPrices().get(0));
 
         Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14, 30));
         Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15, 00));
         Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10, 00));
 
-        tour1.setName("John");
-        tour1.setDescription("Potentiel lærling");
-        tour2.setName("Hans");
+        tour1.setName("Jensen A/S");
+        tour1.setDescription("Firmatur");
+        tour2.setName("EAAA");
         tour2.setDescription("Studerende fra EAAA");
-        tour3.setName("BoMedVenner");
-        tour3.setDescription("bajerTur");
+        tour3.setName("Ølentusiasterne");
+        tour3.setDescription("Afdeling midtjylland");
 
-        tour1.createOrderLine(1, getProductCategories().get(12).getProducts().get(0).getPrices().get(0));
-        tour2.createOrderLine(1, getProductCategories().get(12).getProducts().get(1).getPrices().get(0));
-        tour3.createOrderLine(1, getProductCategories().get(12).getProducts().get(2).getPrices().get(0));
+        tour1.createOrderLine(12, getProductCategories().get(12).getProducts().get(0).getPrices().get(0));
+        tour2.createOrderLine(44, getProductCategories().get(12).getProducts().get(1).getPrices().get(0));
+        tour3.createOrderLine(8, getProductCategories().get(12).getProducts().get(2).getPrices().get(0));
 
         saveOrder(tour1);
         saveOrder(tour2);

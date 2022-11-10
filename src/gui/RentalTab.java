@@ -127,7 +127,7 @@ public class RentalTab extends GridPane {
      * Method to update the textare with the sum of all current rentals
      */
 
-    public void updateSumOfRentedProducts() {
+    private void updateSumOfRentedProducts() {
 
         // Hashmap to contain the amount of products
         HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
@@ -287,6 +287,8 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.getItems().setAll(controller.getActiveRentals());
         lvwRentals.getItems().setAll(controller.getDoneRentals());
         updateSumOfRentedProducts();
+        lvwActiveRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
+        lvwRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
 
 
     }

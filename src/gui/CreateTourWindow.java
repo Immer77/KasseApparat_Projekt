@@ -381,7 +381,7 @@ public class CreateTourWindow extends Stage {
         }
     }
 
-    public void okAction() {
+    private void okAction() {
         String name = "";
         String description = "";
         if (!txfName.getText().isBlank()) {
@@ -393,7 +393,7 @@ public class CreateTourWindow extends Stage {
 
             Tour tour = orderController.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
             for(OrderLine order : order.getOrderLines()){
-                tour.addOrderLine(order);
+                tour.createOrderLine(order.getAmount(), order.getPrice());
             }
 
             tour.setName(name);
@@ -510,7 +510,7 @@ public class CreateTourWindow extends Stage {
         }
     }
 
-    public void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
+    private void amountChangedForOrderLine(int newAmount, OrderLine orderLine) {
         if (newAmount < 1) {
             order.removeOrderLine(orderLine);
         } else {

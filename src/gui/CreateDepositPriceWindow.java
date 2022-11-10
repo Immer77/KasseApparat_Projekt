@@ -1,6 +1,6 @@
 package gui;
 
-import javafx.beans.value.ChangeListener;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -21,7 +21,6 @@ public class CreateDepositPriceWindow extends Stage {
     private Product product;
     private ProductOverviewControllerInterface controller;
     private Spinner<Double> spnAmount;
-    private Label lblSelectedOption;
     private ProductCategory category;
     private ToggleGroup tglGroup;
     private RadioButton rbtnProduct;
@@ -55,7 +54,7 @@ public class CreateDepositPriceWindow extends Stage {
 
 
     //Methods - Other ------------------------------------------------------------------------------------------------
-    public void initContent(GridPane pane) {
+    private void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
@@ -116,7 +115,7 @@ public class CreateDepositPriceWindow extends Stage {
     /**
      * Creates a new Price object with the entered name and description, adding it to the product as a deposit price, then closes the window. If no name is given, an alert is shown and nothing happens instead.
      */
-    public void oKAction() {
+    private void oKAction() {
         Unit unit = Unit.DKK;
         double amount = spnAmount.getValue();
         Situation situation = controller.getSituations().get(0);
@@ -135,7 +134,7 @@ public class CreateDepositPriceWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction() {
+    private void cancelAction() {
         this.close();
     }
 

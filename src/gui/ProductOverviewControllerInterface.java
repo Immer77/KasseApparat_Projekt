@@ -37,7 +37,7 @@ public interface ProductOverviewControllerInterface {
      * @param name of the situation
      * @return situation
      */
-    public Situation createSituation(String name);
+    Situation createSituation(String name);
 
     /**
      * Returns a list of all situations
@@ -50,40 +50,40 @@ public interface ProductOverviewControllerInterface {
      * @param price the price to remove
      * @param product the product from which to remove the price
      */
-    public void removePriceFromProduct (Price price, Product product);
+    void removePriceFromProduct (Price price, Product product);
 
     /**
      * Sets a new title for this category
      * @param title the new title of the category
      * @param category the category to get an updated title
      */
-    public void setTitleForCategory (String title, ProductCategory category);
+    void setTitleForCategory (String title, ProductCategory category);
 
     /**
      * Sets a new description for a ProductCategory
      * @param description the new description
      * @param category the category to recieve the new description
      */
-    public void setDescriptionForCategory (String description, ProductCategory category);
+    void setDescriptionForCategory (String description, ProductCategory category);
 
     /**
      * Sets a new name for the provided Product
      * @param name the new name of the product
      * @param product the product to rename
      */
-    public void setNameForProduct (String name, Product product);
+    void setNameForProduct (String name, Product product);
 
     /**
      * sets a new description for the provided Product
      * @param description the new description
      * @param product the product to describe
      */
-    public void setDescriptionForProduct (String description, Product product);
+    void setDescriptionForProduct (String description, Product product);
 
     /**
      * Removes the given Situation object from storage
      * @param situation the object to remove
      */
-    public void removeSituation (Situation situation);
+    void removeSituation (Situation situation);
 
 }

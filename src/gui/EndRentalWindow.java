@@ -213,7 +213,7 @@ public class EndRentalWindow extends Stage {
         fixedPriceRental();
     }
 
-    public boolean fixedPriceRental(){
+    private boolean fixedPriceRental(){
         boolean fixedPrice;
         if (!txfFixedPrice.getText().isBlank()){
             rental.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
@@ -234,7 +234,7 @@ public class EndRentalWindow extends Stage {
         return fixedPrice;
     }
 
-    public void updateRentalTotal() {
+    private void updateRentalTotal() {
         vboxTotalPrice.getChildren().clear();
         vboxFinalPrice.getChildren().clear();
         fixedPriceRental();
@@ -293,7 +293,7 @@ public class EndRentalWindow extends Stage {
         }
     }
 
-    public double displayDepositPrice(){
+    private double displayDepositPrice(){
         double result = 0.0;
         try {
             if (rental.calculateDeposit() > 0) {

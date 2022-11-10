@@ -346,7 +346,7 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         P701.createPrice(300, Unit.DKK, sitStand);
 
         ProductCategory pc8 = createProductCategory("Beklædning", "");
-        Product P801 = pc8.createProduct("t-shirt", "");
+        Product P801 = pc8.createProduct("T-shirt", "");
         P801.createPrice(70, Unit.DKK, sitStand);
         P801.createPrice(70, Unit.DKK, sitFred);
         Product P802 = pc8.createProduct("Polo", "");
@@ -368,8 +368,8 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         Product P905 = pc9.createProduct("Krus", "");
         P905.createPrice(60, Unit.DKK, sitStand);
 
-        ProductCategory pc10 = createProductCategory("Krus", "");
-        Product P1001 = pc10.createProduct("Krus", "Uanset størrelse");
+        ProductCategory pc10 = createProductCategory("Glas", "");
+        Product P1001 = pc10.createProduct("Glas", "Uanset størrelse");
         P1001.createPrice(15, Unit.DKK, sitStand);
 
         ProductCategory pc11 = createProductCategory("Sampakninger", "");
