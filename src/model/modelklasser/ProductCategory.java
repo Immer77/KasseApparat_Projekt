@@ -11,7 +11,7 @@ public class ProductCategory {
     /**
      * creates object of the ProductCategoy class
      *
-     * @param title name of the product category
+     * @param title       name of the product category
      * @param description a short desciption of what the product category contains
      */
     public ProductCategory(String title, String description) {
@@ -22,17 +22,16 @@ public class ProductCategory {
     /**
      * creates an object of the Product and adds it to the products list on the product category
      *
-     * @param name name of the product
+     * @param name        name of the product
      * @param description a short description of the product
      * @return the product that is created and added
      */
-    public Product createProduct(String name, String description){
+    public Product createProduct(String name, String description) {
         Product product = new Product(name, description);
         products.add(product);
         return product;
     }
 
-    // Getters -------------------------------------------------------------------
     public String getTitle() {
         return title;
     }
@@ -47,6 +46,7 @@ public class ProductCategory {
 
     /**
      * Sets a new title for the product.
+     *
      * @param title the new title. Cannot be blank
      */
     public void setTitle(String title) {
@@ -55,7 +55,6 @@ public class ProductCategory {
         } else {
             this.title = title;
         }
-
     }
 
     public void setDescription(String description) {
@@ -66,7 +65,7 @@ public class ProductCategory {
     public String toString() {
         String returnValue = title;
         if (!description.isBlank()) {
-            returnValue += " ("+description+")";
+            returnValue += " (" + description + ")";
         }
         return returnValue;
     }

@@ -21,14 +21,12 @@ import model.modelklasser.Situation;
 import storage.Storage;
 
 public class ProductOverviewTab extends GridPane {
-
     private ListView<Product> lvwProducts;
     private ListView<ProductCategory> lvwCategories;
-    private ProductOverviewControllerInterface productController;
+    private final ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
     private ListView<Price> lvwPrices;
     private TextField txfDepositPrices;
-
     private Button btnCreatePrice;
     private Button btnCreateDepositPrice;
     private Button btnCreateProductCategory;
@@ -53,8 +51,6 @@ public class ProductOverviewTab extends GridPane {
         this.initContent();
         updateControls();
     }
-
-    // -------------------------------------------------------------------------
 
     /**
      * Creates initial products and categories
@@ -97,7 +93,6 @@ public class ProductOverviewTab extends GridPane {
         VBox vbxCategory = new VBox(lblCategory, hbxCategoryButtons, lvwCategories);
         vbxCategory.setSpacing(5);
         this.add(vbxCategory, 0, 0, 1, 2);
-
 
         //-----Products Controls-----
         //Label
@@ -233,8 +228,6 @@ public class ProductOverviewTab extends GridPane {
 
     }
 
-    // -------------------------------------------------------------------------
-
     /**
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
@@ -248,10 +241,8 @@ public class ProductOverviewTab extends GridPane {
             btnEditCategory.setDisable(false);
             btnCreateProduct.setDisable(false);
         }
-
         updateProductList();
     }
-
 
     // Button actions
 
@@ -293,7 +284,6 @@ public class ProductOverviewTab extends GridPane {
      */
     public void updateControls() {
         try {
-
             if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
                 btnCreateProduct.setDisable(true);
                 btnEditCategory.setDisable(true);
@@ -349,7 +339,6 @@ public class ProductOverviewTab extends GridPane {
         if (selCategory != null) {
             lvwCategories.getSelectionModel().select(selCategory);
         }
-
         updateProductList();
     }
 
@@ -367,7 +356,6 @@ public class ProductOverviewTab extends GridPane {
             btnCreatePrice.setDisable(false);
             btnCreateDepositPrice.setDisable(false);
         }
-
         updatePriceList();
         updateDepositField();
     }
@@ -376,11 +364,7 @@ public class ProductOverviewTab extends GridPane {
      * Called when selection changes in Price listview
      */
     private void priceItemSelected() {
-        if (lvwPrices.getSelectionModel().getSelectedItem() == null) {
-            btnRemovePrice.setDisable(true);
-        } else {
-            btnRemovePrice.setDisable(false);
-        }
+        btnRemovePrice.setDisable(lvwPrices.getSelectionModel().getSelectedItem() == null);
     }
 
     /**
@@ -402,7 +386,6 @@ public class ProductOverviewTab extends GridPane {
             if (selectedPrice != null) {
                 lvwPrices.getSelectionModel().select(selectedPrice);
             }
-
         } else {
             lvwPrices.getItems().clear();
         }
@@ -457,7 +440,6 @@ public class ProductOverviewTab extends GridPane {
             lvwCategories.getSelectionModel().select(selectedCategory);
             lvwProducts.getSelectionModel().select(selectedProduct);
         }
-
         updateDepositField();
     }
 
@@ -528,11 +510,7 @@ public class ProductOverviewTab extends GridPane {
      * Called when a new situation is selected
      */
     private void situationSelected() {
-        if (lvwSituations.getSelectionModel().getSelectedItem() == null) {
-            btnRemoveSituation.setDisable(true);
-        } else {
-            btnRemoveSituation.setDisable(false);
-        }
+        btnRemoveSituation.setDisable(lvwSituations.getSelectionModel().getSelectedItem() == null);
     }
 
     /**
@@ -546,10 +524,10 @@ public class ProductOverviewTab extends GridPane {
      * Inner class to format the Price display in the listview of prices.
      */
     private class PriceFormatCell extends ListCell<Price> {
-        private Label lblSituation;
-        private Label lblValue;
-        private Label lblUnit;
-        private HBox hbxPrice;
+        private final Label lblSituation;
+        private final Label lblValue;
+        private final Label lblUnit;
+        private final HBox hbxPrice;
 
         public PriceFormatCell() {
             //Create label for Situation

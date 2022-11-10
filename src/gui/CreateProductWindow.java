@@ -12,8 +12,6 @@ import model.modelklasser.ProductCategory;
 import storage.Storage;
 
 public class CreateProductWindow extends Stage {
-
-
     private TextField txfName = new TextField();
     private TextArea txaDescription = new TextArea();
     private ProductCategory productCategory;
@@ -21,11 +19,12 @@ public class CreateProductWindow extends Stage {
 
     /**
      * Creates a new window used for creating a new Product
-     * @param title The title of the window
+     *
+     * @param title           The title of the window
      * @param productCategory The ProductCategory for which the Product should belong to
-     * @param owner The Stage owning this window
+     * @param owner           The Stage owning this window
      */
-    public CreateProductWindow (String title, ProductCategory productCategory, Stage owner) {
+    public CreateProductWindow(String title, ProductCategory productCategory, Stage owner) {
         this.productCategory = productCategory;
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
@@ -44,9 +43,9 @@ public class CreateProductWindow extends Stage {
         controller = new ProductOverviewController(Storage.getStorage());
     }
 
-
     /**
      * Initialises the content in the window.
+     *
      * @param pane The Gridpane parent of the content
      */
     private void initContent(GridPane pane) {
@@ -56,11 +55,11 @@ public class CreateProductWindow extends Stage {
         pane.setVgap(10);
 
         Label lblName = new Label("Produktnavn:");
-        pane.add(lblName, 0,0);
+        pane.add(lblName, 0, 0);
         Label lblDescription = new Label("Beskrivelse:");
-        pane.add(lblDescription, 0,1);
+        pane.add(lblDescription, 0, 1);
 
-        pane.add(txfName, 1,0, 2, 1);
+        pane.add(txfName, 1, 0, 2, 1);
         pane.add(txaDescription, 1, 1, 2, 2);
 
         Button btnOK = new Button("Ok");
@@ -101,8 +100,7 @@ public class CreateProductWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    private void cancelAction () {
+    private void cancelAction() {
         this.close();
     }
-
 }

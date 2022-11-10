@@ -3,7 +3,7 @@ package model.modelklasser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class Tour extends Order{
+public class Tour extends Order {
     //Fields ---------------------------------------------------------------------------------------------------------
     private String name;
     private String description;
@@ -38,12 +38,10 @@ public class Tour extends Order{
         return time;
     }
 
-
     //Methods - Other ------------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
         return "Kunde: " + name + " Dato: " + getEndDate();
     }
-
 }

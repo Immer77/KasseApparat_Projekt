@@ -97,19 +97,16 @@ public class EndRentalWindow extends Stage {
         rentalInfoVBox.getChildren().addAll(nameVBox, descriptionVBox, dateHBox);
         pane.add(rentalInfoVBox, 0, 0);
 
-
         //Adds a Vbox to hold all OrderLines
         orderLineView = new VBox(new Label("Alle udlejede produkter"));
         orderLineView.setPrefWidth(300);
         updateOrderLineView();
-
 
         //adds a VBox to hold unused products
         unusedOrderLineView = new VBox();
         Label lblUnused = new Label("Produkter som er ubrugte");
         unusedOrderLineView.setPrefWidth(500);
         unusedOrderLineView.getChildren().setAll(lblUnused, lvwUnusedProducts);
-
 
         //adds vboxs to splitpane
         pane.add(splitPane, 1, 0, 2, 2);
@@ -131,34 +128,34 @@ public class EndRentalWindow extends Stage {
         btnCancel.setCancelButton(true);
 
         buttons.getChildren().addAll(btnOK, btnCancel);
-        pane.add(buttons,1,8);
+        pane.add(buttons, 1, 8);
 
         //vbox and label to show total before price changes
         Label lblTotalBefore = new Label("Total: ");
         pane.add(lblTotalBefore, 1, 2);
         vboxTotalPrice = new VBox();
-        pane.add(vboxTotalPrice,2,2);
+        pane.add(vboxTotalPrice, 2, 2);
 
         // Percent discount on the rental
         Label lblRabat = new Label("Rabat: ");
         pane.add(lblRabat, 1, 3);
 
-        txfRabat = new TextField(rental.getPercentDiscount()+ "");
+        txfRabat = new TextField(rental.getPercentDiscount() + "");
         txfRabat.setPrefWidth(45);
         txfRabat.setMaxWidth(90);
 
         Label lblProcent = new Label(" %");
 
         HBox hboxRabat = new HBox();
-        hboxRabat.getChildren().setAll(txfRabat,lblProcent);
-        pane.add(hboxRabat,2,3);
+        hboxRabat.getChildren().setAll(txfRabat, lblProcent);
+        pane.add(hboxRabat, 2, 3);
 
         // Fixed price for rental
         Label lblFixedPrice = new Label("Aftalt pris: ");
         pane.add(lblFixedPrice, 1, 4);
 
         txfFixedPrice = new TextField();
-        if (rental.getFixedPrice() > 0){
+        if (rental.getFixedPrice() > 0) {
             txfFixedPrice.setText(rental.getFixedPrice() + "");
         }
         txfFixedPrice.setPrefWidth(45);
@@ -170,9 +167,8 @@ public class EndRentalWindow extends Stage {
         chUnits.getSelectionModel().select(0);
 
         HBox hboxFixPri = new HBox();
-        hboxFixPri.getChildren().setAll(txfFixedPrice,chUnits);
-        pane.add(hboxFixPri,2,4);
-
+        hboxFixPri.getChildren().setAll(txfFixedPrice, chUnits);
+        pane.add(hboxFixPri, 2, 4);
 
         // final total for the rental
         Label lblFinal = new Label("Endelig Total: ");
@@ -180,15 +176,15 @@ public class EndRentalWindow extends Stage {
         pane.add(lblFinal, 1, 6);
 
         vboxFinalPrice = new VBox();
-        pane.add(vboxFinalPrice,2,6);
+        pane.add(vboxFinalPrice, 2, 6);
 
         // deposit price
         Label lblDeposit = new Label("Pant: ");
-        pane.add(lblDeposit,1,5);
+        pane.add(lblDeposit, 1, 5);
 
         depositPrice = displayDepositPrice();
         Label lblDepositPrice = new Label("" + depositPrice + " " + Unit.DKK);
-        pane.add(lblDepositPrice,2,5);
+        pane.add(lblDepositPrice, 2, 5);
 
         // to select the payment method for the rental
         chPaymentMethod = new ChoiceBox<>();
@@ -196,10 +192,10 @@ public class EndRentalWindow extends Stage {
         chPaymentMethod.setMaxWidth(Double.MAX_VALUE);
         chPaymentMethod.getItems().setAll(PaymentMethod.values());
         chPaymentMethod.getSelectionModel().select(0);
-        pane.add(chPaymentMethod,1,7);
+        pane.add(chPaymentMethod, 1, 7);
 
         pane.setGridLinesVisible(false);
-        ChangeListener<String> updateOnChange = (o,ov,nv) -> {
+        ChangeListener<String> updateOnChange = (o, ov, nv) -> {
             updateControls();
         };
         txfRabat.textProperty().addListener(updateOnChange);
@@ -207,21 +203,21 @@ public class EndRentalWindow extends Stage {
         updateUnusedProducts();
     }
 
-    public void updateControls(){
+    public void updateControls() {
         updateRentalTotal();
         updateUnusedProducts();
         fixedPriceRental();
     }
 
-    private boolean fixedPriceRental(){
+    private boolean fixedPriceRental() {
         boolean fixedPrice;
-        if (!txfFixedPrice.getText().isBlank()){
+        if (!txfFixedPrice.getText().isBlank()) {
             rental.setFixedPrice(Double.parseDouble(txfFixedPrice.getText().trim()));
             rental.setFixedPriceUnit(chUnits.getSelectionModel().getSelectedItem());
             double fixedMinusDeposit = rental.getFixedPrice() - depositPrice;
-            Label lblFixPri = new Label( fixedMinusDeposit + " " + chUnits.getValue());
+            Label lblFixPri = new Label(fixedMinusDeposit + " " + chUnits.getValue());
             vboxFinalPrice.getChildren().setAll(lblFixPri);
-            for (OrderLine ol : rental.getOrderLines()){
+            for (OrderLine ol : rental.getOrderLines()) {
                 Label lblResult = new Label(rental.calculateSumPriceForUnit(ol.getPrice().getUnit()) + " " + ol.getPrice().getUnit());
                 vboxTotalPrice.getChildren().setAll(lblResult);
             }
@@ -238,9 +234,8 @@ public class EndRentalWindow extends Stage {
         vboxTotalPrice.getChildren().clear();
         vboxFinalPrice.getChildren().clear();
         fixedPriceRental();
-        if (!fixedPriceRental()){
+        if (!fixedPriceRental()) {
             for (Unit unit : Unit.values()) {
-
 
                 //Checks if there is any orderlines in the order with this unit
                 boolean currentUnitFound = false;
@@ -293,13 +288,13 @@ public class EndRentalWindow extends Stage {
         }
     }
 
-    private double displayDepositPrice(){
+    private double displayDepositPrice() {
         double result = 0.0;
         try {
             if (rental.calculateDeposit() > 0) {
                 result = rental.calculateDeposit();
             }
-        } catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             npe.getMessage();
         }
         return result;
@@ -310,7 +305,7 @@ public class EndRentalWindow extends Stage {
             if (ol.getAmount() > 0) {
                 HBox orderline = new HBox();
                 Label lblOL = new Label();
-                if (ol.getPrice().getProduct().getDepositPrice() == null){
+                if (ol.getPrice().getProduct().getDepositPrice() == null) {
                     lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());
                 } else {
                     lblOL.setText(" " + ol.getAmount() + " " + ol.getPrice().getProduct().toString() + " " + ol.getPrice().getValue() + ol.getPrice().getUnit() + "    Pant pr. stk.: " + ol.getPrice().getProduct().getDepositPrice().getValue() + " " + ol.getPrice().getProduct().getDepositPrice().getUnit() + "  Total: " + ol.calculateOrderLinePrice() + " " + ol.getPrice().getUnit());

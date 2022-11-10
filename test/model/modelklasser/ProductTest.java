@@ -29,13 +29,12 @@ class ProductTest {
         Situation situation = mock(Situation.class);
 
         // Act
-        Price price = product.createPrice(value,Unit.DKK,situation);
-
+        Price price = product.createPrice(value, Unit.DKK, situation);
 
         // Assert
-        assertEquals(0,price.getValue());
+        assertEquals(0, price.getValue());
         assertTrue(product.getPrices().contains(price));
-        assertEquals(situation,price.getSituation());
+        assertEquals(situation, price.getSituation());
     }
 
     @Test
@@ -45,17 +44,16 @@ class ProductTest {
         Situation situation = mock(Situation.class);
 
         // Act
-        Price price = product.createPrice(value,Unit.DKK,situation);
-
+        Price price = product.createPrice(value, Unit.DKK, situation);
 
         // Assert
-        assertEquals(35,price.getValue());
+        assertEquals(35, price.getValue());
         assertTrue(product.getPrices().contains(price));
-        assertEquals(situation,price.getSituation());
+        assertEquals(situation, price.getSituation());
     }
 
     @Test
-    void TC3_setName_BlankNameError () {
+    void TC3_setName_BlankNameError() {
         //Arrange
         String blankName = "";
         String expectedMessage = "Navnet på et produkt kan ikke være blankt.";

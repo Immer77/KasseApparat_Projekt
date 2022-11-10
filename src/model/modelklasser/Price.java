@@ -29,8 +29,6 @@ public class Price {
         return product;
     }
 
-
-
     public Situation getSituation() {
         return situation;
     }
@@ -41,6 +39,6 @@ public class Price {
 
     @Override
     public String toString() {
-        return product.getName()+" " +value+" "+unit;
+        return product.getName() + " " + value + " " + unit;
     }
 }

@@ -30,7 +30,6 @@ public class EndOrderWindow extends Stage {
     private Order order;
     private ChoiceBox<PaymentMethod> chPaymentMethod;
 
-
     //Constructors ------------------------------------------------------
     public EndOrderWindow(String title, Stage owner, Order order) {
         this.order = order;
@@ -51,17 +50,12 @@ public class EndOrderWindow extends Stage {
         orderController = new OrderController(Storage.getStorage());
     }
 
-    //Methods - Get, Set & Add -------------------------------------------
-
-
     //Methods - Other ----------------------------------------------------
     private void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
         pane.setVgap(10);
-
-        //Overview of the final order
 
         VBox vbxProduct = new VBox();
         vbxProduct.setPrefWidth(200);
@@ -107,7 +101,6 @@ public class EndOrderWindow extends Stage {
             vbxPriceTotals.getChildren().add(lblAgreed);
             vbxPriceTotals.getChildren().add(lblUnitTotalPrice);
 
-
         } else {
             if (order.getPercentDiscount() > 0.0) {
                 Label lblDiscount = new Label("Rabat: " + order.getPercentDiscount() + "%");
@@ -125,7 +118,6 @@ public class EndOrderWindow extends Stage {
         vbxPriceTotals.setAlignment(Pos.BASELINE_RIGHT);
         pane.add(vbxPriceTotals, 0, 1);
 
-
         //choicebox for payment method
         Label lblPaymentSelect = new Label("Betaling med:");
         lblPaymentSelect.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
@@ -142,7 +134,6 @@ public class EndOrderWindow extends Stage {
         VBox vbxPaymentOptions = new VBox(lblPaymentSelect, chPaymentMethod, lblPunchcardNotice);
         vbxPaymentOptions.setPadding(new Insets(0, 0, 30, 0));
         pane.add(vbxPaymentOptions, 0, 2);
-
 
         //Confirm and cancel buttons
         Button btnOK = new Button("Bekræft");
@@ -165,6 +156,5 @@ public class EndOrderWindow extends Stage {
 
     private void cancelAction() {
         this.close();
-
     }
 }

@@ -30,7 +30,7 @@ public class OrderOverviewTab extends GridPane {
     private TextArea txaOrderDescription;
     private ListView<OrderLine> lvwOrderLines;
 
-    public OrderOverviewTab(){
+    public OrderOverviewTab() {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
@@ -49,8 +49,7 @@ public class OrderOverviewTab extends GridPane {
         endDate.setOnAction(event -> this.updateOrderList());
         endDate.setValue(LocalDate.now());
 
-        hboxDates.getChildren().setAll(startDate,endDate);
-
+        hboxDates.getChildren().setAll(startDate, endDate);
 
         // Listviews with all orders, rentals and tours in the defined period
         lvwOrders = new ListView<>();
@@ -67,7 +66,7 @@ public class OrderOverviewTab extends GridPane {
 
         // VBox for dates and orders
         vboxDateNOrders = new VBox();
-        vboxDateNOrders.getChildren().setAll(hboxDates,lblOrders,lvwOrders,lblRentals,lvwRental,lblTours,lvwTour);
+        vboxDateNOrders.getChildren().setAll(hboxDates, lblOrders, lvwOrders, lblRentals, lvwRental, lblTours, lvwTour);
 
         // Textfields and listview for displaying order info and orderlines
         Label lblOrderName = new Label("Order");
@@ -83,19 +82,19 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.setEditable(false);
 
         vboxOrderInfo = new VBox();
-        vboxOrderInfo.getChildren().setAll(lblOrderName,txfOrderName,lblDescription,txaOrderDescription,lblOrderLines,lvwOrderLines);
+        vboxOrderInfo.getChildren().setAll(lblOrderName, txfOrderName, lblDescription, txaOrderDescription, lblOrderLines, lvwOrderLines);
 
         hboxEntireSheit = new HBox();
-        hboxEntireSheit.getChildren().setAll(vboxDateNOrders,vboxOrderInfo);
+        hboxEntireSheit.getChildren().setAll(vboxDateNOrders, vboxOrderInfo);
         hboxEntireSheit.setMaxHeight(450);
         hboxEntireSheit.setSpacing(20);
-        this.add(hboxEntireSheit,0,0);
+        this.add(hboxEntireSheit, 0, 0);
 
-        ChangeListener<Order> orderChangeListener = (ov,o,v) -> this.updateOrderInfo();
+        ChangeListener<Order> orderChangeListener = (ov, o, v) -> this.updateOrderInfo();
         lvwOrders.getSelectionModel().selectedItemProperty().addListener(orderChangeListener);
-        ChangeListener<Order> rentalChangeListener = (ov,o,v) -> this.updateRentalInfo();
+        ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateRentalInfo();
         lvwRental.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
-        ChangeListener<Order> tourChangeListener = (ov,o,v) -> this.updateTourInfo();
+        ChangeListener<Order> tourChangeListener = (ov, o, v) -> this.updateTourInfo();
         lvwTour.getSelectionModel().selectedItemProperty().addListener(tourChangeListener);
 
         updateControls();
@@ -103,14 +102,13 @@ public class OrderOverviewTab extends GridPane {
     }
 
 
-
-    public void updateOrderList(){
+    public void updateOrderList() {
         ArrayList<Order> ordersInPeriod = new ArrayList<>();
         ArrayList<Rental> rentalsInPeriod = new ArrayList<>();
         ArrayList<Tour> toursInPeriod = new ArrayList<>();
-        for (Order order : orderController.getOrders()){
-            if (order.getEndDate().isEqual(startDate.getValue()) || order.getEndDate().isAfter(startDate.getValue()) && order.getEndDate().isEqual(endDate.getValue()) || order.getEndDate().isBefore(endDate.getValue())){
-                if (order instanceof Rental){
+        for (Order order : orderController.getOrders()) {
+            if (order.getEndDate().isEqual(startDate.getValue()) || order.getEndDate().isAfter(startDate.getValue()) && order.getEndDate().isEqual(endDate.getValue()) || order.getEndDate().isBefore(endDate.getValue())) {
+                if (order instanceof Rental) {
                     rentalsInPeriod.add((Rental) order);
                 } else if (order instanceof Tour) {
                     toursInPeriod.add((Tour) order);
@@ -124,7 +122,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrders.getItems().setAll(ordersInPeriod);
     }
 
-    private void updateOrderInfo(){
+    private void updateOrderInfo() {
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwOrders.getSelectionModel().getSelectedItem();
@@ -133,7 +131,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
     }
 
-    private void updateRentalInfo(){
+    private void updateRentalInfo() {
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwRental.getSelectionModel().getSelectedItem();
@@ -142,21 +140,20 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
     }
 
-    private void updateTourInfo(){
+    private void updateTourInfo() {
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwTour.getSelectionModel().getSelectedItem();
         txfOrderName.setText(selectedOrder.getOrderNumber() + "");
         txaOrderDescription.setText(((Tour) selectedOrder).getDescription());
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
-
     }
 
-    private void updateControls(){
+    private void updateControls() {
         updateOrderList();
     }
 
-    private void clearFields(){
+    private void clearFields() {
         txfOrderName.clear();
         txaOrderDescription.clear();
         lvwOrderLines.getItems().clear();

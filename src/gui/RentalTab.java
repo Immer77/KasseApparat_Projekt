@@ -32,7 +32,6 @@ public class RentalTab extends GridPane {
     private Order order;
     private TextArea txaAllRentalsMade = new TextArea();
 
-
     /**
      * Rental tab to control all the rentals
      */
@@ -49,7 +48,6 @@ public class RentalTab extends GridPane {
         this.setPadding(new Insets(20));
         this.setHgap(10);
         this.setVgap(10);
-
 
         // Adding a splitpane to the pane
         this.add(splitPane, 0, 1);
@@ -69,7 +67,6 @@ public class RentalTab extends GridPane {
         lvwActiveRentals.getItems().setAll();
         ChangeListener<Order> rentalChangeListener = (ov, o, v) -> this.updateOpenRentalInfo();
         lvwActiveRentals.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
-
 
         // List of closed rentals
         lvwRentals.setPrefWidth(100);
@@ -113,11 +110,9 @@ public class RentalTab extends GridPane {
         rightControl.getChildren().add(lblProductrented);
         rightControl.getChildren().add(txaAllRentalsMade);
 
-
         // Adding all active rentals to leftcontrol split pane
         leftControl.getChildren().add(lvwActiveRentals);
         splitPane.getItems().addAll(leftControl, midControl, rightControl);
-
 
         // Updatescontrols
         updateControls();
@@ -128,7 +123,6 @@ public class RentalTab extends GridPane {
      */
 
     private void updateSumOfRentedProducts() {
-
         // Hashmap to contain the amount of products
         HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
         // For each order there is in the active rentals
@@ -146,8 +140,6 @@ public class RentalTab extends GridPane {
                     // If it doesnt exist we just put it in the hashmap
                     productsAndAmounts.put(orderLine.getPrice().getProduct(), orderLine.getAmount());
                 }
-
-
             }
         }
 
@@ -157,7 +149,6 @@ public class RentalTab extends GridPane {
         Set entryset = productsAndAmounts.entrySet();
         // Creating a iterator to iterate through each entryset there is in productsandamounts hashmap
         Iterator iterator = entryset.iterator();
-
 
         // While the entryset has a next line
         while (iterator.hasNext()) {
@@ -170,13 +161,12 @@ public class RentalTab extends GridPane {
         }
         // Finally we set the text for the Textarea
         txaAllRentalsMade.setText(String.valueOf(sb));
-
     }
 
     /**
      * Updates fields in middle control pane
      */
-    private void updateFinishedRentalInfo(){
+    private void updateFinishedRentalInfo() {
         Rental selectedRental;
         clearTextFields();
 
@@ -185,19 +175,20 @@ public class RentalTab extends GridPane {
         txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines());
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
 
-        if (selectedRental.getFixedPrice() > 0){
+        if (selectedRental.getFixedPrice() > 0) {
             txaDescription.clear();
             txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
         }
-        if (selectedRental.getPercentDiscount() > 0){
+        if (selectedRental.getPercentDiscount() > 0) {
             txaDescription.clear();
             txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
         }
     }
+
     /**
      * Updates fields in right control pane
      */
-    private void updateOpenRentalInfo(){
+    private void updateOpenRentalInfo() {
         Rental selectedRental;
         clearTextFields();
 
@@ -206,15 +197,14 @@ public class RentalTab extends GridPane {
         txfDatePicker.setText(String.valueOf(selectedRental.getEndDate()));
         txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice());
 
-        if (selectedRental.getFixedPrice() > 0){
+        if (selectedRental.getFixedPrice() > 0) {
             txaDescription.clear();
             txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nAftalt Pris for Udlejning: " + calculateFinalPrice());
         }
-        if (selectedRental.getPercentDiscount() > 0){
+        if (selectedRental.getPercentDiscount() > 0) {
             txaDescription.clear();
             txaDescription.setText(selectedRental.getDescription() + "\n" + selectedRental.getOrderLines() + "\nTotal Pris for Udlejning: " + calculateFinalPrice() + "\nRabat givet: " + selectedRental.getPercentDiscount() + "%");
         }
-
     }
 
     /**
@@ -226,14 +216,14 @@ public class RentalTab extends GridPane {
         txfDatePicker.clear();
     }
 
-
     /**
      * Calculates the final price for rental made
+     *
      * @return finalprice which contains all rentals orderlines price
      */
     private double calculateFinalPrice() {
         double finalPrice = 0.0;
-        if(lvwActiveRentals.getSelectionModel().getSelectedItem() != null){
+        if (lvwActiveRentals.getSelectionModel().getSelectedItem() != null) {
             for (OrderLine orderLine : lvwActiveRentals.getSelectionModel().getSelectedItem().getOrderLines()) {
                 if (lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice() != 0) {
                     finalPrice = lvwActiveRentals.getSelectionModel().getSelectedItem().getFixedPrice();
@@ -263,8 +253,6 @@ public class RentalTab extends GridPane {
             alert.setHeaderText("Der skal vælges en udlejning");
             alert.show();
         }
-
-
         updateControls();
     }
 
@@ -275,7 +263,6 @@ public class RentalTab extends GridPane {
         Stage stage = new Stage(StageStyle.UTILITY);
         CreateRentalWindow rentalWindow = new CreateRentalWindow("Ny udlejning", stage);
         rentalWindow.showAndWait();
-
 
         updateControls();
     }
@@ -289,8 +276,5 @@ public class RentalTab extends GridPane {
         updateSumOfRentedProducts();
         lvwActiveRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
         lvwRentals.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
-
-
     }
-
 }

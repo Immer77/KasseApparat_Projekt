@@ -12,11 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-
 class ProductOverviewControllerTest {
     StorageInterface storage;
     ProductOverviewControllerInterface controller;
-
 
     /**
      *
@@ -34,28 +32,28 @@ class ProductOverviewControllerTest {
         String description = "6.0% alc. ekstra pilsner";
 
         // Act
-        ProductCategory productCategory = controller.createProductCategory(title,description);
+        ProductCategory productCategory = controller.createProductCategory(title, description);
 
         // Assert
-        assertEquals("Øl",productCategory.getTitle());
-        assertEquals("6.0% alc. ekstra pilsner",productCategory.getDescription());
+        assertEquals("Øl", productCategory.getTitle());
+        assertEquals("6.0% alc. ekstra pilsner", productCategory.getDescription());
         verify(storage).addProductCategory(productCategory);
     }
 
 
     @Test
-    void TC2_createProduct(){
+    void TC2_createProduct() {
         //Arrange
-        ProductCategory productCategory = new ProductCategory("Øl","6.0% alc. ekstra pilsner");
+        ProductCategory productCategory = new ProductCategory("Øl", "6.0% alc. ekstra pilsner");
         String name = "Regnbue Bajer";
         String description = "6% alc. pride piler";
 
         //Act
-        Product testProduct = controller.createProductForCategory(productCategory, name,description);
+        Product testProduct = controller.createProductForCategory(productCategory, name, description);
 
         //Assert
-        assertEquals("Regnbue Bajer",testProduct.getName());
-        assertEquals("6% alc. pride piler",testProduct.getDescription());
+        assertEquals("Regnbue Bajer", testProduct.getName());
+        assertEquals("6% alc. pride piler", testProduct.getDescription());
     }
 
     @Test
@@ -67,7 +65,7 @@ class ProductOverviewControllerTest {
         Situation situation = controller.createSituation(name);
 
         // Assert
-        assertEquals("Fredagsbar",situation.getName());
+        assertEquals("Fredagsbar", situation.getName());
         // Verifies that storage .addsituation gets called
         verify(storage).addSituation(situation);
     }
@@ -77,13 +75,10 @@ class ProductOverviewControllerTest {
         // Arrange
         String name = "";
 
-
         // Act
-        Exception exception = assertThrows(IllegalArgumentException.class,() -> controller.createSituation(name));
-
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> controller.createSituation(name));
 
         // Assert
         assertEquals("En ny salgssituation skal have et navn", exception.getMessage());
-
     }
 }

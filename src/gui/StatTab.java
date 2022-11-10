@@ -28,7 +28,6 @@ public class StatTab extends GridPane {
     private Label lblPunchesSpentResult;
     private Accordion accProductsSold;
 
-
     //Constructors ---------------------------------------------------------------------------------------------------
     public StatTab() {
         this.setPadding(new Insets(20));
@@ -39,9 +38,6 @@ public class StatTab extends GridPane {
         accProductsSold = new Accordion();
         resetTab();
     }
-
-    //Methods - Get, Set & Add ---------------------------------------------------------------------------------------
-
 
     //Methods - Other ------------------------------------------------------------------------------------------------
     private void initContent() {
@@ -64,13 +60,11 @@ public class StatTab extends GridPane {
         lblAllOrdersResult.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.NORMAL, Font.getDefault().getSize()));
         lblAllOrdersResult.setAlignment(Pos.BASELINE_CENTER);
 
-
         Label lblRentals = new Label("Heraf Udlejninger");
         lblRentals.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
         lblRentalsResult = new Label();
         lblRentalsResult.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.NORMAL, Font.getDefault().getSize()));
         lblRentalsResult.setAlignment(Pos.BASELINE_CENTER);
-
 
         Label lblTours = new Label("Heraf Rundvisninger");
         lblTours.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
@@ -79,18 +73,18 @@ public class StatTab extends GridPane {
         lblTourResult.setAlignment(Pos.BASELINE_CENTER);
 
         GridPane gpOrderStats = new GridPane();
-        gpOrderStats.add(lblAllOrders, 0,0);
-        gpOrderStats.add(lblAllOrdersResult,1,0);
-        gpOrderStats.add(lblRentals,0,1);
-        gpOrderStats.add(lblRentalsResult, 1,1);
-        gpOrderStats.add(lblTours,0,2);
-        gpOrderStats.add(lblTourResult,1,2);
+        gpOrderStats.add(lblAllOrders, 0, 0);
+        gpOrderStats.add(lblAllOrdersResult, 1, 0);
+        gpOrderStats.add(lblRentals, 0, 1);
+        gpOrderStats.add(lblRentalsResult, 1, 1);
+        gpOrderStats.add(lblTours, 0, 2);
+        gpOrderStats.add(lblTourResult, 1, 2);
         gpOrderStats.setBackground(Background.fill(Color.WHITE));
         gpOrderStats.setBorder(Border.stroke(Color.BLACK));
         gpOrderStats.setPadding(new Insets(20));
         gpOrderStats.setHgap(10);
         gpOrderStats.setVgap(10);
-        this.add(gpOrderStats,0,2);
+        this.add(gpOrderStats, 0, 2);
         ColumnConstraints orderColumn1 = new ColumnConstraints();
         orderColumn1.setPercentWidth(70);
         gpOrderStats.getColumnConstraints().add(orderColumn1);
@@ -111,10 +105,10 @@ public class StatTab extends GridPane {
         lblPunchesSpentResult.setAlignment(Pos.BASELINE_CENTER);
 
         GridPane gpPunchStats = new GridPane();
-        gpPunchStats.add(lblCardsSold, 0,0);
-        gpPunchStats.add(lblCardsSoldResult,1,0);
-        gpPunchStats.add(lblPunchesSpent,0,2);
-        gpPunchStats.add(lblPunchesSpentResult, 1,2);
+        gpPunchStats.add(lblCardsSold, 0, 0);
+        gpPunchStats.add(lblCardsSoldResult, 1, 0);
+        gpPunchStats.add(lblPunchesSpent, 0, 2);
+        gpPunchStats.add(lblPunchesSpentResult, 1, 2);
         gpPunchStats.setBackground(Background.fill(Color.WHITE));
         gpPunchStats.setBorder(Border.stroke(Color.BLACK));
         gpPunchStats.setPadding(new Insets(20));
@@ -126,14 +120,11 @@ public class StatTab extends GridPane {
         ColumnConstraints punchColumn2 = new ColumnConstraints();
         punchColumn2.setPercentWidth(30);
         gpPunchStats.getColumnConstraints().add(punchColumn2);
-        this.add(gpPunchStats,0,3);
+        this.add(gpPunchStats, 0, 3);
 
         //-----Products sold overview-----
         Label lblProductsSold = new Label("Produkter solgt i denne periode:");
-        this.add(lblProductsSold, 2,1);
-
-
-
+        this.add(lblProductsSold, 2, 1);
     }
 
     public void updateControls() {
@@ -168,33 +159,28 @@ public class StatTab extends GridPane {
 
                     Product currentProduct = orderLine.getPrice().getProduct();
                     if (soldProductsMap.containsKey(currentProduct)) {
-                        soldProductsMap.put(currentProduct, soldProductsMap.get(orderLine.getPrice().getProduct())+orderLine.getAmount());
+                        soldProductsMap.put(currentProduct, soldProductsMap.get(orderLine.getPrice().getProduct()) + orderLine.getAmount());
                     } else {
                         soldProductsMap.put(currentProduct, orderLine.getAmount());
                     }
-
                 }
-
-
-
             }
         }
 
-        lblAllOrdersResult.setText(""+allOrders);
-        lblTourResult.setText(""+tours);
-        lblRentalsResult.setText(""+rentals);
+        lblAllOrdersResult.setText("" + allOrders);
+        lblTourResult.setText("" + tours);
+        lblRentalsResult.setText("" + rentals);
 
-        lblCardsSoldResult.setText(""+punchCardsSold);
-        lblPunchesSpentResult.setText(""+punchesSpent);
-
+        lblCardsSoldResult.setText("" + punchCardsSold);
+        lblPunchesSpentResult.setText("" + punchesSpent);
 
         if (soldProductsMap.size() == 0) {
             Label lblNoProductsSold = new Label("Ingen produkter solgt i denne periode");
-            this.add(lblNoProductsSold,2,2);
+            this.add(lblNoProductsSold, 2, 2);
         } else {
             accProductsSold = new Accordion();
             accProductsSold.setBorder(Border.stroke(Color.BLACK));
-            this.add(accProductsSold, 2,2,1,3);
+            this.add(accProductsSold, 2, 2, 1, 3);
 
             for (ProductCategory category : controller.getProductCategories()) {
                 VBox vbxSoldProductsInCategory = new VBox();
@@ -207,28 +193,23 @@ public class StatTab extends GridPane {
 
                         Label lblName = new Label(product.getName());
                         if (!product.getDescription().isBlank()) {
-                            lblName.setText(lblName.getText() + " ("+product.getDescription()+")");
-
+                            lblName.setText(lblName.getText() + " (" + product.getDescription() + ")");
                         }
 
-                        Label lblAmount = new Label(""+soldProductsMap.get(product));
+                        Label lblAmount = new Label("" + soldProductsMap.get(product));
                         lblAmount.setAlignment(Pos.BASELINE_RIGHT);
 
-
-                        BorderPane bpListItem = new BorderPane(null,null,lblAmount,null,lblName);
+                        BorderPane bpListItem = new BorderPane(null, null, lblAmount, null, lblName);
                         vbxSoldProductsInCategory.getChildren().add(bpListItem);
-
                     }
                 }
 
                 if (!vbxSoldProductsInCategory.getChildren().isEmpty()) {
-                    TitledPane tpCategory = new TitledPane(category.getTitle()+ " ("+soldInCategoryCounter+")", vbxSoldProductsInCategory);
+                    TitledPane tpCategory = new TitledPane(category.getTitle() + " (" + soldInCategoryCounter + ")", vbxSoldProductsInCategory);
                     accProductsSold.getPanes().add(tpCategory);
                 }
-
             }
         }
-
         accProductsSold.getPanes().get(0).setExpanded(true);
     }
 
@@ -254,7 +235,4 @@ public class StatTab extends GridPane {
 
         updateControls();
     }
-
-
-
 }

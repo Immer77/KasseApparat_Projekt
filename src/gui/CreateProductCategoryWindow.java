@@ -13,16 +13,15 @@ import storage.Storage;
 public class CreateProductCategoryWindow extends Stage {
     private TextField txfTitle = new TextField();
     private TextArea txaDescription = new TextArea();
-
     private ProductOverviewControllerInterface controller;
 
     /**
-     *
      * Creates a new window used for creating a new ProductCategory
+     *
      * @param title The title of the window
      * @param owner The Stage owning this window
      */
-    public CreateProductCategoryWindow (String title, Stage owner) {
+    public CreateProductCategoryWindow(String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -33,7 +32,6 @@ public class CreateProductCategoryWindow extends Stage {
         this.setTitle(title);
         GridPane pane = new GridPane();
 
-
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
@@ -43,6 +41,7 @@ public class CreateProductCategoryWindow extends Stage {
 
     /**
      * Initialises the content in the window.
+     *
      * @param pane The Gridpane parent of the content
      */
     private void initContent(GridPane pane) {
@@ -52,18 +51,17 @@ public class CreateProductCategoryWindow extends Stage {
         pane.setVgap(10);
 
         Label lblTitle = new Label("Kategorinavn:");
-        pane.add(lblTitle, 0,0);
+        pane.add(lblTitle, 0, 0);
         Label lblDescription = new Label("Beskrivelse:");
-        pane.add(lblDescription, 0,1);
+        pane.add(lblDescription, 0, 1);
 
-        pane.add(txfTitle, 1,0, 2, 1);
+        pane.add(txfTitle, 1, 0, 2, 1);
         pane.add(txaDescription, 1, 1, 2, 2);
 
         Button btnOK = new Button("Ok");
         pane.add(btnOK, 1, 3);
         btnOK.setOnAction(event -> oKAction());
         btnOK.setDefaultButton(true);
-
 
         Button btnCancel = new Button("Cancel");
         pane.add(btnCancel, 2, 3);
@@ -98,7 +96,7 @@ public class CreateProductCategoryWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    private void cancelAction () {
+    private void cancelAction() {
         this.close();
     }
 }

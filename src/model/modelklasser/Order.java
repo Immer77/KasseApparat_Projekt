@@ -20,14 +20,13 @@ public class Order {
     private LocalDate endDate;
     private int orderNumber;
 
-    // Constructor
-
     public Order(int orderNumber) {
         this.orderNumber = orderNumber;
     }
 
     /**
      * Gets the list of orderlines on the order
+     *
      * @return
      */
     public ArrayList<OrderLine> getOrderLines() {
@@ -36,8 +35,9 @@ public class Order {
 
     /**
      * Creates an orderline
+     *
      * @param amount amount that goes on the orderline
-     * @param price the price of the orderline
+     * @param price  the price of the orderline
      * @return orderline
      */
     public OrderLine createOrderLine(int amount, Price price) {
@@ -56,7 +56,6 @@ public class Order {
     public double getPercentDiscount() {
         return percentDiscount;
     }
-
 
     public void setPercentDiscount(double percentDiscount) {
         this.percentDiscount = percentDiscount;
@@ -96,12 +95,13 @@ public class Order {
 
     /**
      * Calculates the price based on the unit whether its Dkk/punches
+     *
      * @param unit Dkk/Punches
      * @return
      */
-    public double calculateSumPriceForUnit(Unit unit){
+    public double calculateSumPriceForUnit(Unit unit) {
         double sumPrice = 0.0;
-        for (OrderLine orderLine : orderLines){
+        for (OrderLine orderLine : orderLines) {
             if (orderLine.getPrice().getUnit().equals(unit)) {
                 sumPrice += orderLine.calculateOrderLinePrice();
             }
@@ -115,6 +115,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return orderNumber + "\nUdlejet: " + orderLines + "\n Samlet pris: " +calculateSumPriceForUnit(Unit.DKK);
+        return orderNumber + "\nUdlejet: " + orderLines + "\n Samlet pris: " + calculateSumPriceForUnit(Unit.DKK);
     }
 }

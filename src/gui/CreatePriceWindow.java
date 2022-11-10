@@ -15,8 +15,8 @@ import model.modelklasser.Unit;
 import storage.Storage;
 
 public class CreatePriceWindow extends Stage {
-    //Fields ------------------------------------------------------------
 
+    //Fields ------------------------------------------------------------
     private Product product;
     private ProductOverviewControllerInterface controller;
     private ChoiceBox<Situation> chSituation;
@@ -24,7 +24,7 @@ public class CreatePriceWindow extends Stage {
     private Spinner<Double> spnAmount;
 
     //Constructors ------------------------------------------------------
-    public CreatePriceWindow (String title, Product product, Stage owner) {
+    public CreatePriceWindow(String title, Product product, Stage owner) {
         this.product = product;
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
@@ -36,18 +36,17 @@ public class CreatePriceWindow extends Stage {
         this.setTitle(title);
         GridPane pane = new GridPane();
 
-
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
         controller = new ProductOverviewController(Storage.getStorage());
 
         this.initContent(pane);
-            }
+    }
 
-    //Methods - Other ----------------------------------------------------
     /**
      * Initialises the content in the window.
+     *
      * @param pane The Gridpane parent of the content
      */
     private void initContent(GridPane pane) {
@@ -65,11 +64,10 @@ public class CreatePriceWindow extends Stage {
         chSituation.getSelectionModel().select(0);
         chSituation.setPrefWidth(100);
 
+        VBox vbxSituation = new VBox(lblSituation, chSituation);
+        pane.add(vbxSituation, 0, 0);
 
-        VBox vbxSituation = new VBox(lblSituation,chSituation);
-        pane.add(vbxSituation,0,0);
-
-        spnAmount = new Spinner<>(0.0,Double.MAX_VALUE,0.0);
+        spnAmount = new Spinner<>(0.0, Double.MAX_VALUE, 0.0);
         spnAmount.setEditable(true);
 
         chUnit = new ChoiceBox<>();
@@ -78,25 +76,24 @@ public class CreatePriceWindow extends Stage {
 
         HBox hbxAmountInUnit = new HBox(spnAmount, chUnit);
         hbxAmountInUnit.setSpacing(5);
-        hbxAmountInUnit.setPadding(new Insets(20,0,20,0));
-        pane.add(hbxAmountInUnit,0,1);
+        hbxAmountInUnit.setPadding(new Insets(20, 0, 20, 0));
+        pane.add(hbxAmountInUnit, 0, 1);
 
         Button btnOK = new Button("Ok");
         btnOK.setOnAction(event -> oKAction());
         btnOK.setDefaultButton(true);
         btnOK.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(btnOK,Priority.ALWAYS);
+        HBox.setHgrow(btnOK, Priority.ALWAYS);
 
         Button btnCancel = new Button("Cancel");
         btnCancel.setOnAction(event -> cancelAction());
         btnCancel.setCancelButton(true);
         btnCancel.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(btnCancel,Priority.ALWAYS);
+        HBox.setHgrow(btnCancel, Priority.ALWAYS);
 
         HBox hbxButtons = new HBox(btnOK, btnCancel);
         hbxButtons.setSpacing(10);
-        pane.add(hbxButtons,0,3);
-
+        pane.add(hbxButtons, 0, 3);
     }
 
     /**
@@ -107,7 +104,7 @@ public class CreatePriceWindow extends Stage {
         double amount = spnAmount.getValue();
         Situation situation = chSituation.getValue();
 
-        product.createPrice(amount, unit,situation);
+        product.createPrice(amount, unit, situation);
 
         this.close();
     }
@@ -115,10 +112,7 @@ public class CreatePriceWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    private void cancelAction () {
+    private void cancelAction() {
         this.close();
     }
-
-
-
 }
