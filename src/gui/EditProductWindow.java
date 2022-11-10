@@ -49,7 +49,7 @@ public class EditProductWindow extends Stage {
      *
      * @param pane The Gridpane parent of the content
      */
-    public void initContent(GridPane pane) {
+    private void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
@@ -81,7 +81,7 @@ public class EditProductWindow extends Stage {
     /**
      * Updates the title and description of the current Product Category
      */
-    public void oKAction() {
+    private void oKAction() {
         try {
             String title = "";
             String description = "";
@@ -108,7 +108,7 @@ public class EditProductWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction() {
+    private void cancelAction() {
         this.close();
     }
 }

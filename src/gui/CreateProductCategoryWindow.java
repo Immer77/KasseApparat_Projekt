@@ -45,7 +45,7 @@ public class CreateProductCategoryWindow extends Stage {
      * Initialises the content in the window.
      * @param pane The Gridpane parent of the content
      */
-    public void initContent(GridPane pane) {
+    private void initContent(GridPane pane) {
         //pane.setGridLinesVisible(true);
         pane.setPadding(new Insets(20));
         pane.setHgap(10);
@@ -74,7 +74,7 @@ public class CreateProductCategoryWindow extends Stage {
     /**
      * Creates a new ProductCategory object with the entered title and description, then closes the window. If no title is given, an alert is shown and nothing happens instead.
      */
-    public void oKAction() {
+    private void oKAction() {
         String title = "";
         String description = "";
         if (!txfTitle.getText().isBlank()) {
@@ -98,7 +98,7 @@ public class CreateProductCategoryWindow extends Stage {
     /**
      * Closes the window, discarding any changes.
      */
-    public void cancelAction () {
+    private void cancelAction () {
         this.close();
     }
 }

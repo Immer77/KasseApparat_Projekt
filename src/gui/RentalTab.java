@@ -127,7 +127,7 @@ public class RentalTab extends GridPane {
      * Method to update the textare with the sum of all current rentals
      */
 
-    public void updateSumOfRentedProducts() {
+    private void updateSumOfRentedProducts() {
 
         // Hashmap to contain the amount of products
         HashMap<Product, Integer> productsAndAmounts = new HashMap<>();

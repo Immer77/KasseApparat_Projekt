@@ -124,7 +124,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrders.getItems().setAll(ordersInPeriod);
     }
 
-    public void updateOrderInfo(){
+    private void updateOrderInfo(){
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwOrders.getSelectionModel().getSelectedItem();
@@ -133,7 +133,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
     }
 
-    public void updateRentalInfo(){
+    private void updateRentalInfo(){
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwRental.getSelectionModel().getSelectedItem();
@@ -142,7 +142,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
     }
 
-    public void updateTourInfo(){
+    private void updateTourInfo(){
         Order selectedOrder;
         clearFields();
         selectedOrder = lvwTour.getSelectionModel().getSelectedItem();
@@ -152,11 +152,11 @@ public class OrderOverviewTab extends GridPane {
 
     }
 
-    public void updateControls(){
+    private void updateControls(){
         updateOrderList();
     }
 
-    public void clearFields(){
+    private void clearFields(){
         txfOrderName.clear();
         txaOrderDescription.clear();
         lvwOrderLines.getItems().clear();
