@@ -36,7 +36,7 @@ public class StatTab extends GridPane {
         this.setVgap(10);
         this.controller = new OrderController(Storage.getStorage());
 
-
+        accProductsSold = new Accordion();
         resetTab();
     }
 
@@ -132,7 +132,6 @@ public class StatTab extends GridPane {
         Label lblProductsSold = new Label("Produkter solgt i denne periode:");
         this.add(lblProductsSold, 2,1);
 
-        accProductsSold = new Accordion();
 
 
     }
@@ -238,7 +237,6 @@ public class StatTab extends GridPane {
 
         dpckTo.setValue(LocalDate.now());
         dpckFrom.setValue(LocalDate.now());
-
 
         updateControls();
     }
