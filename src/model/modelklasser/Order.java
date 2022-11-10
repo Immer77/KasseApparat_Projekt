@@ -14,11 +14,16 @@ public class Order {
     private PaymentMethod paymentMethod;
     // composition --> 0..* OrderLine
     private final ArrayList<OrderLine> orderLines = new ArrayList<>();
+    /**
+     * The date for which the order is completed.
+     */
     private LocalDate endDate;
+    private int orderNumber;
 
     // Constructor
 
-    public Order() {
+    public Order(int orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     /**
@@ -110,8 +115,12 @@ public class Order {
         return sumPrice;
     }
 
+    public int getOrderNumber() {
+        return orderNumber;
+    }
+
     @Override
     public String toString() {
-        return "\nUdlejet: " + orderLines + "\n Samlet pris: " +calculateSumPriceForUnit(Unit.DKK);
+        return orderNumber + "\nUdlejet: " + orderLines + "\n Samlet pris: " +calculateSumPriceForUnit(Unit.DKK);
     }
 }

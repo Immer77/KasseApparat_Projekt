@@ -1,6 +1,7 @@
 package model.controller;
 
 import gui.OrderControllerInterface;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import storage.Storage;
 
@@ -15,13 +16,14 @@ class OrderControllerTest {
     void setUp() {
         // We need to mock the storage to make sure that we are creating a unit test
         storage = mock(Storage.class);
-        orderController = OrderController.getOrderControllerTest(storage);
+        orderController = new OrderController(storage);
     }
 
 //    @Test
 //    void TC1_createSituationWithNameFredagsbar() {
 //        // Arrange
 //        String name = "Fredagsbar";
+//
 //
 //        // Act
 //        Situation situation = orderController.createSituation(name);

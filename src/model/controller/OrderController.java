@@ -6,13 +6,14 @@ import model.modelklasser.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OrderController implements OrderControllerInterface {
 
     //Field Variables
     private StorageInterface storage;
-
+    private static int orderNumber = 1000;
 
     /**
      * Private ordercontroller supporting singleton pattern
@@ -21,19 +22,6 @@ public class OrderController implements OrderControllerInterface {
      */
     public OrderController(StorageInterface storage) {
         this.storage = storage;
-    }
-
-
-    /**
-     * Bruges til test for ikke at have singleton pattern til at melde fejl
-     *
-     * @param storage
-     * @return
-     */
-    public static OrderControllerInterface getOrderControllerTest(StorageInterface storage) {
-        OrderControllerInterface unique_OrderController = new OrderController(storage);
-        return unique_OrderController;
-
     }
 
 
@@ -52,7 +40,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Order createOrder() {
-        Order order = new Order();
+        orderNumber++;
+        Order order = new Order(orderNumber);
         return order;
     }
 
@@ -64,6 +53,12 @@ public class OrderController implements OrderControllerInterface {
     public void saveOrder(Order order) {
         storage.addOrder(order);
     }
+
+    /**
+     * Sets an enddate for the order
+     * @param order
+     * @param date
+     */
 
     public void setEndDateForOrder(Order order, LocalDate date) {
         order.setEndDate(date);
@@ -122,7 +117,8 @@ public class OrderController implements OrderControllerInterface {
      * @return
      */
     public Rental createRental(String name, String description, LocalDate endDate) {
-        Rental rental = new Rental(name, description, endDate);
+        orderNumber++;
+        Rental rental = new Rental(name, description, endDate, orderNumber);
         storage.addOrder(rental);
         return rental;
     }
@@ -142,6 +138,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Loops through all orders and checks if its an instance of rental and adds it to the list of rentals
+     * @return
+     */
     public List<Rental> getActiveRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -154,6 +154,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Gets all done rentals by seeing if there has been added a paymentmethod, meaning it has been paid for
+     * @return
+     */
     public List<Rental> getDoneRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -174,7 +178,8 @@ public class OrderController implements OrderControllerInterface {
      * @return the new Tour object
      */
     public Tour createTour(LocalDate endDate, LocalTime time) {
-        Tour tour = new Tour(endDate, time);
+        orderNumber++;
+        Tour tour = new Tour(endDate, time,orderNumber);
         return tour;
     }
 
@@ -203,6 +208,7 @@ public class OrderController implements OrderControllerInterface {
     }
 
 
+
     public void initContent() {
         Rental rental1 = createRental("Julius Seerup", "Udlejer 2000 bajere til en stille fredag aften", LocalDate.of(2022, 12, 31));
         Rental rental2 = createRental("Peter Immersen", "Udlejer 2 mokai", LocalDate.now());
@@ -214,9 +220,9 @@ public class OrderController implements OrderControllerInterface {
         rental3.createOrderLine(5, getProductCategories().get(1).getProducts().get(2).getPrices().get(0));
         rental4.createOrderLine(1, getProductCategories().get(1).getProducts().get(3).getPrices().get(1));
 
-        Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14,30));
-        Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15,00));
-        Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10,00));
+        Tour tour1 = createTour(LocalDate.of(2022, 12, 31), LocalTime.of(14, 30));
+        Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15, 00));
+        Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10, 00));
 
         tour1.setName("John");
         tour1.setDescription("Potentiel lærling");

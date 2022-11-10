@@ -93,7 +93,7 @@ public class CreateRentalWindow extends Stage {
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
         accProductOverview.setMaxWidth(Double.MAX_VALUE);
-        accProductOverview.setPrefWidth(250);
+        accProductOverview.setPrefWidth(400);
         accProductOverview.setPadding(Insets.EMPTY);
         pane.add(accProductOverview, 4, 0, 3, 16);
 
@@ -332,8 +332,21 @@ public class CreateRentalWindow extends Stage {
                         txfPrice.setBackground(Background.EMPTY);
                         txfPrice.setAlignment(Pos.BASELINE_RIGHT);
 
+
+
+
+
                         //Create HBox for holding the entire product line
-                        HBox productLine = new HBox(productDescr, txfPrice);
+                        HBox productLine = new HBox();
+                        if (prod.getDepositPrice() != null){
+                            //Creates label with deposit if there is a depositprice on the product
+                            TextField txfDepositPrice = new TextField("Pant pr. stk.: " + prod.getDepositPrice().getValue() + prod.getDepositPrice().getUnit());
+                            txfDepositPrice.setEditable(false);
+                            txfDepositPrice.setBackground(Background.EMPTY);
+                            productLine.getChildren().setAll(productDescr, txfDepositPrice, txfPrice);
+                        } else {
+                            productLine.getChildren().setAll(productDescr, txfPrice);
+                        }
                         productLine.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.DASHED, null, new BorderWidths(0.0, 0.0, 1, 0.0))));
                         for (Node ch : productLine.getChildren()) {
                             ch.setOnMouseClicked(event -> addProductToOrder(price));
@@ -507,6 +520,10 @@ public class CreateRentalWindow extends Stage {
         updateOrder();
     }
 
+    /**
+     * Calculates the deposit price for all products in the orderline
+     * @return
+     */
     private double calculatDepositPrice() {
         double sumOfPant = 0.0;
         for (OrderLine orderLine : order.getOrderLines()) {

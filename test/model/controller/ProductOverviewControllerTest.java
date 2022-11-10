@@ -3,11 +3,12 @@ package model.controller;
 import gui.ProductOverviewControllerInterface;
 import model.modelklasser.Product;
 import model.modelklasser.ProductCategory;
+import model.modelklasser.Situation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import storage.Storage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -55,5 +56,34 @@ class ProductOverviewControllerTest {
         //Assert
         assertEquals("Regnbue Bajer",testProduct.getName());
         assertEquals("6% alc. pride piler",testProduct.getDescription());
+    }
+
+    @Test
+    void TC1_createSituationWithNameFredagsbar() {
+        // Arrange
+        String name = "Fredagsbar";
+
+        // Act
+        Situation situation = controller.createSituation(name);
+
+        // Assert
+        assertEquals("Fredagsbar",situation.getName());
+        // Verifies that storage .addsituation gets called
+        verify(storage).addSituation(situation);
+    }
+
+    @Test
+    void TC2_CreateSituationWhereNameIsBlank() {
+        // Arrange
+        String name = "";
+
+
+        // Act
+        Exception exception = assertThrows(IllegalArgumentException.class,() -> controller.createSituation(name));
+
+
+        // Assert
+        assertEquals("En ny salgssituation skal have et navn", exception.getMessage());
+
     }
 }

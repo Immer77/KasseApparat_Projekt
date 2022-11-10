@@ -22,8 +22,8 @@ import storage.Storage;
 
 public class ProductOverviewTab extends GridPane {
 
-    private final ListView<Product> lvwProducts;
-    private final ListView<ProductCategory> lvwCategories;
+    private ListView<Product> lvwProducts;
+    private ListView<ProductCategory> lvwCategories;
     private ProductOverviewControllerInterface productController;
     private Button btnCreateProduct;
     private ListView<Price> lvwPrices;
@@ -49,6 +49,17 @@ public class ProductOverviewTab extends GridPane {
 
         productController = new ProductOverviewController(Storage.getStorage());
 
+        //-----Initial methods-----
+        this.initContent();
+        updateControls();
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Creates initial products and categories
+     */
+    private void initContent() {
         //-----Category Controls-----
         //Label
         Label lblCategory = new Label("Produktkategorier");
@@ -75,6 +86,8 @@ public class ProductOverviewTab extends GridPane {
         //List View of categories
         lvwCategories = new ListView<>();
         lvwCategories.getItems().setAll();
+        lvwCategories.setMinHeight(200);
+        lvwCategories.setPrefHeight(250);
 
         //Listener for category list
         ChangeListener<ProductCategory> categoryListener = (ov, o, n) -> this.productCategoryItemSelected();
@@ -84,6 +97,7 @@ public class ProductOverviewTab extends GridPane {
         VBox vbxCategory = new VBox(lblCategory, hbxCategoryButtons, lvwCategories);
         vbxCategory.setSpacing(5);
         this.add(vbxCategory, 0, 0, 1, 2);
+
 
         //-----Products Controls-----
         //Label
@@ -109,6 +123,8 @@ public class ProductOverviewTab extends GridPane {
 
         //List View of products
         lvwProducts = new ListView<>();
+        lvwProducts.setMinHeight(200);
+        lvwProducts.setPrefHeight(250);
 
         //Listener for product list
         ChangeListener<Product> productListener = (ov, o, n) -> this.productItemSelected();
@@ -143,6 +159,7 @@ public class ProductOverviewTab extends GridPane {
 
         //List view of Prices
         lvwPrices = new ListView<>();
+        lvwPrices.setPrefHeight(150);
 
         //Listener for Price list
         ChangeListener<Price> priceListener = (ov, o, n) -> this.priceItemSelected();
@@ -151,7 +168,7 @@ public class ProductOverviewTab extends GridPane {
         //Vbox to hold Price controls
         VBox vbxPrices = new VBox(lblPrices, hbxPiceButtons, lvwPrices);
         vbxPrices.setSpacing(5);
-        this.add(vbxPrices, 2, 0);
+
 
         //-----Deposit price controls-----
         //Label
@@ -172,7 +189,12 @@ public class ProductOverviewTab extends GridPane {
         //Vbox to hold deposit controls
         VBox vbxDeposit = new VBox(lblDeposit, btnCreateDepositPrice, txfDepositPrices);
         vbxDeposit.setSpacing(5);
-        this.add(vbxDeposit, 2, 1);
+
+
+        //VBox to group prices and deposit control
+        VBox vbxPriceAndDeposit = new VBox(vbxPrices, vbxDeposit);
+        vbxPriceAndDeposit.setSpacing(15);
+        this.add(vbxPriceAndDeposit, 2, 0, 1, 2);
 
         //-----Situation controls-----
         //Label
@@ -198,6 +220,7 @@ public class ProductOverviewTab extends GridPane {
 
         //List view of situations
         lvwSituations = new ListView<>();
+        lvwSituations.setPrefHeight(75);
 
         //Listener for Situation list
         ChangeListener<Situation> situationListener = (ov, o, n) -> this.situationSelected();
@@ -208,25 +231,6 @@ public class ProductOverviewTab extends GridPane {
         vbxSituationList.setSpacing(5);
         this.add(vbxSituationList, 1, 2);
 
-        //-----Initial methods-----
-        this.initContent();
-        updateControls();
-    }
-
-    // -------------------------------------------------------------------------
-
-    /**
-     * Creates initial products and categories
-     */
-    private void initContent() {
-        //TODO - Remove this from final version. It creates initial objects to storage
-        if (productController instanceof ProductOverviewController) {
-            ProductOverviewController controller = (ProductOverviewController) productController;
-            controller.initContent();
-        }
-
-        updateControls();
-
     }
 
     // -------------------------------------------------------------------------
@@ -235,6 +239,8 @@ public class ProductOverviewTab extends GridPane {
      * Called when listener detects changes in selection from category list. Updates product list to show the products contained in the category.
      */
     private void productCategoryItemSelected() {
+        lvwProducts.getSelectionModel().clearSelection();
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwCategories.getSelectionModel().getSelectedItem() == null) {
             btnEditCategory.setDisable(true);
             btnCreateProduct.setDisable(true);
@@ -351,7 +357,7 @@ public class ProductOverviewTab extends GridPane {
      * Called when selection changes in Product listview
      */
     public void productItemSelected() {
-
+        lvwPrices.getSelectionModel().clearSelection();
         if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
             btnEditProduct.setDisable(true);
             btnCreatePrice.setDisable(true);
@@ -409,7 +415,7 @@ public class ProductOverviewTab extends GridPane {
         Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null && selectedProduct.getDepositPrice() != null) {
-                txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
+            txfDepositPrices.setText(selectedProduct.getDepositPrice().getValue() + " " + selectedProduct.getDepositPrice().getUnit());
         } else {
             txfDepositPrices.setText("0.0 DKK");
         }
@@ -435,14 +441,22 @@ public class ProductOverviewTab extends GridPane {
      * Called when the create deposit button is pressed.
      */
     public void createDepositPriceAction() {
-        ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
-        Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
+        if (lvwProducts.getSelectionModel().getSelectedItem() == null) {
+            Alert noProductAlert = new Alert(Alert.AlertType.ERROR);
+            noProductAlert.setTitle("Der er ikke valgt et produkt");
+            noProductAlert.setContentText("Du skal vælge et produkt før du kan oprette pant");
+            noProductAlert.showAndWait();
 
-        CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage(), selectedCategory);
-        newDepositPriceWindow.showAndWait();
+        } else {
+            ProductCategory selectedCategory = lvwCategories.getSelectionModel().getSelectedItem();
+            Product selectedProduct = lvwProducts.getSelectionModel().getSelectedItem();
 
-        lvwCategories.getSelectionModel().select(selectedCategory);
-        lvwProducts.getSelectionModel().select(selectedProduct);
+            CreateDepositPriceWindow newDepositPriceWindow = new CreateDepositPriceWindow("Ny Pantpris", selectedProduct, new Stage(), selectedCategory);
+            newDepositPriceWindow.showAndWait();
+
+            lvwCategories.getSelectionModel().select(selectedCategory);
+            lvwProducts.getSelectionModel().select(selectedProduct);
+        }
 
         updateDepositField();
     }

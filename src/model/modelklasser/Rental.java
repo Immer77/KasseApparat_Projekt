@@ -12,8 +12,8 @@ public class Rental extends Order {
 
 
     // Constructor
-    public Rental(String name, String description, LocalDate endDate) {
-        super();
+    public Rental(String name, String description, LocalDate endDate, int orderNumber) {
+        super(orderNumber);
         this.name = name;
         this.description = description;
         this.startDate = LocalDate.now();
