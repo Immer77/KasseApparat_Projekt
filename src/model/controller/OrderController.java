@@ -227,16 +227,16 @@ public class OrderController implements OrderControllerInterface {
         Tour tour2 = createTour(LocalDate.of(2022, 11, 16), LocalTime.of(15, 00));
         Tour tour3 = createTour(LocalDate.of(2022, 12, 10), LocalTime.of(10, 00));
 
-        tour1.setName("John");
-        tour1.setDescription("Potentiel lærling");
-        tour2.setName("Hans");
+        tour1.setName("Jensen A/S");
+        tour1.setDescription("Firmatur");
+        tour2.setName("EAAA");
         tour2.setDescription("Studerende fra EAAA");
-        tour3.setName("BoMedVenner");
-        tour3.setDescription("bajerTur");
+        tour3.setName("Ølentusiasterne");
+        tour3.setDescription("Afdeling midtjylland");
 
-        tour1.createOrderLine(1, getProductCategories().get(12).getProducts().get(0).getPrices().get(0));
-        tour2.createOrderLine(1, getProductCategories().get(12).getProducts().get(1).getPrices().get(0));
-        tour3.createOrderLine(1, getProductCategories().get(12).getProducts().get(2).getPrices().get(0));
+        tour1.createOrderLine(12, getProductCategories().get(12).getProducts().get(0).getPrices().get(0));
+        tour2.createOrderLine(44, getProductCategories().get(12).getProducts().get(1).getPrices().get(0));
+        tour3.createOrderLine(8, getProductCategories().get(12).getProducts().get(2).getPrices().get(0));
 
         saveOrder(tour1);
         saveOrder(tour2);
