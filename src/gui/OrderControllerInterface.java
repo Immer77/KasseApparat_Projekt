@@ -81,17 +81,20 @@ public interface OrderControllerInterface {
      * @param time the time this tour is planned for
      * @return the new Tour object
      */
-    public Tour createTour (LocalDate endDate, LocalTime time);
+    Tour createTour (LocalDate endDate, LocalTime time);
 
     /**
      * Returns a list of all Tours in the system.
      * @return A list of Tours
      */
-    public List<Tour> getTours();
+    List<Tour> getTours();
 
-    public List<ProductCategory> getProductCategories();
+    /**
+     * Get all productcategoires
+     * @return
+     */
+    List<ProductCategory> getProductCategories();
 
-    public Map<Product, Integer> getSumOfRentalProducts();
 
 
 }

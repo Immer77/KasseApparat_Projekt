@@ -54,6 +54,12 @@ public class OrderController implements OrderControllerInterface {
         storage.addOrder(order);
     }
 
+    /**
+     * Sets an enddate for the order
+     * @param order
+     * @param date
+     */
+
     public void setEndDateForOrder(Order order, LocalDate date) {
         order.setEndDate(date);
     }
@@ -132,6 +138,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Loops through all orders and checks if its an instance of rental and adds it to the list of rentals
+     * @return
+     */
     public List<Rental> getActiveRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -144,6 +154,10 @@ public class OrderController implements OrderControllerInterface {
         return rentals;
     }
 
+    /**
+     * Gets all done rentals by seeing if there has been added a paymentmethod, meaning it has been paid for
+     * @return
+     */
     public List<Rental> getDoneRentals() {
         ArrayList<Rental> rentals = new ArrayList<>();
         for (Order order : storage.getOrders()) {
@@ -193,16 +207,6 @@ public class OrderController implements OrderControllerInterface {
         return storage.getProductCategories();
     }
 
-    public HashMap<Product, Integer> getSumOfRentalProducts() {
-
-        HashMap<Product, Integer> productsAndAmounts = new HashMap<>();
-        for (Order order : getActiveRentals()) {
-            for (OrderLine orderLine : order.getOrderLines()) {
-                productsAndAmounts.put(orderLine.getPrice().getProduct(), +orderLine.getAmount());
-            }
-        }
-        return productsAndAmounts;
-    }
 
 
     public void initContent() {
