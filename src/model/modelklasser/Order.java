@@ -118,6 +118,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return orderNumber + "\nUdlejet: " + orderLines + "\n Samlet pris: " +calculateSumPriceForUnit(Unit.DKK);
+        return orderNumber + "        Dato: " + getEndDate() ;
     }
 }

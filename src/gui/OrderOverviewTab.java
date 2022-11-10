@@ -8,12 +8,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.controller.OrderController;
-import model.modelklasser.Order;
-import model.modelklasser.OrderLine;
-import model.modelklasser.Rental;
-import model.modelklasser.Tour;
+import model.modelklasser.*;
 import storage.Storage;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -61,16 +61,22 @@ public class OrderOverviewTab extends GridPane {
         lvwTour.setPrefHeight(70);
 
         // Labels for defining listviews
-        Label lblOrders = new Label("Ordernummer");
+        Label lblOrders = new Label("Salgordre");
         Label lblRentals = new Label("Udlejninger");
         Label lblTours = new Label("Rundvisninger");
 
+        //Button for printing orders in period
+        Button btnPrintReceipt = new Button("Print periodeopgørelse");
+        btnPrintReceipt.setPrefWidth(150);
+        btnPrintReceipt.setOnAction(event -> printReceipt());
+
         // VBox for dates and orders
         vboxDateNOrders = new VBox();
-        vboxDateNOrders.getChildren().setAll(hboxDates,lblOrders,lvwOrders,lblRentals,lvwRental,lblTours,lvwTour);
+        vboxDateNOrders.setSpacing(5);
+        vboxDateNOrders.getChildren().setAll(hboxDates,lblOrders,lvwOrders,lblRentals,lvwRental,lblTours,lvwTour,btnPrintReceipt);
 
         // Textfields and listview for displaying order info and orderlines
-        Label lblOrderName = new Label("Order");
+        Label lblOrderName = new Label("Ordrenummer");
         txfOrderName = new TextField();
         txfOrderName.setEditable(false);
 
@@ -83,6 +89,7 @@ public class OrderOverviewTab extends GridPane {
         lvwOrderLines.setEditable(false);
 
         vboxOrderInfo = new VBox();
+        vboxOrderInfo.setSpacing(5);
         vboxOrderInfo.getChildren().setAll(lblOrderName,txfOrderName,lblDescription,txaOrderDescription,lblOrderLines,lvwOrderLines);
 
         hboxEntireSheit = new HBox();
@@ -97,6 +104,8 @@ public class OrderOverviewTab extends GridPane {
         lvwRental.getSelectionModel().selectedItemProperty().addListener(rentalChangeListener);
         ChangeListener<Order> tourChangeListener = (ov,o,v) -> this.updateTourInfo();
         lvwTour.getSelectionModel().selectedItemProperty().addListener(tourChangeListener);
+
+
 
         updateControls();
         updateOrderList();
@@ -149,6 +158,47 @@ public class OrderOverviewTab extends GridPane {
         txfOrderName.setText(selectedOrder.getOrderNumber() + "");
         txaOrderDescription.setText(((Tour) selectedOrder).getDescription());
         lvwOrderLines.getItems().addAll(selectedOrder.getOrderLines());
+
+    }
+
+    private void printReceipt(){
+        String currentWorkingPath = System.getProperty("user.dir");
+        String fileName = "receipt.txt";
+        String path = currentWorkingPath  + File.separator+ fileName;
+        File file = new File(path);
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            for (Order order : orderController.getOrders()){
+                if (order.getEndDate().isEqual(startDate.getValue()) || order.getEndDate().isAfter(startDate.getValue()) && order.getEndDate().isEqual(endDate.getValue()) || order.getEndDate().isBefore(endDate.getValue())){
+                    String salgstype = "salg";
+                    if (order instanceof Rental){
+                        salgstype = "Udlejning";
+                    } else if (order instanceof Tour){
+                        salgstype = "Rundvisning";
+                    }
+                    String betaling = "";
+                    if (order.getFixedPrice() > 0){
+                        betaling = "Aftalt pris: " + order.getFixedPrice() + "\n";
+                    } else if (order.getPercentDiscount() > 0){
+                        betaling = "Rabat givet: " + order.getPercentDiscount() + "%\nPris med rabat: " + (order.calculateSumPriceForUnit(Unit.DKK)-(order.calculateSumPriceForUnit(Unit.DKK)*order.getPercentDiscount()/100)) + "\n" + "\n";
+                    } else {
+                        betaling = "Total pris: " + order.calculateSumPriceForUnit(Unit.DKK) + "\n";
+                    }
+                    fileWriter.write("type af salg: " + salgstype + "\nOrdernummer: " + order.getOrderNumber() + "\n" + order.getOrderLines() + "\n" + betaling + "\n");
+                    Alert fileMessage = new Alert(Alert.AlertType.INFORMATION);
+                    fileMessage.setHeaderText("Periodeopgørelse kan findes i projekt mappen");
+                    fileMessage.showAndWait();
+                }
+            }
+            fileWriter.close();
+        } catch (IOException ioe){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Fejl!");
+            alert.setContentText("File path er forkert!");
+            alert.showAndWait();
+        } finally {
+
+        }
 
     }
 
