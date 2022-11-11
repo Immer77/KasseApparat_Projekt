@@ -1,16 +1,16 @@
 package model.controller;
 
-import model.modelklasser.Order;
-import model.modelklasser.Situation;
+import model.modelklasser.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import storage.Storage;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class OrderControllerTest {
@@ -72,12 +72,19 @@ class OrderControllerTest {
     @Test
     void setDiscountForOrder() {
         //Arrange
+        double discount = 20;
+        Order mockedOrder = mock(Order.class);
+
+        when(mockedOrder.getPercentDiscount()).thenReturn(discount);
 
 
         //Act
+        controller.setDiscountForOrder(mockedOrder,discount);
 
 
         //Assert
+        assertEquals(20, mockedOrder.getPercentDiscount());
+        verify(mockedOrder).setPercentDiscount(20);
 
     }
 
@@ -85,12 +92,18 @@ class OrderControllerTest {
     @Test
     void setFixedPriceForOrder() {
         //Arrange
+        double fixedPrice = 200;
+        Order mockedOrder = mock(Order.class);
+
+        when(mockedOrder.getFixedPrice()).thenReturn(fixedPrice);
 
 
         //Act
+        controller.setFixedPriceForOrder(mockedOrder,fixedPrice, Unit.DKK);
 
 
         //Assert
+        assertEquals(200, mockedOrder.getFixedPrice());
 
     }
 
@@ -100,57 +113,59 @@ class OrderControllerTest {
 
 
         //Act
-
-
-        //Assert
-
-    }
-
-    @Test
-    void createOrderLineForOrder() {
-        //Arrange
-
-
-        //Act
-
+        controller.getOrders();
 
         //Assert
 
+        verify(storage).getOrders();
+
     }
+
+
 
     @Test
     void getPaymentMethodForOrder() {
         //Arrange
+        Order order = mock(Order.class);
 
-
+        when(order.getPaymentMethod()).thenReturn(PaymentMethod.Dankort);
         //Act
-
+        controller.getPaymentMethodForOrder(order);
 
         //Assert
-
+        assertEquals(PaymentMethod.Dankort,order.getPaymentMethod());
     }
 
     @Test
     void setPaymentMethodForOrder() {
         //Arrange
-
+        Order order = new Order(3);
 
         //Act
-
+        controller.setPaymentMethodForOrder(order,PaymentMethod.Dankort);
 
         //Assert
+        assertEquals(PaymentMethod.Dankort,order.getPaymentMethod());
+
+
 
     }
 
     @Test
     void createRental() {
         //Arrange
-
+        LocalDate date = LocalDate.now();
+        String name = "Peter";
+        String description = "Udlejer 15 øl";
 
         //Act
-
+        Rental rental = controller.createRental(name,description,date);
 
         //Assert
+        assertEquals("Peter",rental.getName());
+        assertEquals("Udlejer 15 øl",rental.getDescription());
+        assertEquals(LocalDate.now(),date);
+        verify(storage).addOrder(rental);
 
     }
 
@@ -158,59 +173,25 @@ class OrderControllerTest {
     void getRentals() {
         //Arrange
 
-
         //Act
-
-
+        controller.getRentals();
         //Assert
-
-    }
-
-    @Test
-    void getActiveRentals() {
-        //Arrange
-
-
-        //Act
-
-
-        //Assert
-
-    }
-
-    @Test
-    void getDoneRentals() {
-        //Arrange
-
-
-        //Act
-
-
-        //Assert
-
+        verify(storage).getOrders();
     }
 
     @Test
     void createTour() {
         //Arrange
-
-
-        //Act
-
-
-        //Assert
-
-    }
-
-    @Test
-    void getTours() {
-        //Arrange
-
+        LocalTime startdate = LocalTime.now();
+        LocalDate enddate = LocalDate.of(1997,12,20);
 
         //Act
-
+        Tour tour = controller.createTour(enddate,startdate);
 
         //Assert
+        assertEquals(enddate,tour.getEndDate());
+        assertEquals(startdate,tour.getTime());
+
 
     }
 
@@ -220,9 +201,9 @@ class OrderControllerTest {
 
 
         //Act
-
+        controller.getProductCategories();
 
         //Assert
-
+        verify(storage).getProductCategories();
     }
 }
