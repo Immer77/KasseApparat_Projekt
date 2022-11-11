@@ -15,7 +15,7 @@ class ProductCategoryTest {
      */
     @BeforeEach
     void setUp() {
-        productCategory = new ProductCategory("Øl","Bajselademadder");
+        productCategory = new ProductCategory("Øl", "Bajselademadder");
     }
 
     /**
@@ -28,16 +28,16 @@ class ProductCategoryTest {
         String description = "5,1% alc. En pilsner der er lidt mere pilsner";
 
         // Act
-        Product productTest = productCategory.createProduct(name,description);
+        Product productTest = productCategory.createProduct(name, description);
 
         // Assert
-        assertEquals("Extra Pilsner",productTest.getName());
+        assertEquals("Extra Pilsner", productTest.getName());
         assertEquals("5,1% alc. En pilsner der er lidt mere pilsner", productTest.getDescription());
         assertTrue(productCategory.getProducts().contains(productTest));
     }
 
     @Test
-    void TC2_setTitle_BlankTitleError () {
+    void TC2_setTitle_BlankTitleError() {
         //Arrange
         String blankTitle = "";
         String expectedMessage = "Titlen på en produktkategory kan ikke være blank";

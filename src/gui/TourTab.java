@@ -12,8 +12,8 @@ import model.controller.OrderController;
 import model.modelklasser.Order;
 import model.modelklasser.Tour;
 import storage.Storage;
-import java.time.LocalTime;
 
+import java.time.LocalTime;
 
 public class TourTab extends GridPane {
     private final ListView<Tour> lvwActiveTours;
@@ -95,7 +95,6 @@ public class TourTab extends GridPane {
         // Updatescontrols
         updateControls();
     }
-    //----------------------------------------------------------------------------------------------------
 
     /**
      * Updates fields in right(??) control pane
@@ -123,7 +122,6 @@ public class TourTab extends GridPane {
         } catch (NullPointerException ne) {
             System.out.println("Systemet blev lukket ned uden at foretage ændringer");
         }
-
     }
 
     /**
@@ -139,11 +137,11 @@ public class TourTab extends GridPane {
      * Method to open endTourWindow where one ends the selectedf tour
      */
     private void finishTour() {
-        try{
+        try {
             Stage stage = new Stage(StageStyle.UTILITY);
             EndTourWindow endTourWindow = new EndTourWindow("Afslut rundtur", stage, lvwActiveTours.getSelectionModel().getSelectedItem());
             endTourWindow.showAndWait();
-        }catch(NullPointerException ne) {
+        } catch (NullPointerException ne) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Vælg en tour");
             alert.setHeaderText("Der skal vælges en tour");
@@ -171,9 +169,9 @@ public class TourTab extends GridPane {
         lvwTours.getItems().clear();
 
         for (Tour tour : controller.getTours()) {
-            if (tour.getPaymentMethod() != null){
+            if (tour.getPaymentMethod() != null) {
                 lvwTours.getItems().add(tour);
-            }else {
+            } else {
                 lvwActiveTours.getItems().add(tour);
             }
         }
@@ -181,5 +179,4 @@ public class TourTab extends GridPane {
         lvwTours.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
         lvwActiveTours.getItems().sort((o1, o2) -> o1.getEndDate().compareTo(o2.getEndDate()));
     }
-
 }

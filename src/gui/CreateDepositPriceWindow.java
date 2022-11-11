@@ -17,6 +17,7 @@ import model.modelklasser.*;
 import storage.Storage;
 
 public class CreateDepositPriceWindow extends Stage {
+
     //Fields ---------------------------------------------------------------------------------------------------------
     private Product product;
     private ProductOverviewControllerInterface controller;
@@ -26,8 +27,6 @@ public class CreateDepositPriceWindow extends Stage {
     private RadioButton rbtnProduct;
     private RadioButton rbtnCategory;
 
-
-    //Constructors ---------------------------------------------------------------------------------------------------
     public CreateDepositPriceWindow(String title, Product product, Stage owner, ProductCategory category) {
         this.product = product;
         this.category = category;
@@ -41,7 +40,6 @@ public class CreateDepositPriceWindow extends Stage {
         this.setTitle(title);
         GridPane pane = new GridPane();
 
-
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
@@ -49,9 +47,6 @@ public class CreateDepositPriceWindow extends Stage {
 
         this.initContent(pane);
     }
-
-    //Methods - Get, Set & Add ---------------------------------------------------------------------------------------
-
 
     //Methods - Other ------------------------------------------------------------------------------------------------
     private void initContent(GridPane pane) {
@@ -62,14 +57,14 @@ public class CreateDepositPriceWindow extends Stage {
 
         Label lblDepositFor = new Label("Lav ny pantpris for:");
 
-        rbtnProduct = new RadioButton("Produktet "+product.getName());
+        rbtnProduct = new RadioButton("Produktet " + product.getName());
         if (!product.getDescription().isBlank()) {
-            rbtnProduct.setText(rbtnProduct.getText()+" ("+product.getDescription()+")");
+            rbtnProduct.setText(rbtnProduct.getText() + " (" + product.getDescription() + ")");
         }
 
-        rbtnCategory = new RadioButton("Hele kategorien "+category.getTitle());
+        rbtnCategory = new RadioButton("Hele kategorien " + category.getTitle());
         if (!category.getDescription().isBlank()) {
-            rbtnCategory.setText(rbtnCategory.getText()+" ("+category.getDescription()+")");
+            rbtnCategory.setText(rbtnCategory.getText() + " (" + category.getDescription() + ")");
         }
 
         tglGroup = new ToggleGroup();
@@ -121,13 +116,12 @@ public class CreateDepositPriceWindow extends Stage {
         Situation situation = controller.getSituations().get(0);
 
         if (tglGroup.getSelectedToggle().equals(rbtnProduct)) {
-            product.createDeposit(amount, unit,situation);
+            product.createDeposit(amount, unit, situation);
         } else if (tglGroup.getSelectedToggle().equals(rbtnCategory)) {
             for (Product prod : category.getProducts()) {
-                prod.createDeposit(amount,unit,situation);
+                prod.createDeposit(amount, unit, situation);
             }
         }
-
         this.close();
     }
 
@@ -137,7 +131,4 @@ public class CreateDepositPriceWindow extends Stage {
     private void cancelAction() {
         this.close();
     }
-
-
-
 }

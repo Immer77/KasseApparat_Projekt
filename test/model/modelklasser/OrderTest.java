@@ -12,7 +12,6 @@ class OrderTest {
     Price price;
     Order order;
 
-
     @BeforeEach
     void setUp() {
         price = mock(Price.class);
@@ -25,23 +24,22 @@ class OrderTest {
         // Arrange
 
         // Simulerede 3 forskellige priser
-        when(price.getValue()).thenReturn(30.0,40.0,20.0);
+        when(price.getValue()).thenReturn(30.0, 40.0, 20.0);
         when(price.getUnit()).thenReturn(Unit.DKK);
 
         // Setting up our orderlines
-        OrderLine orderLine1 = order.createOrderLine(1,price);
-        OrderLine orderLine2 = order.createOrderLine(1,price);
-        OrderLine orderLine3 = order.createOrderLine(1,price);
+        OrderLine orderLine1 = order.createOrderLine(1, price);
+        OrderLine orderLine2 = order.createOrderLine(1, price);
+        OrderLine orderLine3 = order.createOrderLine(1, price);
 
         // Act
         double result = order.calculateSumPriceForUnit(Unit.DKK);
 
         //Assert
-        assertEquals(90,result);
+        assertEquals(90, result);
         assertTrue(order.getOrderLines().contains(orderLine1));
         assertTrue(order.getOrderLines().contains(orderLine2));
         assertTrue(order.getOrderLines().contains(orderLine3));
-
     }
 
     /**
@@ -56,11 +54,9 @@ class OrderTest {
         // Act
         OrderLine orderLine = order.createOrderLine(amount, price);
 
-
         // Assert
         assertTrue(order.getOrderLines().contains(orderLine));
-        assertEquals(35,orderLine.getPrice().getValue());
-
+        assertEquals(35, orderLine.getPrice().getValue());
     }
 
     @Test
@@ -72,11 +68,8 @@ class OrderTest {
         // Act
         OrderLine orderLine = order.createOrderLine(amount, price);
 
-
         // Assert
         assertTrue(order.getOrderLines().contains(orderLine));
-        assertEquals(525,orderLine.getPrice().getValue());
+        assertEquals(525, orderLine.getPrice().getValue());
     }
-
-
 }

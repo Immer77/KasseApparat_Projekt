@@ -18,14 +18,14 @@ class OrderLineTest {
         // Arrange
         Price price = mock(Price.class);
         int amount = 3;
-        OrderLine orderLine = new OrderLine(amount,price);
+        OrderLine orderLine = new OrderLine(amount, price);
         when(price.getValue()).thenReturn(35.0);
 
         // Act
         double result = orderLine.calculateOrderLinePrice();
 
         // Assert
-        assertEquals(105,result);
+        assertEquals(105, result);
     }
 
     /**
@@ -36,14 +36,14 @@ class OrderLineTest {
         // Arrange
         Price price = mock(Price.class);
         int amount = 0;
-        OrderLine orderLine = new OrderLine(amount,price);
+        OrderLine orderLine = new OrderLine(amount, price);
         when(price.getValue()).thenReturn(35.0);
 
         // Act
         double result = orderLine.calculateOrderLinePrice();
 
         // Assert
-        assertEquals(0,result);
+        assertEquals(0, result);
     }
 
     /**
@@ -55,18 +55,15 @@ class OrderLineTest {
         // Arrange
         Price price = mock(Price.class);
         int amount = -3;
-        OrderLine orderLine = new OrderLine(amount,price);
+        OrderLine orderLine = new OrderLine(amount, price);
         when(price.getValue()).thenReturn(35.0);
 
         // Act
-        Exception exception = assertThrows(IllegalArgumentException.class,() -> {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             orderLine.calculateOrderLinePrice();
         });
 
-
-                // Assert
-        assertEquals(exception.getMessage(),"Number must not be negative");
+        // Assert
+        assertEquals(exception.getMessage(), "Number must not be negative");
     }
-
-
 }

@@ -32,18 +32,14 @@ public class CreateTourWindow extends Stage {
     private Order order;
     private VBox vbxOrderTotal;
     private Accordion accProductOverview;
-
-    private TextField txfPercentDiscount;
+    private TextField txfPercentDiscount, txfFixedTotal;
     private VBox vbxFinalPrice;
-    private TextField txfFixedTotal;
     private TextField txfTidspunkt = new TextField();
     private LocalDateTime tidspunkt;
     private double calculatedFinalPrice = 0.0;
 
-
-
     // Constructor to createRentalWindows
-    public CreateTourWindow(String title, Stage owner){
+    public CreateTourWindow(String title, Stage owner) {
         this.initOwner(owner);
         this.initStyle(StageStyle.UTILITY);
         this.initModality(Modality.APPLICATION_MODAL);
@@ -66,6 +62,7 @@ public class CreateTourWindow extends Stage {
 
     /**
      * Initilizes the pane to display lbls, textfields etc.
+     *
      * @param pane
      */
     public void initContent(GridPane pane) {
@@ -87,13 +84,10 @@ public class CreateTourWindow extends Stage {
 
         pane.add(datePicker, 1, 1, 2, 1);
 
-        pane.add(txfTidspunkt, 1, 2,2,1);
+        pane.add(txfTidspunkt, 1, 2, 2, 1);
 
         pane.add(txaDescription, 1, 3, 2, 1);
         txaDescription.setPrefWidth(100);
-
-
-        //-------------------------------------------
 
         //Adds Accordion control for showing of categories and products
         accProductOverview = new Accordion();
@@ -182,12 +176,9 @@ public class CreateTourWindow extends Stage {
         btnCancel.setOnAction(event -> cancelAction());
         pane.add(btnCancel, 6, 8, 3, 1);
 
-
         //Updates all controls
         updateControls();
     }
-
-    //----------------------------------------------------------------------------------------------------
 
     //Updates controls
     public void updateControls() {
@@ -243,9 +234,6 @@ public class CreateTourWindow extends Stage {
         vbxOrderTotal.getChildren().clear();
         vbxFinalPrice.getChildren().clear();
 
-        //For each unit, calculates the sum of the orderlines with that unit
-
-
         //Checks if there is any orderlines in the order with this unit
         boolean currentUnitFound = false;
         for (OrderLine ol : order.getOrderLines()) {
@@ -264,7 +252,6 @@ public class CreateTourWindow extends Stage {
             vbxOrderTotal.getChildren().add(priceTotal);
 
             //Calculate the total after subtracting the percentage discount
-
             calculatedFinalPrice = result;
             try {
                 if (!txfPercentDiscount.getText().isBlank()) {
@@ -292,8 +279,6 @@ public class CreateTourWindow extends Stage {
             Label lblFinalPrice = new Label(finalPriceText);
             lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
             vbxFinalPrice.getChildren().add(lblFinalPrice);
-
-
         }
 
         if (!txfFixedTotal.getText().isBlank()) {
@@ -306,8 +291,6 @@ public class CreateTourWindow extends Stage {
             vbxFinalPrice.getChildren().add(lblAgreedTotal);
             vbxFinalPrice.getChildren().add(lblManualFinalPrice);
         }
-
-
     }
 
     // Reset the order an clears the fields
@@ -318,9 +301,9 @@ public class CreateTourWindow extends Stage {
         updateOrder();
     }
 
-        /**
-         * Method to update discount on the order
-         */
+    /**
+     * Method to update discount on the order
+     */
     private void updateDiscount() {
         try {
             if (txfPercentDiscount.getText().isBlank()) {
@@ -392,7 +375,7 @@ public class CreateTourWindow extends Stage {
             }
 
             Tour tour = orderController.createTour(LocalDate.from(datePicker.getValue()), LocalTime.parse(txfTidspunkt.getText().trim()));
-            for(OrderLine order : order.getOrderLines()){
+            for (OrderLine order : order.getOrderLines()) {
                 tour.createOrderLine(order.getAmount(), order.getPrice());
             }
 
@@ -400,7 +383,6 @@ public class CreateTourWindow extends Stage {
             tour.setDescription(description);
             orderController.saveOrder(tour);
             this.close();
-
         } else {
             Alert nameAlert = new Alert(Alert.AlertType.ERROR);
             nameAlert.setTitle("Manglende navn!");
@@ -432,7 +414,6 @@ public class CreateTourWindow extends Stage {
             if (ol.getPrice().equals(price)) {
                 foundInOrderLine = true;
                 ol.setAmount(ol.getAmount() + 1);
-
             }
         }
 
@@ -440,16 +421,13 @@ public class CreateTourWindow extends Stage {
         if (!foundInOrderLine) {
             orderController.createOrderLineForOrder(order, 1, price);
         }
-
         //then displays orderlines in OrderLineView
         updateOrder();
     }
 
     private void updateProductOverview() {
         TitledPane selected = accProductOverview.getExpandedPane();
-
         accProductOverview.getPanes().clear();
-
 
         //For each price in each product in each category...
         for (ProductCategory proCat : orderController.getProductCategories()) {
@@ -459,7 +437,6 @@ public class CreateTourWindow extends Stage {
                 vbxCategory.setFillWidth(true);
                 vbxCategory.maxWidth(Double.MAX_VALUE);
                 vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
-
 
                 for (Product prod : proCat.getProducts()) {
                     for (Price price : prod.getPrices()) {
@@ -489,18 +466,15 @@ public class CreateTourWindow extends Stage {
                             productLine.setOnMouseClicked(event -> addProductToOrder(price));
 
                             vbxCategory.getChildren().add(productLine);
-
                         }
                     }
                 }
-
                 //If category is not empty...
                 if (!vbxCategory.getChildren().isEmpty()) {
                     //Create a titled pane and add the vbox to it
                     TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
                     accProductOverview.getPanes().add(titledPane);
                 }
-
                 if (accProductOverview.getPanes().contains(selected)) {
                     accProductOverview.setExpandedPane(selected);
                 } else if (!accProductOverview.getPanes().isEmpty()) {
@@ -518,5 +492,4 @@ public class CreateTourWindow extends Stage {
         }
         updateOrder();
     }
-
 }

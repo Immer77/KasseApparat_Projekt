@@ -2,6 +2,7 @@ package model.controller;
 
 import gui.OrderControllerInterface;
 import model.modelklasser.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class OrderController implements OrderControllerInterface {
     public OrderController(StorageInterface storage) {
         this.storage = storage;
     }
-
 
     /**
      * Gets a list of all the situation there is from storage
@@ -54,6 +54,7 @@ public class OrderController implements OrderControllerInterface {
 
     /**
      * Sets an enddate for the order
+     *
      * @param order
      * @param date
      */
@@ -138,6 +139,7 @@ public class OrderController implements OrderControllerInterface {
 
     /**
      * Loops through all orders and checks if its an instance of rental and adds it to the list of rentals
+     *
      * @return
      */
     public List<Rental> getActiveRentals() {
@@ -154,6 +156,7 @@ public class OrderController implements OrderControllerInterface {
 
     /**
      * Gets all done rentals by seeing if there has been added a paymentmethod, meaning it has been paid for
+     *
      * @return
      */
     public List<Rental> getDoneRentals() {
@@ -177,7 +180,7 @@ public class OrderController implements OrderControllerInterface {
      */
     public Tour createTour(LocalDate endDate, LocalTime time) {
         orderNumber++;
-        Tour tour = new Tour(endDate, time,orderNumber);
+        Tour tour = new Tour(endDate, time, orderNumber);
         return tour;
     }
 
@@ -204,8 +207,6 @@ public class OrderController implements OrderControllerInterface {
     public List<ProductCategory> getProductCategories() {
         return storage.getProductCategories();
     }
-
-
 
     public void initContent() {
         Rental rental1 = createRental("Jens Hansen", "Lejer 1 hane, 1 fustage Klosterbryg og 2 krus", LocalDate.of(2022, 12, 31));

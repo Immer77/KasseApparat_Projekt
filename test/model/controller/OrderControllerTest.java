@@ -54,7 +54,6 @@ class OrderControllerTest {
 
         //Assert
         verify(storage).addOrder(mockedOrder);
-
     }
 
     @Test

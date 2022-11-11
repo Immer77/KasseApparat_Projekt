@@ -6,10 +6,7 @@ import model.modelklasser.*;
 import java.util.List;
 
 public class ProductOverviewController implements ProductOverviewControllerInterface {
-    //Fields ---------------------------------------------------------------------------------------------------------
     private StorageInterface storage;
-
-    //Constructors ---------------------------------------------------------------------------------------------------
 
     /**
      * Creates a new ProductOverviewController object.
@@ -19,8 +16,6 @@ public class ProductOverviewController implements ProductOverviewControllerInter
     public ProductOverviewController(StorageInterface storage) {
         this.storage = storage;
     }
-
-    //Methods - Get, Set & Add ---------------------------------------------------------------------------------------
 
     /**
      * Bruges til test
@@ -403,5 +398,4 @@ public class ProductOverviewController implements ProductOverviewControllerInter
         Product P1203 = pc12.createProduct("Rundvisning - Aften", "Udenfor arbejdstid");
         P1203.createPrice(150, Unit.DKK, sitStand);
     }
-
 }

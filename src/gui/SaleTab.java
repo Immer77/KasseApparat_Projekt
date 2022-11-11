@@ -17,7 +17,6 @@ import storage.Storage;
 public class SaleTab extends GridPane {
     //Fields ------------------------------------------------------------
     private OrderControllerInterface orderController;
-
     private Stage mainStage;
     private Accordion accProductOverview;
     private ChoiceBox<Situation> chSituation;
@@ -69,7 +68,6 @@ public class SaleTab extends GridPane {
         accProductOverview.setPrefWidth(500);
         accProductOverview.setPadding(Insets.EMPTY);
         this.add(accProductOverview, 0, 2, 3, 7);
-
 
         //Adds a Vbox to hold OrderLines
         orderLineView = new VBox();
@@ -129,7 +127,6 @@ public class SaleTab extends GridPane {
         hbxFixedTotal.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, new BorderWidths(0.0, 0.0, 0.5, 0.0))));
         this.add(hbxFixedTotal, 8, 3);
 
-
         //Add field for the final price
         Label lblFinal = new Label("Endelig Total: ");
         lblFinal.setFont(Font.font(Font.getDefault().getFamily(), FontWeight.BOLD, Font.getDefault().getSize()));
@@ -146,7 +143,6 @@ public class SaleTab extends GridPane {
         hbxFinalPrice.setPadding(new Insets(30, 10, 0, 0));
         this.add(hbxFinalPrice, 8, 4);
 
-
         //Add confirmation button for order
         Button btnConfirmOrder = new Button("Afslut Ordre");
         btnConfirmOrder.setMaxWidth(Double.MAX_VALUE);
@@ -154,16 +150,9 @@ public class SaleTab extends GridPane {
         btnConfirmOrder.setAlignment(Pos.TOP_LEFT);
         this.add(btnConfirmOrder, 7, 5, 2, 1);
 
-
-
         //Updates all controls
         updateControls();
-
-
     }
-
-    //Methods - Get, Set & Add -------------------------------------------
-
 
     //Methods - Other ----------------------------------------------------
 
@@ -187,8 +176,6 @@ public class SaleTab extends GridPane {
 
         //Resets the order
         resetOrder();
-
-
     }
 
 
@@ -229,7 +216,6 @@ public class SaleTab extends GridPane {
 
         accProductOverview.getPanes().clear();
 
-
         //For each price in each product in each category...
         for (ProductCategory proCat : orderController.getProductCategories()) {
             VBox vbxCategory = new VBox();
@@ -237,7 +223,6 @@ public class SaleTab extends GridPane {
             vbxCategory.setFillWidth(true);
             vbxCategory.maxWidth(Double.MAX_VALUE);
             vbxCategory.setPrefWidth(accProductOverview.getPrefWidth());
-
 
             for (Product prod : proCat.getProducts()) {
                 for (Price price : prod.getPrices()) {
@@ -267,7 +252,6 @@ public class SaleTab extends GridPane {
                         productLine.setOnMouseClicked(event -> addProductToOrder(price));
 
                         vbxCategory.getChildren().add(productLine);
-
                     }
                 }
             }
@@ -278,7 +262,6 @@ public class SaleTab extends GridPane {
                 TitledPane titledPane = new TitledPane(proCat.getTitle(), vbxCategory);
                 accProductOverview.getPanes().add(titledPane);
             }
-
         }
 
         if (accProductOverview.getPanes().contains(selected)) {
@@ -296,15 +279,12 @@ public class SaleTab extends GridPane {
         chUnits.getItems().setAll(Unit.values());
         chUnits.getSelectionModel().select(0);
 
-
         //Updates overview
         updateProductOverview();
 
         //Resets and updates the order
         resetOrder();
         updateOrder();
-
-
     }
 
     /**
@@ -373,7 +353,6 @@ public class SaleTab extends GridPane {
         //For each unit, calculates the sum of the orderlines with that unit
         for (Unit unit : Unit.values()) {
 
-
             //Checks if there is any orderlines in the order with this unit
             boolean currentUnitFound = false;
             for (OrderLine ol : tempOrder.getOrderLines()) {
@@ -392,7 +371,6 @@ public class SaleTab extends GridPane {
                 vbxOrderTotal.getChildren().add(priceTotal);
 
                 //Calculate the total after subtracting the percentage discount
-
                 double calculatedFinalPrice = result;
                 try {
                     if (!txfPercentDiscount.getText().isBlank()) {
@@ -420,7 +398,6 @@ public class SaleTab extends GridPane {
                 Label lblFinalPrice = new Label(finalPriceText);
                 lblFinalPrice.setAlignment(Pos.BASELINE_RIGHT);
                 vbxFinalPrice.getChildren().add(lblFinalPrice);
-
             }
         }
 
@@ -433,8 +410,6 @@ public class SaleTab extends GridPane {
             vbxFinalPrice.getChildren().add(lblAgreedTotal);
             vbxFinalPrice.getChildren().add(lblManualFinalPrice);
         }
-
-
     }
 
     /**
@@ -495,8 +470,6 @@ public class SaleTab extends GridPane {
             alertRTE.showAndWait();
 
         }
-
-
         updateOrder();
     }
 
@@ -523,10 +496,7 @@ public class SaleTab extends GridPane {
             alertNFE.setContentText(nfe.getMessage());
             alertNFE.showAndWait();
         }
-
     }
-
-
 }
 
 

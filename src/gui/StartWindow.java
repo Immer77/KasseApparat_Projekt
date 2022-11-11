@@ -11,9 +11,7 @@ import model.controller.ProductOverviewController;
 import storage.Storage;
 
 public class StartWindow extends Application {
-
     private Stage mainStage;
-
 
     public void start(Stage stage) {
         stage.setTitle("Aarhus Bryghus");
@@ -48,12 +46,10 @@ public class StartWindow extends Application {
      */
     private void initTabPane(TabPane tabPane) {
         //tabPane size
-        tabPane.setPrefSize(1000,750);
+        tabPane.setPrefSize(1000, 750);
 
         //disabled closing of tabs
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-
-
 
         //-----------Product Overview Tab creation------------------------------------
         //Creates a new instance of a SaleTab
@@ -64,7 +60,6 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(secondTab);
         //Updates controls when tab selection changes
         secondTab.setOnSelectionChanged(event -> saleTab.updateControls());
-        //----------------------------------------------------------------------------
 
         //-----------Rental overview tab creation-------------------------------------
         //Creates a new instance of a Rentaltab
@@ -75,7 +70,6 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(thirdTab);
         //Updates controls when tab selection changes
         thirdTab.setOnSelectionChanged(event -> rentalTab.updateControls());
-        //----------------------------------------------------------------------------
 
         //-----------Tour overview tab creation-------------------------------------
         //Creates a new instance of a Rentaltab
@@ -86,7 +80,6 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(fourthTab);
         //Updates controls when tab selection changes
         fourthTab.setOnSelectionChanged(event -> tourTab.updateControls());
-        //----------------------------------------------------------------------------
 
         //-----------Product Overview Tab creation
         //Creates a new Tab with a label, and adds it to the tabPane
@@ -99,7 +92,6 @@ public class StartWindow extends Application {
         firstTab.setContent(productOverviewTab);
         //Updates controls when tab selection changes
         firstTab.setOnSelectionChanged(event -> productOverviewTab.updateControls());
-        //----------------------------------------------------------------------------
 
         //-----------Product Statistics Tab creation------------------------------------
         //Creates a new instance of a SaleTab
@@ -110,7 +102,6 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(fifthTab);
         //Updates controls when tab selection changes
         fifthTab.setOnSelectionChanged(event -> statTab.resetTab());
-        //----------------------------------------------------------------------------
 
         //-----------Order overview tab creation-------------------------------------
         // Creates a new instance of the OrderOverviewTab
@@ -121,8 +112,5 @@ public class StartWindow extends Application {
         tabPane.getTabs().add(sixthTab);
         // updates the tab when selecting it
         sixthTab.setOnSelectionChanged(event -> orderOverviewTab.updateOrderList());
-
-
     }
-
 }

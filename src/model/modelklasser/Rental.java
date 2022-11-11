@@ -10,7 +10,6 @@ public class Rental extends Order {
     private LocalDate startDate;
     private LocalDate endDate;
 
-
     // Constructor
     public Rental(String name, String description, LocalDate endDate, int orderNumber) {
         super(orderNumber);
@@ -18,10 +17,8 @@ public class Rental extends Order {
         this.description = description;
         this.startDate = LocalDate.now();
         this.endDate = endDate;
-
     }
 
-    // Getters and setters--------------
     public String getName() {
         return name;
     }
@@ -42,7 +39,6 @@ public class Rental extends Order {
         return startDate;
     }
 
-
     @Override
     public LocalDate getEndDate() {
         return endDate;
@@ -50,9 +46,9 @@ public class Rental extends Order {
 
     /**
      * Method to calculate the deposit
+     *
      * @return
      */
-
     public double calculateDeposit() {
         double sumPrice = 0.0;
         for (OrderLine orderLine : super.getOrderLines()) {

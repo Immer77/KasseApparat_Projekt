@@ -36,7 +36,6 @@ public class EditProductCategoryWindow extends Stage {
         this.setTitle(title);
         GridPane pane = new GridPane();
 
-
         Scene scene = new Scene(pane);
         this.setScene(scene);
 
@@ -70,7 +69,6 @@ public class EditProductCategoryWindow extends Stage {
         pane.add(btnOK, 1, 3);
         btnOK.setOnAction(event -> oKAction());
         btnOK.setDefaultButton(true);
-
 
         Button btnCancel = new Button("Cancel");
         pane.add(btnCancel, 2, 3);
